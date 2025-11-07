@@ -43,6 +43,9 @@ public class SecurityConfig {
                 .authorizeHttpRequests(authz -> authz
                         .requestMatchers("/api/auth/**").permitAll()
                         .requestMatchers("/api/public/**").permitAll()
+                        .requestMatchers("/api/teams/**").permitAll()
+                        .requestMatchers("/api/projects/**").permitAll()
+                        .requestMatchers("/api/courses/**").permitAll()
                         .anyRequest().authenticated()
                 )
                 .authenticationProvider(authenticationProvider)

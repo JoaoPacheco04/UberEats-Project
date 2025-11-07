@@ -77,7 +77,7 @@ public class TeamMember {
     /**
      * Check if member is currently active
      */
-    public boolean isActive() {
+    public boolean isActiveMember() {
         return Boolean.TRUE.equals(isActive) && leftAt == null;
     }
 

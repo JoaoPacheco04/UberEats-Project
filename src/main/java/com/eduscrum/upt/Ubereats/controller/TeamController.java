@@ -1,0 +1,111 @@
+package com.eduscrum.upt.Ubereats.controller;
+
+import com.eduscrum.upt.Ubereats.dto.request.AddMemberRequest;
+import com.eduscrum.upt.Ubereats.dto.request.CreateTeamRequest;
+import com.eduscrum.upt.Ubereats.dto.request.UpdateMemberRoleRequest;
+import com.eduscrum.upt.Ubereats.dto.response.TeamMemberResponse;
+import com.eduscrum.upt.Ubereats.dto.response.TeamResponse;
+import com.eduscrum.upt.Ubereats.entity.Team;
+import com.eduscrum.upt.Ubereats.entity.TeamMember;
+import com.eduscrum.upt.Ubereats.service.TeamService;
+import jakarta.validation.Valid;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+import java.util.stream.Collectors;
+
+/*
+    * Controller for managing teams and team members.
+    * Provides endpoints for creating teams, adding/removing members,
+    * updating member roles, and retrieving team information.
+ */
+@RestController
+@RequestMapping("/api/teams")
+public class TeamController {
+
+    private final TeamService teamService;
+
+    public TeamController(TeamService teamService) {
+        this.teamService = teamService;
+    }
+
+    // Create new team
+    @PostMapping
+    public ResponseEntity<TeamResponse> createTeam(@Valid @RequestBody CreateTeamRequest request) {
+        Team team = teamService.createTeam(request);
+        return ResponseEntity.ok(new TeamResponse(team));
+    }
+
+    // Get teams for project
+    @GetMapping("/project/{projectId}")
+    public ResponseEntity<List<TeamResponse>> getProjectTeams(@PathVariable Long projectId) {
+        List<Team> teams = teamService.getTeamsByProject(projectId);
+        List<TeamResponse> response = teams.stream()
+                .map(TeamResponse::new)
+                .collect(Collectors.toList());
+        return ResponseEntity.ok(response);
+    }
+
+    // Get user's teams
+    @GetMapping("/user/{userId}")
+    public ResponseEntity<List<TeamResponse>> getUserTeams(@PathVariable Long userId) {
+        List<Team> teams = teamService.getUserTeams(userId);
+        List<TeamResponse> response = teams.stream()
+                .map(TeamResponse::new)
+                .collect(Collectors.toList());
+        return ResponseEntity.ok(response);
+    }
+
+    // Get team by ID
+    @GetMapping("/{teamId}")
+    public ResponseEntity<TeamResponse> getTeam(@PathVariable Long teamId) {
+        Team team = teamService.getTeamById(teamId);
+        return ResponseEntity.ok(new TeamResponse(team));
+    }
+
+    // Add member to team
+    @PostMapping("/{teamId}/members")
+    public ResponseEntity<TeamMemberResponse> addMember(
+            @PathVariable Long teamId,
+            @Valid @RequestBody AddMemberRequest request) {
+        TeamMember member = teamService.addMemberToTeam(teamId, request);
+        return ResponseEntity.ok(new TeamMemberResponse(member));
+    }
+
+    // Get team members
+    @GetMapping("/{teamId}/members")
+    public ResponseEntity<List<TeamMemberResponse>> getTeamMembers(@PathVariable Long teamId) {
+        List<TeamMember> members = teamService.getTeamMembers(teamId);
+        List<TeamMemberResponse> response = members.stream()
+                .map(TeamMemberResponse::new)
+                .collect(Collectors.toList());
+        return ResponseEntity.ok(response);
+    }
+
+    // Update member role
+    @PutMapping("/{teamId}/members/{userId}/role")
+    public ResponseEntity<TeamMemberResponse> updateMemberRole(
+            @PathVariable Long teamId,
+            @PathVariable Long userId,
+            @Valid @RequestBody UpdateMemberRoleRequest request) {
+        TeamMember member = teamService.updateMemberRole(teamId, userId, request);
+        return ResponseEntity.ok(new TeamMemberResponse(member));
+    }
+
+    // Remove member from team
+    @DeleteMapping("/{teamId}/members/{userId}")
+    public ResponseEntity<Void> removeMember(
+            @PathVariable Long teamId,
+            @PathVariable Long userId) {
+        teamService.removeMemberFromTeam(teamId, userId);
+        return ResponseEntity.noContent().build();
+    }
+
+    // Delete team
+    @DeleteMapping("/{teamId}")
+    public ResponseEntity<Void> deleteTeam(@PathVariable Long teamId) {
+        teamService.deleteTeam(teamId);
+        return ResponseEntity.noContent().build();
+    }
+}
