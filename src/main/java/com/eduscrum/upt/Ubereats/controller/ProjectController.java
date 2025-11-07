@@ -1,7 +1,10 @@
 package com.eduscrum.upt.Ubereats.controller;
 
-import com.eduscrum.upt.Ubereats.entity.Project;
+import com.eduscrum.upt.Ubereats.dto.request.CreateProjectRequest;
+import com.eduscrum.upt.Ubereats.dto.request.UpdateProjectRequest;
+import com.eduscrum.upt.Ubereats.dto.response.ProjectResponse;
 import com.eduscrum.upt.Ubereats.service.ProjectService;
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -13,32 +16,26 @@ import java.util.List;
 public class ProjectController {
 
     private final ProjectService projectService;
-
-    public ProjectController(ProjectService projectService) {
-        this.projectService = projectService;
-    }
+    public ProjectController(ProjectService projectService) { this.projectService = projectService; }
 
     @PostMapping
-    public ResponseEntity<Project> create(@RequestBody Project project) {
-        return ResponseEntity.ok(projectService.createProject(project));
+    public ResponseEntity<ProjectResponse> create(@Valid @RequestBody CreateProjectRequest req) {
+        return ResponseEntity.ok(projectService.createProject(req));
     }
 
     @GetMapping
-    public ResponseEntity<List<Project>> getAll() {
+    public ResponseEntity<List<ProjectResponse>> getAll() {
         return ResponseEntity.ok(projectService.getAllProjects());
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Project> getById(@PathVariable Long id) {
-        return projectService.getProjectById(id)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+    public ResponseEntity<ProjectResponse> getById(@PathVariable Long id) {
+        return ResponseEntity.ok(projectService.getProjectById(id));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Project> update(@PathVariable Long id, @RequestBody Project project) {
-        project.setId(id);
-        return ResponseEntity.ok(projectService.updateProject(project));
+    public ResponseEntity<ProjectResponse> update(@PathVariable Long id, @RequestBody UpdateProjectRequest req) {
+        return ResponseEntity.ok(projectService.updateProject(id, req));
     }
 
     @DeleteMapping("/{id}")
