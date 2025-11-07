@@ -9,10 +9,6 @@ import org.springframework.stereotype.Component;
 import javax.crypto.SecretKey;
 import java.util.Date;
 
-/**
- * Handles JWT token creation, validation, and parsing
- * Responsible for all JWT cryptographic operations
- */
 @Component
 public class JwtTokenProvider {
 
@@ -20,16 +16,12 @@ public class JwtTokenProvider {
     private String jwtSecret;
 
     @Value("${app.jwt.expiration}")
-    private int jwtExpiration;
+    private long jwtExpiration;
 
-
-     //Creates HMAC-SHA signing key from secret string
     private SecretKey getSigningKey() {
         return Keys.hmacShaKeyFor(jwtSecret.getBytes());
     }
 
-
-     //Generates JWT token for authenticated user
     public String generateToken(Authentication authentication) {
         CustomUserDetails userPrincipal = (CustomUserDetails) authentication.getPrincipal();
 
@@ -37,26 +29,22 @@ public class JwtTokenProvider {
         Date expiryDate = new Date(now.getTime() + jwtExpiration);
 
         return Jwts.builder()
-                .setSubject(userPrincipal.getUsername()) // Use email as subject
+                .setSubject(userPrincipal.getUsername())
                 .setIssuedAt(now)
                 .setExpiration(expiryDate)
                 .signWith(getSigningKey(), SignatureAlgorithm.HS512)
                 .compact();
     }
 
-
-     //Extracts user email from JWT token
     public String getEmailFromToken(String token) {
-        Claims claims = Jwts.parserBuilder()
+        return Jwts.parserBuilder()
                 .setSigningKey(getSigningKey())
                 .build()
                 .parseClaimsJws(token)
-                .getBody();
-        return claims.getSubject();
+                .getBody()
+                .getSubject();
     }
 
-
-    //Validates JWT token signature and expiration
     public boolean validateToken(String token) {
         try {
             Jwts.parserBuilder()
@@ -64,8 +52,7 @@ public class JwtTokenProvider {
                     .build()
                     .parseClaimsJws(token);
             return true;
-        } catch (JwtException | IllegalArgumentException e) {
-            // Token is invalid, expired, or malformed
+        } catch (Exception ex) {
             return false;
         }
     }

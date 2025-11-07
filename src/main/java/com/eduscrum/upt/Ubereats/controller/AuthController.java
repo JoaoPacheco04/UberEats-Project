@@ -65,11 +65,12 @@ public class AuthController {
 
             return ResponseEntity.ok(loginResponse);
 
-        } catch (Exception e) {
-            Map<String, String> response = new HashMap<>();
-            response.put("message", "Invalid email or password");
-            return ResponseEntity.badRequest().body(response);
-        }
+        }  catch (Exception e) {
+        e.printStackTrace();  // <-- VERY IMPORTANT
+        Map<String, String> response = new HashMap<>();
+        response.put("message", e.getMessage());
+        return ResponseEntity.badRequest().body(response);
+    }
     }
 
     @PostMapping("/register")
