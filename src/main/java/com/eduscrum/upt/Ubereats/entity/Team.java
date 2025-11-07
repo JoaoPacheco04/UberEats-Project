@@ -95,7 +95,7 @@ public class Team {
      */
     public User getScrumMaster() {
         return members.stream()
-                .filter(member -> member.getRole() == ScrumRole.SCRUM_MASTER && member.isActive())
+                .filter(member -> member.getRole() == ScrumRole.SCRUM_MASTER && member.getIsActive())
                 .map(TeamMember::getUser)
                 .findFirst()
                 .orElse(null);
@@ -106,7 +106,7 @@ public class Team {
      */
     public User getProductOwner() {
         return members.stream()
-                .filter(member -> member.getRole() == ScrumRole.PRODUCT_OWNER && member.isActive())
+                .filter(member -> member.getRole() == ScrumRole.PRODUCT_OWNER && member.getIsActive())
                 .map(TeamMember::getUser)
                 .findFirst()
                 .orElse(null);
@@ -117,7 +117,7 @@ public class Team {
      */
     public List<User> getDevelopers() {
         return members.stream()
-                .filter(member -> member.getRole() == ScrumRole.DEVELOPER && member.isActive())
+                .filter(member -> member.getRole() == ScrumRole.DEVELOPER && member.getIsActive())
                 .map(TeamMember::getUser)
                 .collect(Collectors.toList());
     }
@@ -138,7 +138,7 @@ public class Team {
         if (progressMetrics.isEmpty()) return BigDecimal.ZERO;
 
         BigDecimal totalVelocity = progressMetrics.stream()
-                .map(ProgressMetric::getVelocity)
+                .map(metric -> metric.getVelocity() != null ? metric.getVelocity() : BigDecimal.ZERO)
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
 
         return totalVelocity.divide(
@@ -167,7 +167,7 @@ public class Team {
      */
     public List<TeamMember> getActiveMembers() {
         return members.stream()
-                .filter(TeamMember::isActive)
+                .filter(member -> member.getIsActive())
                 .collect(Collectors.toList());
     }
 
@@ -176,7 +176,7 @@ public class Team {
      */
     public boolean hasMember(User user) {
         return members.stream()
-                .anyMatch(member -> member.getUser().equals(user) && member.isActive());
+                .anyMatch(member -> member.getUser().equals(user) && member.getIsActive());
     }
 
     /**

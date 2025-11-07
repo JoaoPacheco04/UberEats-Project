@@ -212,7 +212,7 @@ public class User {
      */
     public Integer getTeamPointsInProject(Project project) {
         Optional<TeamMember> teamMember = teamMemberships.stream()
-                .filter(member -> member.isActive() &&
+                .filter(member -> member.getIsActive() &&
                         member.getTeam().getProject().equals(project))
                 .findFirst();
 
@@ -222,7 +222,7 @@ public class User {
                     .mapToInt(achievement -> achievement.getBadge().getPoints())
                     .sum();
             int teamSize = team.getMembers().stream()
-                    .filter(TeamMember::isActive)
+                    .filter(TeamMember::getIsActive)
                     .toList().size();
             return teamSize > 0 ? teamAchievementPoints / teamSize : 0;
         }
