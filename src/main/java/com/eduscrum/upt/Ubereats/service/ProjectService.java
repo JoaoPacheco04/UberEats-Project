@@ -46,6 +46,7 @@ public class ProjectService {
                 .collect(Collectors.toList());
     }
 
+
     public ProjectResponse getProjectById(Long id) {
         return projectRepository.findById(id)
                 .map(this::mapToResponse)
@@ -82,4 +83,7 @@ public class ProjectService {
                 p.getCourse().getName()
         );
     }
+
+
+
 }

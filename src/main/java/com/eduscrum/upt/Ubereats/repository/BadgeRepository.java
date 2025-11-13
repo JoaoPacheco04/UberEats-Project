@@ -1,0 +1,45 @@
+// BadgeRepository.java
+package com.eduscrum.upt.Ubereats.repository;
+
+import com.eduscrum.upt.Ubereats.entity.Badge;
+import com.eduscrum.upt.Ubereats.entity.enums.BadgeType;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
+import org.springframework.stereotype.Repository;
+
+import java.util.List;
+import java.util.Optional;
+
+@Repository
+public interface BadgeRepository extends JpaRepository<Badge, Long> {
+
+    // Find by name
+    Optional<Badge> findByName(String name);
+
+    // Find by badge type
+    List<Badge> findByBadgeType(BadgeType badgeType);
+
+    // Find active badges
+    List<Badge> findByIsActiveTrue();
+
+    // Find by creator
+    List<Badge> findByCreatedById(Long createdById);
+
+    // Find automatic badges
+    List<Badge> findByBadgeTypeAndIsActiveTrue(BadgeType badgeType);
+
+    // Check if name exists (for creation/update validation)
+    boolean existsByName(String name);
+
+    // Check if name exists excluding current badge (for update validation)
+    boolean existsByNameAndIdNot(String name, Long id);
+
+    // Find badges with award count
+    @Query("SELECT b FROM Badge b LEFT JOIN FETCH b.achievements WHERE b.id = :id")
+    Optional<Badge> findByIdWithAchievements(@Param("id") Long id);
+
+    // Find most awarded badges
+    @Query("SELECT b, COUNT(a) as awardCount FROM Badge b LEFT JOIN b.achievements a GROUP BY b ORDER BY awardCount DESC")
+    List<Object[]> findMostAwardedBadges();
+}
