@@ -46,6 +46,12 @@ public class SecurityConfig {
                         .requestMatchers("/api/teams/**").permitAll()
                         .requestMatchers("/api/projects/**").permitAll()
                         .requestMatchers("/api/courses/**").permitAll()
+                        .requestMatchers("/api/sprints/**").permitAll()
+                        .requestMatchers("/api/user-stories/**").permitAll()
+                        .requestMatchers("/api/achievements/**").permitAll()
+                        .requestMatchers("/api/badges/**").permitAll()
+
+
                         .anyRequest().authenticated()
                 )
                 .authenticationProvider(authenticationProvider)

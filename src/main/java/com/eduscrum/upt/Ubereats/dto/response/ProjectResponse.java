@@ -39,5 +39,27 @@ public class ProjectResponse {
         this.courseName = courseName;
     }
 
-    // getters/setters ...
+    // === GETTERS & SETTERS ===
+    public Long getId() { return id; }
+    public String getName() { return name; }
+    public String getDescription() { return description; }
+    public LocalDate getStartDate() { return startDate; }
+    public LocalDate getEndDate() { return endDate; }
+    public ProjectStatus getStatus() { return status; }
+    public LocalDateTime getCreatedAt() { return createdAt; }
+    public LocalDateTime getUpdatedAt() { return updatedAt; }
+    public Long getCourseId() { return courseId; }
+    public String getCourseName() { return courseName; }
+
+
+    public void setId(Long id) { this.id = id; }
+    public void setName(String name) { this.name = name; }
+    public void setDescription(String description) { this.description = description; }
+    public void setStartDate(LocalDate startDate) { this.startDate = startDate; }
+    public void setEndDate(LocalDate endDate) { this.endDate = endDate; }
+    public void setStatus(ProjectStatus status) { this.status = status; }
+    public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }
+    public void setUpdatedAt(LocalDateTime updatedAt) { this.updatedAt = updatedAt; }
+    public void setCourseId(Long courseId) { this.courseId = courseId; }
+    public void setCourseName(String courseName) { this.courseName = courseName; }
 }
