@@ -22,7 +22,7 @@ public interface TeamRepository extends JpaRepository<Team, Long> {
     // Check if team name already exists in project
     boolean existsByNameAndProjectId(String name, Long projectId);
 
-    // Find teams where user is a member - CORRIGIDO
+    // Find teams where user is a member
     @Query("SELECT t FROM Team t JOIN t.members m WHERE m.user.id = :userId AND m.isActive = true")
     List<Team> findTeamsByUserId(@Param("userId") Long userId);
 
@@ -32,4 +32,12 @@ public interface TeamRepository extends JpaRepository<Team, Long> {
 
     // Find team by name and project
     Optional<Team> findByNameAndProjectId(String name, Long projectId);
+
+    @Query("SELECT COUNT(t.project) FROM Team t " +
+            "WHERE t.id = :teamId " +
+            "AND t.project.course.id = :courseId " +
+            "AND t.project.status = 'COMPLETED'")
+    Long countCompletedProjectsByTeamInCourse(
+            @Param("teamId") Long teamId,
+            @Param("courseId") Long courseId);
 }

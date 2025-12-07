@@ -20,7 +20,6 @@ public class AchievementRequestDTO {
 
     private Long sprintId;
 
-    @NotNull(message = "Awarded by user ID is required")
     private Long awardedByUserId;
 
     // Constructors

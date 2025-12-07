@@ -11,6 +11,9 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import java.util.Map;
+import java.util.HashMap;
+import java.util.Objects;
 
 @Service
 @Transactional
@@ -20,21 +23,24 @@ public class AchievementService {
     private final BadgeService badgeService;
     private final UserService userService;
     private final TeamService teamService;
-    private final ProjectRepository projectRepository; // Added to access Project entities directly
+    private final ProjectRepository projectRepository;
     private final SprintService sprintService;
+    private final UserStoryService userStoryService;
 
     public AchievementService(AchievementRepository achievementRepository,
                               BadgeService badgeService,
                               UserService userService,
                               TeamService teamService,
-                              ProjectRepository projectRepository, // Added
-                              SprintService sprintService) {
+                              ProjectRepository projectRepository,
+                              SprintService sprintService,
+                              UserStoryService userStoryService) {
         this.achievementRepository = achievementRepository;
         this.badgeService = badgeService;
         this.userService = userService;
         this.teamService = teamService;
         this.projectRepository = projectRepository;
         this.sprintService = sprintService;
+        this.userStoryService = userStoryService;
     }
 
     // === CRUD OPERATIONS ===
@@ -44,23 +50,27 @@ public class AchievementService {
 
         Badge badge = badgeService.getBadgeEntity(requestDTO.getBadgeId());
         Project project = getProjectEntity(requestDTO.getProjectId());
-        User awardedBy = getUserEntity(requestDTO.getAwardedByUserId());
+
+        // LÓGICA DE AWARDS AUTOMÁTICOS: Handle awardedBy = null
+        User awardedBy = null;
+        if (requestDTO.getAwardedByUserId() != null) {
+            awardedBy = getUserEntity(requestDTO.getAwardedByUserId());
+        } else if (badge.isManual()) {
+            throw new IllegalArgumentException("Manual badges must be awarded by a user (Teacher).");
+        }
 
         Achievement achievement;
 
         if (requestDTO.getAwardedToUserId() != null) {
-            // Individual achievement
             User awardedToUser = getUserEntity(requestDTO.getAwardedToUserId());
             achievement = new Achievement(badge, awardedToUser, project, awardedBy, requestDTO.getReason());
         } else if (requestDTO.getAwardedToTeamId() != null) {
-            // Team achievement
             Team awardedToTeam = teamService.getTeamById(requestDTO.getAwardedToTeamId());
             achievement = new Achievement(badge, awardedToTeam, project, awardedBy, requestDTO.getReason());
         } else {
             throw new IllegalArgumentException("Either awardedToUserId or awardedToTeamId must be provided");
         }
 
-        // Set sprint if provided
         if (requestDTO.getSprintId() != null) {
             Sprint sprint = sprintService.getSprintEntity(requestDTO.getSprintId());
             achievement.setSprint(sprint);
@@ -265,22 +275,293 @@ public class AchievementService {
                 .orElseThrow(() -> new IllegalArgumentException("Achievement not found with id: " + id));
     }
 
-    // === AUTOMATIC ACHIEVEMENT METHODS ===
+    // === AUTOMATIC AWARDS IMPLEMENTATION ===
+
+    // --- Awards Nível Sprint ---
+
+    /**
+     * Check for and awards automatic team badges when a sprint is completed. (Sprint Master)
+     */
+    public void checkAutomaticTeamBadgesOnSprintCompletion(Long sprintId) {
+        Sprint sprint = sprintService.getSprintEntity(sprintId);
+        Long projectId = sprint.getProject().getId();
+        List<Team> teams = sprint.getProject().getTeams();
+
+        Badge sprintMasterBadge = badgeService.getBadgeByName("Sprint Master")
+                .map(dto -> badgeService.getBadgeEntity(dto.getId()))
+                .orElse(null);
+
+        if (sprintMasterBadge == null || !sprintMasterBadge.isAutomatic()) {
+            return;
+        }
+
+        for (Team team : teams) {
+            Long teamId = team.getId();
+            Integer totalPoints = userStoryService.getTotalStoryPointsBySprint(sprintId);
+            Integer completedPoints = userStoryService.getCompletedStoryPointsBySprint(sprintId);
+
+            if (totalPoints > 0 && completedPoints.equals(totalPoints)) {
+                AchievementRequestDTO request = new AchievementRequestDTO(
+                        "Concluded 100% of planned Story Points for Sprint " + sprint.getSprintNumber(),
+                        sprintMasterBadge.getId(), null, teamId, projectId, sprintId, null
+                );
+
+                try {
+                    createAchievement(request);
+                } catch (IllegalArgumentException e) {
+                    if (!e.getMessage().contains("already has this badge")) {
+                        System.err.println("Error awarding Sprint Master to Team " + team.getName() + ": " + e.getMessage());
+                    }
+                }
+            }
+        }
+    }
+
+    // --- Awards Nível Projeto (Entry Point) ---
+
+    /**
+     * Entry point to check for and award all automatic badges related to project conclusion.
+     * This method is meant to be triggered when a project changes status to COMPLETED.
+     */
+    public void checkAutomaticBadgesOnProjectCompletion(Long projectId) {
+        // 1. Check Individual Awards
+        checkHighImpactDev(projectId);
+        checkConsistentContributor(projectId);
+
+        // 2. Check Team Awards
+        checkOnTimeLegend(projectId);
+        checkProjectMultiplier(projectId);
+    }
+
+
+    // --- Awards Nível Projeto (Lógica Detalhada) ---
+
+    /**
+     * Checks if any student qualifies for the "High-Impact Dev" badge in a project. (Individual)
+     */
+    private void checkHighImpactDev(Long projectId) {
+        Project project = getProjectEntity(projectId);
+
+        Badge highImpactDevBadge = badgeService.getBadgeByName("High-Impact Dev")
+                .map(dto -> badgeService.getBadgeEntity(dto.getId()))
+                .orElse(null);
+
+        if (highImpactDevBadge == null || !highImpactDevBadge.isAutomatic()) return;
+
+        List<Team> teams = project.getTeams();
+        if (teams.isEmpty()) return;
+
+        Map<Long, Integer> studentImpactScores = new HashMap<>();
+        Integer maxScore = 0;
+
+        for (Team team : teams) {
+            for (TeamMember member : team.getActiveMembers()) {
+                Long userId = member.getUser().getId();
+                // Usa a query implementada no UserStoryRepository
+                Integer score = userStoryService.sumHighPriorityCompletedStoryPointsByProject(userId, projectId);
+
+                studentImpactScores.put(userId, score);
+                if (score > maxScore) {
+                    maxScore = score;
+                }
+            }
+        }
+
+        if (maxScore == 0) return;
+
+        for (Map.Entry<Long, Integer> entry : studentImpactScores.entrySet()) {
+            Long userId = entry.getKey();
+            Integer score = entry.getValue();
+
+            if (score.equals(maxScore)) {
+                if (achievementRepository.existsByUserIdAndBadgeIdAndProjectId(userId, highImpactDevBadge.getId(), projectId)) {
+                    continue;
+                }
+
+                AchievementRequestDTO request = new AchievementRequestDTO(
+                        "Achieved max High/Critical Story Points (" + maxScore + ") in the project.",
+                        highImpactDevBadge.getId(), userId, null, projectId, null, null
+                );
+
+                try {
+                    createAchievement(request);
+                } catch (IllegalArgumentException e) {
+                    if (!e.getMessage().contains("already has this badge")) {
+                        System.err.println("Error awarding High-Impact Dev to User " + userId + ": " + e.getMessage());
+                    }
+                }
+            }
+        }
+    }
+
+    /**
+     * Checks if any student qualifies for the "Consistent Contributor" badge in a project. (Individual)
+     * Criteria: Completed >= 8 Story Points in >= 75% of sprints participated in.
+     */
+    private void checkConsistentContributor(Long projectId) {
+        Project project = getProjectEntity(projectId);
+        final double MIN_CONSISTENCY_PERCENTAGE = 0.75;
+        final int MIN_STORY_POINTS = 8;
+
+        // 1. Get the target Badge entity
+        Badge consistentContributorBadge = badgeService.getBadgeByName("Consistent Contributor")
+                .map(dto -> badgeService.getBadgeEntity(dto.getId()))
+                .orElse(null);
+
+        if (consistentContributorBadge == null || !consistentContributorBadge.isAutomatic()) return;
+
+        List<Team> teams = project.getTeams();
+        if (teams.isEmpty()) return;
+
+        // Collect all unique active students in the project
+        List<User> students = teams.stream()
+                .flatMap(team -> team.getActiveMembers().stream())
+                .map(TeamMember::getUser)
+                .filter(Objects::nonNull) // Ensure user is not null
+                .distinct()
+                .collect(Collectors.toList());
+
+
+        for (User student : students) {
+            Long userId = student.getId();
+
+            // 2. Retrieve completed Story Points per sprint for this user/project
+            List<Object[]> completedSprintsData = userStoryService.getCompletedStoryPointsPerSprintInProject(userId, projectId);
+
+            // Total Sprints in which the user contributed something (total sprints participated)
+            int totalSprintsParticipated = completedSprintsData.size();
+            int successfulSprints = 0;
+
+            if (totalSprintsParticipated == 0) continue; // Skip if user contributed zero completed items
+
+            // 3. Count successful sprints (where SPs >= 8)
+            for (Object[] data : completedSprintsData) {
+                // data[0] is Sprint ID (Long), data[1] is Total SPs Completed (Long)
+                Long storyPointsCompletedLong = (Long) data[1];
+                int storyPointsCompleted = storyPointsCompletedLong != null ? storyPointsCompletedLong.intValue() : 0;
+
+                if (storyPointsCompleted >= MIN_STORY_POINTS) {
+                    successfulSprints++;
+                }
+            }
+
+            // 4. Calculate consistency ratio
+            double consistencyRatio = (double) successfulSprints / totalSprintsParticipated;
+
+            // 5. Check Criterion (Ratio >= 75%)
+            if (consistencyRatio >= MIN_CONSISTENCY_PERCENTAGE) {
+
+                if (achievementRepository.existsByUserIdAndBadgeIdAndProjectId(userId, consistentContributorBadge.getId(), projectId)) {
+                    continue;
+                }
+
+                AchievementRequestDTO request = new AchievementRequestDTO(
+                        "Achieved " + (int)(consistencyRatio * 100) + "% consistency (Completed >= 8 SPs in " + successfulSprints + " of " + totalSprintsParticipated + " sprints).",
+                        consistentContributorBadge.getId(), userId, null, projectId, null, null
+                );
+
+                try {
+                    createAchievement(request);
+                } catch (IllegalArgumentException e) {
+                    if (!e.getMessage().contains("already has this badge")) {
+                        System.err.println("Error awarding Consistent Contributor to User " + student.getFullName() + ": " + e.getMessage());
+                    }
+                }
+            }
+        }
+    }
+
+    /**
+     * Checks if all teams in a project qualify for the "On-Time Legend" badge. (Team)
+     */
+    private void checkOnTimeLegend(Long projectId) {
+        Project project = getProjectEntity(projectId);
+
+        Badge onTimeLegendBadge = badgeService.getBadgeByName("On-Time Legend")
+                .map(dto -> badgeService.getBadgeEntity(dto.getId()))
+                .orElse(null);
+
+        if (onTimeLegendBadge == null || !onTimeLegendBadge.isAutomatic()) {
+            return;
+        }
+
+        // Usa o método implementado no SprintService
+        boolean allSprintsOnTime = sprintService.checkIfAllSprintsInProjectCompletedOnTime(projectId);
+
+        if (allSprintsOnTime) {
+            for (Team team : project.getTeams()) {
+                if (achievementRepository.existsByTeamIdAndBadgeId(team.getId(), onTimeLegendBadge.getId())) {
+                    continue;
+                }
+
+                AchievementRequestDTO request = new AchievementRequestDTO(
+                        "All project sprints were completed on or before the deadline.",
+                        onTimeLegendBadge.getId(), null, team.getId(), projectId, null, null
+                );
+
+                try {
+                    createAchievement(request);
+                } catch (IllegalArgumentException e) {
+                    if (!e.getMessage().contains("already has this badge")) {
+                        System.err.println("Error awarding On-Time Legend to Team " + team.getName() + ": " + e.getMessage());
+                    }
+                }
+            }
+        }
+    }
+
+    /**
+     * Checks if a team qualifies for the "Project Multiplier" badge. (Team)
+     */
+    private void checkProjectMultiplier(Long projectId) {
+        Project project = getProjectEntity(projectId);
+        Long courseId = project.getCourse().getId();
+        final int MIN_PROJECTS_REQUIRED = 3;
+
+        Badge projectMultiplierBadge = badgeService.getBadgeByName("Project Multiplier")
+                .map(dto -> badgeService.getBadgeEntity(dto.getId()))
+                .orElse(null);
+
+        if (projectMultiplierBadge == null || !projectMultiplierBadge.isAutomatic()) {
+            return;
+        }
+
+        for (Team team : project.getTeams()) {
+            Long teamId = team.getId();
+
+            if (achievementRepository.existsByTeamIdAndBadgeId(teamId, projectMultiplierBadge.getId())) {
+                continue;
+            }
+
+            // Usa o método implementado no TeamService
+            Long completedProjectsCount = teamService.countCompletedProjectsByTeamInCourse(teamId, courseId);
+
+            if (completedProjectsCount >= MIN_PROJECTS_REQUIRED) {
+
+                AchievementRequestDTO request = new AchievementRequestDTO(
+                        "Team successfully completed " + completedProjectsCount + " projects in the course.",
+                        projectMultiplierBadge.getId(), null, teamId, projectId, null, null
+                );
+
+                try {
+                    createAchievement(request);
+                } catch (IllegalArgumentException e) {
+                    if (!e.getMessage().contains("already has this badge")) {
+                        System.err.println("Error awarding Project Multiplier to Team " + team.getName() + ": " + e.getMessage());
+                    }
+                }
+            }
+        }
+    }
+
 
     /**
      * Check if user qualifies for automatic achievements based on progress metrics
      */
     @Transactional(readOnly = true)
     public boolean userQualifiesForAutomaticBadge(Long userId, Long projectId, Long badgeId) {
-        // Implementation would depend on specific badge conditions
-        // This is a placeholder - you would integrate with ProgressMetricService
-        // to check if user meets the criteria for automatic badge awarding
-
-        // Example: Check if user has completed all tasks in sprint
-        // Example: Check if user has maintained high velocity
-        // Example: Check if user has perfect attendance, etc.
-
-        return false; // Implement based on your specific business rules
+        // Método não utilizado, lógica movida para checkConsistentContributor
+        return false;
     }
 
     /**
@@ -288,15 +569,8 @@ public class AchievementService {
      */
     @Transactional(readOnly = true)
     public boolean teamQualifiesForAutomaticBadge(Long teamId, Long badgeId) {
-        // Implementation would depend on specific badge conditions
-        // This is a placeholder - you would integrate with ProgressMetricService
-        // to check if team meets the criteria for automatic badge awarding
-
-        // Example: Check if team completed sprint early
-        // Example: Check if team maintained high morale
-        // Example: Check if team exceeded velocity targets
-
-        return false; // Implement based on your specific business rules
+        // Método não utilizado, lógica movida para métodos check* específicos
+        return false;
     }
 
     /**

@@ -139,4 +139,13 @@ public class TeamService {
         members.forEach(TeamMember::leaveTeam);
         teamMemberRepository.saveAll(members);
     }
+
+    /**
+     * Counts the number of COMPLETED projects by a specific team within a given course.
+     * This exposes the custom repository query for the 'Project Multiplier' award.
+     */
+    @Transactional(readOnly = true)
+    public Long countCompletedProjectsByTeamInCourse(Long teamId, Long courseId) {
+        return teamRepository.countCompletedProjectsByTeamInCourse(teamId, courseId);
+    }
 }

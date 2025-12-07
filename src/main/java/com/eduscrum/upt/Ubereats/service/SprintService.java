@@ -6,7 +6,8 @@ import com.eduscrum.upt.Ubereats.entity.Sprint;
 import com.eduscrum.upt.Ubereats.entity.Project;
 import com.eduscrum.upt.Ubereats.entity.enums.SprintStatus;
 import com.eduscrum.upt.Ubereats.repository.SprintRepository;
-import com.eduscrum.upt.Ubereats.repository.ProjectRepository; // Add this import
+import com.eduscrum.upt.Ubereats.repository.ProjectRepository;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -20,11 +21,13 @@ import java.util.stream.Collectors;
 public class SprintService {
 
     private final SprintRepository sprintRepository;
-    private final ProjectRepository projectRepository; // Use repository directly
+    private final ProjectRepository projectRepository;
+    private final AchievementService achievementService;
 
-    public SprintService(SprintRepository sprintRepository, ProjectRepository projectRepository) {
+    public SprintService(SprintRepository sprintRepository, ProjectRepository projectRepository, @Lazy AchievementService achievementService) {
         this.sprintRepository = sprintRepository;
         this.projectRepository = projectRepository;
+        this.achievementService = achievementService;
     }
 
     // === SPRINT CREATION ===
@@ -263,6 +266,10 @@ public class SprintService {
 
         sprint.setStatus(SprintStatus.COMPLETED);
         Sprint updatedSprint = sprintRepository.save(sprint);
+
+        // Trigger automatic badge checks for sprint completion
+        achievementService.checkAutomaticTeamBadgesOnSprintCompletion(id);
+
         return convertToDTO(updatedSprint);
     }
 
@@ -309,12 +316,53 @@ public class SprintService {
      */
     public List<SprintResponseDTO> completeReadySprints() {
         List<Sprint> readySprints = sprintRepository.findSprintsReadyToComplete(LocalDate.now());
-        readySprints.forEach(sprint -> sprint.setStatus(SprintStatus.COMPLETED));
+        readySprints.forEach(sprint -> {
+            sprint.setStatus(SprintStatus.COMPLETED);
+            achievementService.checkAutomaticTeamBadgesOnSprintCompletion(sprint.getId());
+        });
         List<Sprint> updatedSprints = sprintRepository.saveAll(readySprints);
         return updatedSprints.stream()
                 .map(this::convertToDTO)
                 .collect(Collectors.toList());
     }
+
+    // === BUSINESS LOGIC FOR AWARDS ===
+
+    /**
+     * Checks if all sprints belonging to a given project were completed on or before their planned end date.
+     * It relies on the 'updatedAt' timestamp as a proxy for the completion date when status is COMPLETED.
+     */
+    @Transactional(readOnly = true)
+    public boolean checkIfAllSprintsInProjectCompletedOnTime(Long projectId) {
+        List<Sprint> sprints = sprintRepository.findByProjectId(projectId);
+
+        if (sprints.isEmpty()) {
+            // If there are no sprints, the criterion is trivially met.
+            return true;
+        }
+
+        for (Sprint sprint : sprints) {
+            // 1. Check if the sprint was actually completed
+            if (sprint.getStatus() != SprintStatus.COMPLETED) {
+                return false; // Fail: A sprint was not completed
+            }
+
+            // 2. Check if the completion date (proxy: updatedAt) was after the planned deadline
+            if (sprint.getUpdatedAt() != null) {
+                // We compare the date part only (LocalDate)
+                if (sprint.getUpdatedAt().toLocalDate().isAfter(sprint.getEndDate())) {
+                    return false; // Fail: Completed late
+                }
+            } else {
+                // If the status is COMPLETED, but updatedAt is null, it indicates an error or inconsistency.
+                // We treat it as a failure for the award criteria.
+                return false;
+            }
+        }
+
+        return true; // All sprints were completed and on time.
+    }
+
 
     // === INTERNAL ENTITY METHODS ===
 

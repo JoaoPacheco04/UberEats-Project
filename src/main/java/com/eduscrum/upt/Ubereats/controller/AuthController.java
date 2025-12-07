@@ -4,12 +4,13 @@ import com.eduscrum.upt.Ubereats.dto.request.LoginRequest;
 import com.eduscrum.upt.Ubereats.dto.request.RegisterRequest;
 import com.eduscrum.upt.Ubereats.dto.response.LoginResponse;
 import com.eduscrum.upt.Ubereats.entity.User;
-import com.eduscrum.upt.Ubereats.entity.enums.UserRole;
 import com.eduscrum.upt.Ubereats.security.CustomUserDetails;
 import com.eduscrum.upt.Ubereats.security.JwtTokenProvider;
 import com.eduscrum.upt.Ubereats.service.UserService;
+import org.springframework.http.HttpStatus; // Import adicionado
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException; // Import adicionado
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -27,9 +28,7 @@ public class AuthController {
     private final JwtTokenProvider tokenProvider;
     private final UserService userService;
 
-    /**
-     * Constructor injection
-     */
+
     public AuthController(AuthenticationManager authenticationManager,
                           JwtTokenProvider tokenProvider,
                           UserService userService) {
@@ -52,7 +51,8 @@ public class AuthController {
             String jwt = tokenProvider.generateToken(authentication);
 
             CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
-            User user = userService.findByEmail(userDetails.getUsername()).orElseThrow();
+            User user = userService.findByEmail(userDetails.getUsername())
+                    .orElseThrow(() -> new RuntimeException("User data not found after successful authentication."));
 
             LoginResponse loginResponse = new LoginResponse(
                     jwt,
@@ -65,12 +65,15 @@ public class AuthController {
 
             return ResponseEntity.ok(loginResponse);
 
-        }  catch (Exception e) {
-        e.printStackTrace();  // <-- VERY IMPORTANT
-        Map<String, String> response = new HashMap<>();
-        response.put("message", e.getMessage());
-        return ResponseEntity.badRequest().body(response);
-    }
+        }  catch (BadCredentialsException e) {
+            Map<String, String> response = new HashMap<>();
+            response.put("message", "Invalid email or password.");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
+        } catch (Exception e) {
+            Map<String, String> response = new HashMap<>();
+            response.put("message", "Login failed: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
+        }
     }
 
     @PostMapping("/register")
@@ -101,7 +104,7 @@ public class AuthController {
             Map<String, String> response = new HashMap<>();
             response.put("message", "User registered successfully");
             response.put("userId", user.getId().toString());
-            return ResponseEntity.ok(response);
+            return ResponseEntity.status(HttpStatus.CREATED).body(response); // ⭐️ Usar 201 CREATED
 
         } catch (Exception e) {
             Map<String, String> response = new HashMap<>();

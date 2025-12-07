@@ -10,15 +10,14 @@ import com.eduscrum.upt.Ubereats.entity.TeamMember;
 import com.eduscrum.upt.Ubereats.service.TeamService;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize; // Import necessário
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 /*
-    * Controller for managing teams and team members.
-    * Provides endpoints for creating teams, adding/removing members,
-    * updating member roles, and retrieving team information.
+ * Controller for managing teams and team members.
  */
 @RestController
 @RequestMapping("/api/teams")
@@ -32,6 +31,7 @@ public class TeamController {
 
     // Create new team
     @PostMapping
+    @PreAuthorize("hasAuthority('ROLE_TEACHER')")
     public ResponseEntity<TeamResponse> createTeam(@Valid @RequestBody CreateTeamRequest request) {
         Team team = teamService.createTeam(request);
         return ResponseEntity.ok(new TeamResponse(team));
@@ -39,6 +39,7 @@ public class TeamController {
 
     // Get teams for project
     @GetMapping("/project/{projectId}")
+    @PreAuthorize("isAuthenticated()")
     public ResponseEntity<List<TeamResponse>> getProjectTeams(@PathVariable Long projectId) {
         List<Team> teams = teamService.getTeamsByProject(projectId);
         List<TeamResponse> response = teams.stream()
@@ -49,6 +50,7 @@ public class TeamController {
 
     // Get user's teams
     @GetMapping("/user/{userId}")
+    @PreAuthorize("isAuthenticated()")
     public ResponseEntity<List<TeamResponse>> getUserTeams(@PathVariable Long userId) {
         List<Team> teams = teamService.getUserTeams(userId);
         List<TeamResponse> response = teams.stream()
@@ -59,6 +61,7 @@ public class TeamController {
 
     // Get team by ID
     @GetMapping("/{teamId}")
+    @PreAuthorize("isAuthenticated()")
     public ResponseEntity<TeamResponse> getTeam(@PathVariable Long teamId) {
         Team team = teamService.getTeamById(teamId);
         return ResponseEntity.ok(new TeamResponse(team));
@@ -66,6 +69,7 @@ public class TeamController {
 
     // Add member to team
     @PostMapping("/{teamId}/members")
+    @PreAuthorize("hasAuthority('ROLE_TEACHER')")
     public ResponseEntity<TeamMemberResponse> addMember(
             @PathVariable Long teamId,
             @Valid @RequestBody AddMemberRequest request) {
@@ -75,6 +79,7 @@ public class TeamController {
 
     // Get team members
     @GetMapping("/{teamId}/members")
+    @PreAuthorize("isAuthenticated()")
     public ResponseEntity<List<TeamMemberResponse>> getTeamMembers(@PathVariable Long teamId) {
         List<TeamMember> members = teamService.getTeamMembers(teamId);
         List<TeamMemberResponse> response = members.stream()
@@ -85,6 +90,7 @@ public class TeamController {
 
     // Update member role
     @PutMapping("/{teamId}/members/{userId}/role")
+    @PreAuthorize("hasAuthority('ROLE_TEACHER')")
     public ResponseEntity<TeamMemberResponse> updateMemberRole(
             @PathVariable Long teamId,
             @PathVariable Long userId,
@@ -95,6 +101,7 @@ public class TeamController {
 
     // Remove member from team
     @DeleteMapping("/{teamId}/members/{userId}")
+    @PreAuthorize("hasAuthority('ROLE_TEACHER')")
     public ResponseEntity<Void> removeMember(
             @PathVariable Long teamId,
             @PathVariable Long userId) {
@@ -104,6 +111,7 @@ public class TeamController {
 
     // Delete team
     @DeleteMapping("/{teamId}")
+    @PreAuthorize("hasAuthority('ROLE_TEACHER')")
     public ResponseEntity<Void> deleteTeam(@PathVariable Long teamId) {
         teamService.deleteTeam(teamId);
         return ResponseEntity.noContent().build();

@@ -1,4 +1,3 @@
-// UserStoryRepository.java
 package com.eduscrum.upt.Ubereats.repository;
 
 import com.eduscrum.upt.Ubereats.entity.UserStory;
@@ -67,4 +66,23 @@ public interface UserStoryRepository extends JpaRepository<UserStory, Long> {
 
     // Check if title exists in sprint excluding current story
     boolean existsBySprintIdAndTitleAndIdNot(Long sprintId, String title, Long id);
+
+    // Query for High-Impact Dev
+    @Query("SELECT COALESCE(SUM(us.storyPoints), 0) FROM UserStory us " +
+            "WHERE us.assignedTo.id = :userId " +
+            "AND us.sprint.project.id = :projectId " +
+            "AND us.status = 'DONE' " +
+            "AND us.priority IN ('HIGH', 'CRITICAL')")
+    Integer sumHighPriorityCompletedStoryPointsByProject(
+            @Param("userId") Long userId,
+            @Param("projectId") Long projectId);
+
+    @Query("SELECT us.sprint.id, SUM(us.storyPoints) FROM UserStory us " +
+            "WHERE us.assignedTo.id = :userId " +
+            "AND us.sprint.project.id = :projectId " +
+            "AND us.status = 'DONE' " +
+            "GROUP BY us.sprint.id")
+    List<Object[]> sumCompletedStoryPointsPerSprintInProject(
+            @Param("userId") Long userId,
+            @Param("projectId") Long projectId);
 }

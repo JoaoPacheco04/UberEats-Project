@@ -1,4 +1,3 @@
-// BadgeController.java
 package com.eduscrum.upt.Ubereats.controller;
 
 import com.eduscrum.upt.Ubereats.dto.request.BadgeRequestDTO;
@@ -7,6 +6,7 @@ import com.eduscrum.upt.Ubereats.entity.enums.BadgeType;
 import com.eduscrum.upt.Ubereats.service.BadgeService;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize; // Import necessário
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
@@ -24,7 +24,9 @@ public class BadgeController {
         this.badgeService = badgeService;
     }
 
+
     @PostMapping
+    @PreAuthorize("hasAuthority('ROLE_TEACHER')")
     public ResponseEntity<?> createBadge(@Valid @RequestBody BadgeRequestDTO requestDTO) {
         try {
             BadgeResponseDTO response = badgeService.createBadge(requestDTO);
@@ -36,25 +38,33 @@ public class BadgeController {
         }
     }
 
+
     @GetMapping
+    @PreAuthorize("isAuthenticated()") // Apenas logado
     public ResponseEntity<List<BadgeResponseDTO>> getAllBadges() {
         List<BadgeResponseDTO> badges = badgeService.getAllBadges();
         return ResponseEntity.ok(badges);
     }
 
+
     @GetMapping("/active")
+    @PreAuthorize("isAuthenticated()")
     public ResponseEntity<List<BadgeResponseDTO>> getActiveBadges() {
         List<BadgeResponseDTO> badges = badgeService.getActiveBadges();
         return ResponseEntity.ok(badges);
     }
 
+
     @GetMapping("/type/{badgeType}")
+    @PreAuthorize("isAuthenticated()")
     public ResponseEntity<List<BadgeResponseDTO>> getBadgesByType(@PathVariable BadgeType badgeType) {
         List<BadgeResponseDTO> badges = badgeService.getBadgesByType(badgeType);
         return ResponseEntity.ok(badges);
     }
 
+
     @GetMapping("/{id}")
+    @PreAuthorize("isAuthenticated()")
     public ResponseEntity<?> getBadgeById(@PathVariable Long id) {
         try {
             BadgeResponseDTO badge = badgeService.getBadgeById(id)
@@ -68,6 +78,7 @@ public class BadgeController {
     }
 
     @GetMapping("/name/{name}")
+    @PreAuthorize("isAuthenticated()")
     public ResponseEntity<?> getBadgeByName(@PathVariable String name) {
         try {
             BadgeResponseDTO badge = badgeService.getBadgeByName(name)
@@ -80,7 +91,9 @@ public class BadgeController {
         }
     }
 
+
     @PutMapping("/{id}")
+    @PreAuthorize("hasAuthority('ROLE_TEACHER')")
     public ResponseEntity<?> updateBadge(@PathVariable Long id, @Valid @RequestBody BadgeRequestDTO requestDTO) {
         try {
             BadgeResponseDTO response = badgeService.updateBadge(id, requestDTO);
@@ -93,6 +106,7 @@ public class BadgeController {
     }
 
     @PatchMapping("/{id}/toggle")
+    @PreAuthorize("hasAuthority('ROLE_TEACHER')")
     public ResponseEntity<?> toggleBadgeStatus(@PathVariable Long id) {
         try {
             badgeService.toggleBadgeStatus(id);
@@ -106,7 +120,9 @@ public class BadgeController {
         }
     }
 
+
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasAuthority('ROLE_TEACHER')")
     public ResponseEntity<?> deleteBadge(@PathVariable Long id) {
         try {
             badgeService.deleteBadge(id);

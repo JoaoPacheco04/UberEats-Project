@@ -14,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
+import java.util.Optional; // Importado
 import java.util.stream.Collectors;
 
 @Service
@@ -22,10 +23,13 @@ public class CourseService {
 
     private final CourseRepository courseRepository;
     private final UserRepository userRepository;
+    private final CourseEnrollmentService enrollmentService;
 
-    public CourseService(CourseRepository courseRepository, UserRepository userRepository) {
+    public CourseService(CourseRepository courseRepository, UserRepository userRepository,
+                         CourseEnrollmentService enrollmentService) {
         this.courseRepository = courseRepository;
         this.userRepository = userRepository;
+        this.enrollmentService = enrollmentService;
     }
 
     /**
@@ -75,7 +79,7 @@ public class CourseService {
     }
 
 
-     //Get all courses for a teacher
+    //Get all courses for a teacher
 
     @Transactional(readOnly = true)
     public List<CourseResponse> getCoursesByTeacher(String teacherEmail) {
@@ -97,7 +101,7 @@ public class CourseService {
     }
 
 
-     //Update course
+    //Update course
     public CourseResponse updateCourse(Long courseId, UpdateCourseRequest request) {
         Course course = courseRepository.findById(courseId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
@@ -147,12 +151,19 @@ public class CourseService {
 
     /**
      * Check if student is enrolled in course
+     * This is used for @PreAuthorize security checks in the CourseController.
      */
     @Transactional(readOnly = true)
     public boolean isStudentEnrolled(Long courseId, String studentEmail) {
-        // Will implement when CourseEnrollment is created
-        // For now, return false or implement basic check
-        return false;
+        // 1. Find student by email
+        Optional<User> studentOpt = userRepository.findByEmail(studentEmail);
+
+        if (studentOpt.isEmpty()) {
+            return false; // User does not exist, cannot be enrolled
+        }
+
+        // 2. Delegate the check to the CourseEnrollmentService
+        return enrollmentService.isStudentEnrolled(courseId, studentOpt.get().getId());
     }
 
     /**

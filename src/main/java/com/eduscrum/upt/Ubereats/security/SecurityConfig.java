@@ -2,6 +2,7 @@ package com.eduscrum.upt.Ubereats.security;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
@@ -41,17 +42,27 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(authz -> authz
+                        // 1. Public access for authentication
                         .requestMatchers("/api/auth/**").permitAll()
-                        .requestMatchers("/api/public/**").permitAll()
-                        .requestMatchers("/api/teams/**").permitAll()
-                        .requestMatchers("/api/projects/**").permitAll()
-                        .requestMatchers("/api/courses/**").permitAll()
-                        .requestMatchers("/api/sprints/**").permitAll()
-                        .requestMatchers("/api/user-stories/**").permitAll()
-                        .requestMatchers("/api/achievements/**").permitAll()
-                        .requestMatchers("/api/badges/**").permitAll()
 
+                        // 2. Teacher-only access for management tasks
+                        .requestMatchers(HttpMethod.POST, "/api/courses/**", "/api/projects/**", "/api/sprints/**", "/api/teams/**", "/api/enrollments").hasAuthority("ROLE_TEACHER")
+                        .requestMatchers(HttpMethod.PUT, "/api/courses/**", "/api/projects/**", "/api/sprints/**", "/api/teams/**").hasAuthority("ROLE_TEACHER")
+                        .requestMatchers(HttpMethod.DELETE, "/api/courses/**", "/api/projects/**", "/api/sprints/**", "/api/teams/**").hasAuthority("ROLE_TEACHER")
+                        .requestMatchers(HttpMethod.DELETE, "/api/user-stories/**").hasAuthority("ROLE_TEACHER")
+                        .requestMatchers(HttpMethod.POST, "/api/achievements").hasAuthority("ROLE_TEACHER")
 
+                        // 3. Student-only access
+                        .requestMatchers(HttpMethod.POST, "/api/progress-metrics").hasAuthority("ROLE_STUDENT")
+
+                        // 4. Authenticated users (Students and Teachers) can manage their work
+                        .requestMatchers(HttpMethod.POST, "/api/user-stories").authenticated()
+                        .requestMatchers(HttpMethod.PUT, "/api/user-stories/**").authenticated()
+
+                        // 5. General authenticated access for all other API requests
+                        .requestMatchers("/api/**").authenticated()
+
+                        // Fallback for any other request
                         .anyRequest().authenticated()
                 )
                 .authenticationProvider(authenticationProvider)

@@ -1,4 +1,3 @@
-// SprintController.java
 package com.eduscrum.upt.Ubereats.controller;
 
 import com.eduscrum.upt.Ubereats.dto.request.SprintRequestDTO;
@@ -6,12 +5,11 @@ import com.eduscrum.upt.Ubereats.dto.response.SprintResponseDTO;
 import com.eduscrum.upt.Ubereats.entity.enums.SprintStatus;
 import com.eduscrum.upt.Ubereats.service.SprintService;
 import jakarta.validation.Valid;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @RestController
 @RequestMapping("/api/sprints")
@@ -25,15 +23,9 @@ public class SprintController {
     }
 
     @PostMapping
-    public ResponseEntity<?> createSprint(@Valid @RequestBody SprintRequestDTO requestDTO) {
-        try {
-            SprintResponseDTO response = sprintService.createSprint(requestDTO);
-            return ResponseEntity.ok(response);
-        } catch (Exception e) {
-            Map<String, String> response = new HashMap<>();
-            response.put("message", "Failed to create sprint: " + e.getMessage());
-            return ResponseEntity.badRequest().body(response);
-        }
+    public ResponseEntity<SprintResponseDTO> createSprint(@Valid @RequestBody SprintRequestDTO requestDTO) {
+        SprintResponseDTO createdSprint = sprintService.createSprint(requestDTO);
+        return new ResponseEntity<>(createdSprint, HttpStatus.CREATED);
     }
 
     @GetMapping
@@ -43,16 +35,10 @@ public class SprintController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<?> getSprintById(@PathVariable Long id) {
-        try {
-            SprintResponseDTO sprint = sprintService.getSprintById(id)
-                    .orElseThrow(() -> new IllegalArgumentException("Sprint not found"));
-            return ResponseEntity.ok(sprint);
-        } catch (Exception e) {
-            Map<String, String> response = new HashMap<>();
-            response.put("message", e.getMessage());
-            return ResponseEntity.badRequest().body(response);
-        }
+    public ResponseEntity<SprintResponseDTO> getSprintById(@PathVariable Long id) {
+        SprintResponseDTO sprint = sprintService.getSprintById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Sprint not found with id: " + id));
+        return ResponseEntity.ok(sprint);
     }
 
     @GetMapping("/project/{projectId}")
@@ -67,102 +53,33 @@ public class SprintController {
         return ResponseEntity.ok(sprints);
     }
 
-    @GetMapping("/active")
-    public ResponseEntity<List<SprintResponseDTO>> getActiveSprints() {
-        List<SprintResponseDTO> sprints = sprintService.getActiveSprints();
-        return ResponseEntity.ok(sprints);
-    }
-
-    @GetMapping("/overdue")
-    public ResponseEntity<List<SprintResponseDTO>> getOverdueSprints() {
-        List<SprintResponseDTO> sprints = sprintService.getOverdueSprints();
-        return ResponseEntity.ok(sprints);
-    }
-
-    @GetMapping("/project/{projectId}/latest")
-    public ResponseEntity<?> getLatestSprintByProject(@PathVariable Long projectId) {
-        try {
-            SprintResponseDTO sprint = sprintService.getLatestSprintByProject(projectId)
-                    .orElseThrow(() -> new IllegalArgumentException("No sprints found for project"));
-            return ResponseEntity.ok(sprint);
-        } catch (Exception e) {
-            Map<String, String> response = new HashMap<>();
-            response.put("message", e.getMessage());
-            return ResponseEntity.badRequest().body(response);
-        }
-    }
-
     @PutMapping("/{id}")
-    public ResponseEntity<?> updateSprint(@PathVariable Long id, @Valid @RequestBody SprintRequestDTO requestDTO) {
-        try {
-            SprintResponseDTO response = sprintService.updateSprint(id, requestDTO);
-            return ResponseEntity.ok(response);
-        } catch (Exception e) {
-            Map<String, String> response = new HashMap<>();
-            response.put("message", "Failed to update sprint: " + e.getMessage());
-            return ResponseEntity.badRequest().body(response);
-        }
+    public ResponseEntity<SprintResponseDTO> updateSprint(@PathVariable Long id, @Valid @RequestBody SprintRequestDTO requestDTO) {
+        SprintResponseDTO updatedSprint = sprintService.updateSprint(id, requestDTO);
+        return ResponseEntity.ok(updatedSprint);
     }
 
-    @PatchMapping("/{id}/start")
-    public ResponseEntity<?> startSprint(@PathVariable Long id) {
-        try {
-            SprintResponseDTO response = sprintService.startSprint(id);
-            return ResponseEntity.ok(response);
-        } catch (Exception e) {
-            Map<String, String> response = new HashMap<>();
-            response.put("message", "Failed to start sprint: " + e.getMessage());
-            return ResponseEntity.badRequest().body(response);
-        }
+    @PutMapping("/{id}/start")
+    public ResponseEntity<SprintResponseDTO> startSprint(@PathVariable Long id) {
+        SprintResponseDTO response = sprintService.startSprint(id);
+        return ResponseEntity.ok(response);
     }
 
-    @PatchMapping("/{id}/complete")
-    public ResponseEntity<?> completeSprint(@PathVariable Long id) {
-        try {
-            SprintResponseDTO response = sprintService.completeSprint(id);
-            return ResponseEntity.ok(response);
-        } catch (Exception e) {
-            Map<String, String> response = new HashMap<>();
-            response.put("message", "Failed to complete sprint: " + e.getMessage());
-            return ResponseEntity.badRequest().body(response);
-        }
+    @PutMapping("/{id}/complete")
+    public ResponseEntity<SprintResponseDTO> completeSprint(@PathVariable Long id) {
+        SprintResponseDTO response = sprintService.completeSprint(id);
+        return ResponseEntity.ok(response);
     }
 
-    @PatchMapping("/{id}/cancel")
-    public ResponseEntity<?> cancelSprint(@PathVariable Long id) {
-        try {
-            SprintResponseDTO response = sprintService.cancelSprint(id);
-            return ResponseEntity.ok(response);
-        } catch (Exception e) {
-            Map<String, String> response = new HashMap<>();
-            response.put("message", "Failed to cancel sprint: " + e.getMessage());
-            return ResponseEntity.badRequest().body(response);
-        }
-    }
-
-    @PostMapping("/auto-start")
-    public ResponseEntity<List<SprintResponseDTO>> autoStartReadySprints() {
-        List<SprintResponseDTO> startedSprints = sprintService.startReadySprints();
-        return ResponseEntity.ok(startedSprints);
-    }
-
-    @PostMapping("/auto-complete")
-    public ResponseEntity<List<SprintResponseDTO>> autoCompleteReadySprints() {
-        List<SprintResponseDTO> completedSprints = sprintService.completeReadySprints();
-        return ResponseEntity.ok(completedSprints);
+    @PutMapping("/{id}/cancel")
+    public ResponseEntity<SprintResponseDTO> cancelSprint(@PathVariable Long id) {
+        SprintResponseDTO response = sprintService.cancelSprint(id);
+        return ResponseEntity.ok(response);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> deleteSprint(@PathVariable Long id) {
-        try {
-            sprintService.deleteSprint(id);
-            Map<String, String> response = new HashMap<>();
-            response.put("message", "Sprint deleted successfully");
-            return ResponseEntity.ok(response);
-        } catch (Exception e) {
-            Map<String, String> response = new HashMap<>();
-            response.put("message", "Failed to delete sprint: " + e.getMessage());
-            return ResponseEntity.badRequest().body(response);
-        }
+    public ResponseEntity<Void> deleteSprint(@PathVariable Long id) {
+        sprintService.deleteSprint(id);
+        return ResponseEntity.noContent().build();
     }
 }

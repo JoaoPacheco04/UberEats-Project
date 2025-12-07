@@ -372,6 +372,25 @@ public class UserStoryService {
         return (completedPoints.doubleValue() / totalPoints.doubleValue()) * 100.0;
     }
 
+    /**
+     * Retrieves completed Story Points per sprint for a specific user within a project.
+     * This method is used by AchievementService to calculate consistency (Consistent Contributor badge).
+     * Returns a list of arrays: [Sprint ID (Long), Total SPs Completed (Long)]
+     */
+    @Transactional(readOnly = true)
+    public List<Object[]> getCompletedStoryPointsPerSprintInProject(Long userId, Long projectId) {
+        // Assume Long instead of Integer for sum, as per repository definition convention
+        return userStoryRepository.sumCompletedStoryPointsPerSprintInProject(userId, projectId);
+    }
+
+    /**
+     * Retrieves the sum of HIGH/CRITICAL Story Points completed by a user in a project.
+     */
+    @Transactional(readOnly = true)
+    public Integer sumHighPriorityCompletedStoryPointsByProject(Long userId, Long projectId) {
+        return userStoryRepository.sumHighPriorityCompletedStoryPointsByProject(userId, projectId);
+    }
+
     // === UTILITY METHODS ===
 
     /**

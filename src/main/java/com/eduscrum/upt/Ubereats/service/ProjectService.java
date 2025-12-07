@@ -5,22 +5,28 @@ import com.eduscrum.upt.Ubereats.dto.request.UpdateProjectRequest;
 import com.eduscrum.upt.Ubereats.dto.response.ProjectResponse;
 import com.eduscrum.upt.Ubereats.entity.Course;
 import com.eduscrum.upt.Ubereats.entity.Project;
+import com.eduscrum.upt.Ubereats.entity.enums.ProjectStatus;
 import com.eduscrum.upt.Ubereats.repository.CourseRepository;
 import com.eduscrum.upt.Ubereats.repository.ProjectRepository;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
+@Transactional
 public class ProjectService {
 
     private final ProjectRepository projectRepository;
     private final CourseRepository courseRepository;
+    private final AchievementService achievementService;
 
-    public ProjectService(ProjectRepository projectRepository, CourseRepository courseRepository) {
+    public ProjectService(ProjectRepository projectRepository, CourseRepository courseRepository, @Lazy AchievementService achievementService) {
         this.projectRepository = projectRepository;
         this.courseRepository = courseRepository;
+        this.achievementService = achievementService;
     }
 
     public ProjectResponse createProject(CreateProjectRequest req) {
@@ -41,16 +47,23 @@ public class ProjectService {
     }
 
     public List<ProjectResponse> getAllProjects() {
-        return projectRepository.findAll().stream()
+        // Return only non-archived projects
+        return projectRepository.findByStatusNot(ProjectStatus.ARCHIVED).stream()
                 .map(this::mapToResponse)
                 .collect(Collectors.toList());
     }
 
 
     public ProjectResponse getProjectById(Long id) {
-        return projectRepository.findById(id)
-                .map(this::mapToResponse)
+        Project project = projectRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Project not found: " + id));
+
+        // Do not return archived projects through this standard getter
+        if (project.getStatus() == ProjectStatus.ARCHIVED) {
+            throw new IllegalArgumentException("Project not found: " + id);
+        }
+
+        return mapToResponse(project);
     }
 
     public ProjectResponse updateProject(Long id, UpdateProjectRequest req) {
@@ -65,9 +78,37 @@ public class ProjectService {
         return mapToResponse(projectRepository.save(project));
     }
 
+    /**
+     * Archives a project instead of deleting it permanently.
+     */
     public void deleteProject(Long id) {
-        projectRepository.deleteById(id);
+        Project project = projectRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Project not found: " + id));
+
+        project.setStatus(ProjectStatus.ARCHIVED);
+        projectRepository.save(project);
     }
+
+    /**
+     * Marks the project status as COMPLETED.
+     */
+    public ProjectResponse completeProject(Long id) {
+        Project project = projectRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Project not found: " + id));
+
+        if (project.isCompleted()) {
+            throw new IllegalStateException("Project is already marked as completed.");
+        }
+
+        project.setStatus(ProjectStatus.COMPLETED);
+        Project updatedProject = projectRepository.save(project);
+
+        // Trigger automatic badge checks for project completion
+        achievementService.checkAutomaticBadgesOnProjectCompletion(id);
+
+        return mapToResponse(updatedProject);
+    }
+
 
     private ProjectResponse mapToResponse(Project p) {
         return new ProjectResponse(
@@ -83,7 +124,4 @@ public class ProjectService {
                 p.getCourse().getName()
         );
     }
-
-
-
 }

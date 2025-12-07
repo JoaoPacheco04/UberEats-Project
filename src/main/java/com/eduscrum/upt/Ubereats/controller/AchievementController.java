@@ -1,4 +1,3 @@
-// AchievementController.java
 package com.eduscrum.upt.Ubereats.controller;
 
 import com.eduscrum.upt.Ubereats.dto.request.AchievementRequestDTO;
@@ -6,6 +5,8 @@ import com.eduscrum.upt.Ubereats.dto.response.AchievementResponseDTO;
 import com.eduscrum.upt.Ubereats.service.AchievementService;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
@@ -23,7 +24,9 @@ public class AchievementController {
         this.achievementService = achievementService;
     }
 
+
     @PostMapping
+    @PreAuthorize("hasAuthority('ROLE_TEACHER')") // ⭐️ REGRA DE SEGURANÇA CRÍTICA
     public ResponseEntity<?> createAchievement(@Valid @RequestBody AchievementRequestDTO requestDTO) {
         try {
             AchievementResponseDTO response = achievementService.createAchievement(requestDTO);
@@ -35,13 +38,17 @@ public class AchievementController {
         }
     }
 
+
     @GetMapping
+    @PreAuthorize("hasAuthority('ROLE_TEACHER')") // ⭐️ REGRA DE SEGURANÇA
     public ResponseEntity<List<AchievementResponseDTO>> getAllAchievements() {
         List<AchievementResponseDTO> achievements = achievementService.getAllAchievements();
         return ResponseEntity.ok(achievements);
     }
 
+
     @GetMapping("/{id}")
+    @PreAuthorize("isAuthenticated()") // Basta estar logado
     public ResponseEntity<?> getAchievementById(@PathVariable Long id) {
         try {
             AchievementResponseDTO achievement = achievementService.getAchievementById(id)
@@ -54,25 +61,33 @@ public class AchievementController {
         }
     }
 
+
     @GetMapping("/user/{userId}")
+    @PreAuthorize("hasAuthority('ROLE_TEACHER') or #userId.toString() == authentication.principal.id.toString()") // ⭐️ REGRA DE SEGURANÇA: TEACHER ou SELF
     public ResponseEntity<List<AchievementResponseDTO>> getUserAchievements(@PathVariable Long userId) {
         List<AchievementResponseDTO> achievements = achievementService.getUserAchievements(userId);
         return ResponseEntity.ok(achievements);
     }
 
+
     @GetMapping("/team/{teamId}")
+    @PreAuthorize("hasAuthority('ROLE_TEACHER')")
     public ResponseEntity<List<AchievementResponseDTO>> getTeamAchievements(@PathVariable Long teamId) {
         List<AchievementResponseDTO> achievements = achievementService.getTeamAchievements(teamId);
         return ResponseEntity.ok(achievements);
     }
 
+
     @GetMapping("/project/{projectId}")
+    @PreAuthorize("hasAuthority('ROLE_TEACHER')")
     public ResponseEntity<List<AchievementResponseDTO>> getProjectAchievements(@PathVariable Long projectId) {
         List<AchievementResponseDTO> achievements = achievementService.getProjectAchievements(projectId);
         return ResponseEntity.ok(achievements);
     }
 
+
     @GetMapping("/user/{userId}/project/{projectId}/points")
+    @PreAuthorize("hasAuthority('ROLE_TEACHER') or #userId.toString() == authentication.principal.id.toString()") // ⭐️ REGRA DE SEGURANÇA
     public ResponseEntity<Map<String, Integer>> getUserPointsInProject(
             @PathVariable Long userId, @PathVariable Long projectId) {
         Integer points = achievementService.getUserTotalPoints(userId, projectId);
@@ -82,6 +97,7 @@ public class AchievementController {
     }
 
     @GetMapping("/team/{teamId}/points")
+    @PreAuthorize("hasAuthority('ROLE_TEACHER')")
     public ResponseEntity<Map<String, Integer>> getTeamPoints(@PathVariable Long teamId) {
         Integer points = achievementService.getTeamTotalPoints(teamId);
         Map<String, Integer> response = new HashMap<>();
@@ -89,7 +105,9 @@ public class AchievementController {
         return ResponseEntity.ok(response);
     }
 
+
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasAuthority('ROLE_TEACHER')")
     public ResponseEntity<?> deleteAchievement(@PathVariable Long id) {
         try {
             achievementService.deleteAchievement(id);
