@@ -213,7 +213,7 @@ public class User {
     public Integer getTeamPointsInProject(Project project) {
         Optional<TeamMember> teamMember = teamMemberships.stream()
                 .filter(member -> member.getIsActive() &&
-                        member.getTeam().getProject().equals(project))
+                        member.getTeam().getProjects().contains(project))
                 .findFirst();
 
         if (teamMember.isPresent()) {

@@ -23,7 +23,7 @@ public class Team {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false, length = 100)
+    @Column(nullable = false, length = 100, unique = true)
     private String name;
 
     @CreationTimestamp
@@ -35,9 +35,13 @@ public class Team {
     private LocalDateTime updatedAt;
 
     // === RELATIONS ===
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "project_id", nullable = false)
-    private Project project;
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(
+            name = "team_projects",
+            joinColumns = @JoinColumn(name = "team_id"),
+            inverseJoinColumns = @JoinColumn(name = "project_id")
+    )
+    private List<Project> projects = new ArrayList<>();
 
     @OneToMany(mappedBy = "team", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<TeamMember> members = new ArrayList<>();
@@ -51,9 +55,8 @@ public class Team {
     // === CONSTRUCTORS ===
     public Team() {}
 
-    public Team(String name, Project project) {
+    public Team(String name) {
         this.name = name;
-        this.project = project;
     }
 
     // === GETTERS & SETTERS ===
@@ -69,8 +72,8 @@ public class Team {
     public LocalDateTime getUpdatedAt() { return updatedAt; }
     public void setUpdatedAt(LocalDateTime updatedAt) { this.updatedAt = updatedAt; }
 
-    public Project getProject() { return project; }
-    public void setProject(Project project) { this.project = project; }
+    public List<Project> getProjects() { return projects; }
+    public void setProjects(List<Project> projects) { this.projects = projects; }
 
     public List<TeamMember> getMembers() { return members; }
     public void setMembers(List<TeamMember> members) { this.members = members; }
@@ -82,6 +85,13 @@ public class Team {
     public void setTeamAchievements(List<Achievement> teamAchievements) { this.teamAchievements = teamAchievements; }
 
     // === BUSINESS METHODS ===
+
+    public void addProject(Project project) {
+        if (!this.projects.contains(project)) {
+            this.projects.add(project);
+            project.getTeams().add(this);
+        }
+    }
 
     /**
      * Get number of active members
@@ -280,7 +290,7 @@ public class Team {
         return "Team{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
-                ", project=" + (project != null ? project.getName() : "null") +
+                ", projects=" + projects.stream().map(Project::getName).collect(Collectors.joining(", ")) +
                 ", memberCount=" + getMemberCount() +
                 ", progress=" + getCurrentProgress() + "%" +
                 ", points=" + getTotalPoints() +

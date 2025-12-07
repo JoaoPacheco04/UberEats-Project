@@ -38,33 +38,36 @@ public class TeamService {
 
     // Create new team
     public Team createTeam(CreateTeamRequest request) {
-        // Validate project exists
-        Project project = projectRepository.findById(request.getProjectId())
-                .orElseThrow(() -> new RuntimeException("Project not found with id: " + request.getProjectId()));
+        if (teamRepository.existsByName(request.getName())) {
+            throw new RuntimeException("Team name '" + request.getName() + "' already exists");
+        }
+        Team team = new Team(request.getName());
+        return teamRepository.save(team);
+    }
 
-        // Check if team name is unique in project
-        if (teamRepository.existsByNameAndProjectId(request.getName(), request.getProjectId())) {
-            throw new RuntimeException("Team name '" + request.getName() + "' already exists in this project");
+    // Associate a team with a project
+    public Team addTeamToProject(Long teamId, Long projectId) {
+        Team team = getTeamById(teamId);
+        Project project = projectRepository.findById(projectId)
+                .orElseThrow(() -> new RuntimeException("Project not found with id: " + projectId));
+
+        if (team.getProjects().contains(project)) {
+            throw new IllegalStateException("Team is already in this project.");
         }
 
-        Team team = new Team(request.getName(), project);
+        team.addProject(project);
         return teamRepository.save(team);
     }
 
     // Add member to team
     public TeamMember addMemberToTeam(Long teamId, AddMemberRequest request) {
-        Team team = teamRepository.findById(teamId)
-                .orElseThrow(() -> new RuntimeException("Team not found with id: " + teamId));
-
+        Team team = getTeamById(teamId);
         User user = userRepository.findById(request.getUserId())
                 .orElseThrow(() -> new RuntimeException("User not found with id: " + request.getUserId()));
 
-        // Check if user is already in a team for this project
-        if (teamMemberRepository.existsActiveMemberInProject(request.getUserId(), team.getProject().getId())) {
-            throw new RuntimeException("User is already in a team for this project");
-        }
+        // The validation for a user being in multiple teams per project was removed for now.
+        // A more complex rule would be needed to check per-project team membership.
 
-        // Check if role is already taken (for Scrum Master and Product Owner)
         if (request.getRole() == ScrumRole.SCRUM_MASTER || request.getRole() == ScrumRole.PRODUCT_OWNER) {
             boolean roleTaken = teamMemberRepository.findByTeamIdAndRoleAndIsActiveTrue(teamId, request.getRole())
                     .stream()
@@ -82,7 +85,7 @@ public class TeamService {
 
     // Get teams for project
     public List<Team> getTeamsByProject(Long projectId) {
-        return teamRepository.findByProjectId(projectId);
+        return teamRepository.findByProjects_Id(projectId);
     }
 
     // Get user's teams
@@ -104,7 +107,6 @@ public class TeamService {
         TeamMember member = teamMemberRepository.findByUserIdAndTeamId(userId, teamId)
                 .orElseThrow(() -> new RuntimeException("Team member not found"));
 
-        // Check if new role is already taken (for Scrum Master and Product Owner)
         if (request.getRole() == ScrumRole.SCRUM_MASTER || request.getRole() == ScrumRole.PRODUCT_OWNER) {
             boolean roleTaken = teamMemberRepository.findByTeamIdAndRoleAndIsActiveTrue(teamId, request.getRole())
                     .stream()
@@ -135,15 +137,10 @@ public class TeamService {
         Team team = getTeamById(teamId);
         List<TeamMember> members = teamMemberRepository.findByTeamIdAndIsActiveTrue(teamId);
 
-        // Deactivate all members
         members.forEach(TeamMember::leaveTeam);
         teamMemberRepository.saveAll(members);
     }
 
-    /**
-     * Counts the number of COMPLETED projects by a specific team within a given course.
-     * This exposes the custom repository query for the 'Project Multiplier' award.
-     */
     @Transactional(readOnly = true)
     public Long countCompletedProjectsByTeamInCourse(Long teamId, Long courseId) {
         return teamRepository.countCompletedProjectsByTeamInCourse(teamId, courseId);

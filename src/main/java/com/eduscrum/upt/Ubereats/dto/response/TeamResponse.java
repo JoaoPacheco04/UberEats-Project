@@ -1,20 +1,18 @@
 package com.eduscrum.upt.Ubereats.dto.response;
 
 import com.eduscrum.upt.Ubereats.entity.Team;
+import com.eduscrum.upt.Ubereats.entity.Project;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.stream.Collectors;
 
-/*
-    * DTO for team response.
-    * Includes team details and statistics.
- */
 public class TeamResponse {
     private Long id;
     private String name;
-    private String projectName;
-    private Long projectId;
-    private String courseName;
+    private Integer projectCount;
+    private List<String> projectNames;
     private Integer memberCount;
     private Integer totalPoints;
     private String scrumMaster;
@@ -23,13 +21,11 @@ public class TeamResponse {
     private BigDecimal performanceRating;
     private LocalDateTime createdAt;
 
-    // Constructor from Team entity
     public TeamResponse(Team team) {
         this.id = team.getId();
         this.name = team.getName();
-        this.projectName = team.getProject().getName();
-        this.projectId = team.getProject().getId();
-        this.courseName = team.getProject().getCourse().getName();
+        this.projectCount = team.getProjects().size();
+        this.projectNames = team.getProjects().stream().map(Project::getName).collect(Collectors.toList());
         this.memberCount = team.getMemberCount();
         this.totalPoints = team.getTotalPoints();
         this.scrumMaster = team.getScrumMaster() != null ? team.getScrumMaster().getFullName() : "Not assigned";
@@ -39,12 +35,11 @@ public class TeamResponse {
         this.createdAt = team.getCreatedAt();
     }
 
-    // Getters and Setters
+    // Getters
     public Long getId() { return id; }
     public String getName() { return name; }
-    public String getProjectName() { return projectName; }
-    public Long getProjectId() { return projectId; }
-    public String getCourseName() { return courseName; }
+    public Integer getProjectCount() { return projectCount; }
+    public List<String> getProjectNames() { return projectNames; }
     public Integer getMemberCount() { return memberCount; }
     public Integer getTotalPoints() { return totalPoints; }
     public String getScrumMaster() { return scrumMaster; }

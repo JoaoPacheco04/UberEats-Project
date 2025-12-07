@@ -42,4 +42,12 @@ public interface BadgeRepository extends JpaRepository<Badge, Long> {
     // Find most awarded badges
     @Query("SELECT b, COUNT(a) as awardCount FROM Badge b LEFT JOIN b.achievements a GROUP BY b ORDER BY awardCount DESC")
     List<Object[]> findMostAwardedBadges();
+
+    @Query("SELECT COALESCE(SUM(us.storyPoints), 0) FROM UserStory us " +
+            "WHERE us.assignedTo.id = :userId " +
+            "AND us.sprint.project.id = :projectId " +
+            "AND us.status = 'DONE'")
+    Integer sumCompletedStoryPointsByProject(
+            @Param("userId") Long userId,
+            @Param("projectId") Long projectId);
 }

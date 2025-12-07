@@ -22,10 +22,6 @@ public interface TeamMemberRepository extends JpaRepository<TeamMember, Long> {
     // Find all teams where user is active member
     List<TeamMember> findByUserIdAndIsActiveTrue(Long userId);
 
-    // Check if user is already in a team for specific project
-    @Query("SELECT COUNT(tm) > 0 FROM TeamMember tm WHERE tm.user.id = :userId AND tm.team.project.id = :projectId AND tm.isActive = true")
-    boolean existsActiveMemberInProject(@Param("userId") Long userId, @Param("projectId") Long projectId);
-
     // Count active members in team
     Long countByTeamIdAndIsActiveTrue(Long teamId);
 

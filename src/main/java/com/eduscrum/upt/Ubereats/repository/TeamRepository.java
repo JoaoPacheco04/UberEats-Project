@@ -12,32 +12,21 @@ import java.util.Optional;
 @Repository
 public interface TeamRepository extends JpaRepository<Team, Long> {
 
-    // Find teams by project
-    List<Team> findByProjectId(Long projectId);
+    // Find teams by project ID
+    List<Team> findByProjects_Id(Long projectId);
 
-    // Find teams by course (through project)
-    @Query("SELECT t FROM Team t WHERE t.project.course.id = :courseId")
-    List<Team> findByCourseId(@Param("courseId") Long courseId);
+    // Check if a team with a given name exists
+    boolean existsByName(String name);
 
-    // Check if team name already exists in project
-    boolean existsByNameAndProjectId(String name, Long projectId);
-
-    // Find teams where user is a member
+    // Find teams where a user is an active member
     @Query("SELECT t FROM Team t JOIN t.members m WHERE m.user.id = :userId AND m.isActive = true")
     List<Team> findTeamsByUserId(@Param("userId") Long userId);
 
-    // Count active teams in project
-    @Query("SELECT COUNT(t) FROM Team t WHERE t.project.id = :projectId")
-    Long countByProjectId(@Param("projectId") Long projectId);
+    // Count the number of completed projects for a team within a specific course
+    @Query("SELECT COUNT(p) FROM Team t JOIN t.projects p " +
+           "WHERE t.id = :teamId " +
+           "AND p.course.id = :courseId " +
+           "AND p.status = com.eduscrum.upt.Ubereats.entity.enums.ProjectStatus.COMPLETED")
+    Long countCompletedProjectsByTeamInCourse(@Param("teamId") Long teamId, @Param("courseId") Long courseId);
 
-    // Find team by name and project
-    Optional<Team> findByNameAndProjectId(String name, Long projectId);
-
-    @Query("SELECT COUNT(t.project) FROM Team t " +
-            "WHERE t.id = :teamId " +
-            "AND t.project.course.id = :courseId " +
-            "AND t.project.status = 'COMPLETED'")
-    Long countCompletedProjectsByTeamInCourse(
-            @Param("teamId") Long teamId,
-            @Param("courseId") Long courseId);
 }

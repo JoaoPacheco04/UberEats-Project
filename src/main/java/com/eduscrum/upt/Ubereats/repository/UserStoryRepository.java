@@ -39,7 +39,7 @@ public interface UserStoryRepository extends JpaRepository<UserStory, Long> {
     List<UserStory> findByTeamIdAndStatus(Long teamId, StoryStatus status);
 
     // Find completed user stories in sprint
-    @Query("SELECT us FROM UserStory us WHERE us.sprint.id = :sprintId AND us.status = 'DONE'")
+    @Query("SELECT us FROM UserStory us WHERE us.sprint.id = :sprintId AND us.status = com.eduscrum.upt.Ubereats.entity.enums.StoryStatus.DONE")
     List<UserStory> findCompletedStoriesBySprint(@Param("sprintId") Long sprintId);
 
     // Calculate total story points in sprint
@@ -47,7 +47,7 @@ public interface UserStoryRepository extends JpaRepository<UserStory, Long> {
     Integer sumStoryPointsBySprint(@Param("sprintId") Long sprintId);
 
     // Calculate completed story points in sprint
-    @Query("SELECT COALESCE(SUM(us.storyPoints), 0) FROM UserStory us WHERE us.sprint.id = :sprintId AND us.status = 'DONE'")
+    @Query("SELECT COALESCE(SUM(us.storyPoints), 0) FROM UserStory us WHERE us.sprint.id = :sprintId AND us.status = com.eduscrum.upt.Ubereats.entity.enums.StoryStatus.DONE")
     Integer sumCompletedStoryPointsBySprint(@Param("sprintId") Long sprintId);
 
     // Find user stories by multiple criteria
@@ -71,8 +71,8 @@ public interface UserStoryRepository extends JpaRepository<UserStory, Long> {
     @Query("SELECT COALESCE(SUM(us.storyPoints), 0) FROM UserStory us " +
             "WHERE us.assignedTo.id = :userId " +
             "AND us.sprint.project.id = :projectId " +
-            "AND us.status = 'DONE' " +
-            "AND us.priority IN ('HIGH', 'CRITICAL')")
+            "AND us.status = com.eduscrum.upt.Ubereats.entity.enums.StoryStatus.DONE " +
+            "AND us.priority IN (com.eduscrum.upt.Ubereats.entity.enums.StoryPriority.HIGH, com.eduscrum.upt.Ubereats.entity.enums.StoryPriority.CRITICAL)")
     Integer sumHighPriorityCompletedStoryPointsByProject(
             @Param("userId") Long userId,
             @Param("projectId") Long projectId);
@@ -80,7 +80,7 @@ public interface UserStoryRepository extends JpaRepository<UserStory, Long> {
     @Query("SELECT us.sprint.id, SUM(us.storyPoints) FROM UserStory us " +
             "WHERE us.assignedTo.id = :userId " +
             "AND us.sprint.project.id = :projectId " +
-            "AND us.status = 'DONE' " +
+            "AND us.status = com.eduscrum.upt.Ubereats.entity.enums.StoryStatus.DONE " +
             "GROUP BY us.sprint.id")
     List<Object[]> sumCompletedStoryPointsPerSprintInProject(
             @Param("userId") Long userId,

@@ -560,7 +560,6 @@ public class AchievementService {
      */
     @Transactional(readOnly = true)
     public boolean userQualifiesForAutomaticBadge(Long userId, Long projectId, Long badgeId) {
-        // Método não utilizado, lógica movida para checkConsistentContributor
         return false;
     }
 
@@ -569,7 +568,6 @@ public class AchievementService {
      */
     @Transactional(readOnly = true)
     public boolean teamQualifiesForAutomaticBadge(Long teamId, Long badgeId) {
-        // Método não utilizado, lógica movida para métodos check* específicos
         return false;
     }
 

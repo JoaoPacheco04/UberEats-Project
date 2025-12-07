@@ -10,15 +10,12 @@ import com.eduscrum.upt.Ubereats.entity.TeamMember;
 import com.eduscrum.upt.Ubereats.service.TeamService;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize; // Import necessário
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
-/*
- * Controller for managing teams and team members.
- */
 @RestController
 @RequestMapping("/api/teams")
 public class TeamController {
@@ -29,11 +26,19 @@ public class TeamController {
         this.teamService = teamService;
     }
 
-    // Create new team
+    // Create new team (now independent of a project)
     @PostMapping
     @PreAuthorize("hasAuthority('ROLE_TEACHER')")
     public ResponseEntity<TeamResponse> createTeam(@Valid @RequestBody CreateTeamRequest request) {
         Team team = teamService.createTeam(request);
+        return ResponseEntity.ok(new TeamResponse(team));
+    }
+
+    // Associate a team with a project
+    @PostMapping("/{teamId}/projects/{projectId}")
+    @PreAuthorize("hasAuthority('ROLE_TEACHER')")
+    public ResponseEntity<TeamResponse> addTeamToProject(@PathVariable Long teamId, @PathVariable Long projectId) {
+        Team team = teamService.addTeamToProject(teamId, projectId);
         return ResponseEntity.ok(new TeamResponse(team));
     }
 

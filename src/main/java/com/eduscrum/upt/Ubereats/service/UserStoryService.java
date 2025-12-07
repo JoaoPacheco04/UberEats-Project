@@ -9,6 +9,7 @@ import com.eduscrum.upt.Ubereats.entity.User;
 import com.eduscrum.upt.Ubereats.entity.enums.StoryStatus;
 import com.eduscrum.upt.Ubereats.repository.UserStoryRepository;
 import com.eduscrum.upt.Ubereats.repository.TeamMemberRepository; // Add this import
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -25,17 +26,21 @@ public class UserStoryService {
     private final TeamService teamService;
     private final UserService userService;
     private final TeamMemberRepository teamMemberRepository; // Add this
+    private final AchievementService achievementService;
+
 
     public UserStoryService(UserStoryRepository userStoryRepository,
                             SprintService sprintService,
                             TeamService teamService,
                             UserService userService,
-                            TeamMemberRepository teamMemberRepository) { // Add this parameter
+                            TeamMemberRepository teamMemberRepository,
+                            @Lazy AchievementService achievementService) { // Add this parameter
         this.userStoryRepository = userStoryRepository;
         this.sprintService = sprintService;
         this.teamService = teamService;
         this.userService = userService;
         this.teamMemberRepository = teamMemberRepository;
+        this.achievementService = achievementService;
     }
 
     // === USER STORY CREATION ===
@@ -314,6 +319,13 @@ public class UserStoryService {
 
         userStory.moveToNextStatus();
         UserStory updatedUserStory = userStoryRepository.save(userStory);
+
+        // Check for automatic achievements when a story is completed
+        if (updatedUserStory.getStatus() == StoryStatus.DONE) {
+            achievementService.checkAutomaticTeamBadgesOnSprintCompletion(updatedUserStory.getSprint().getId());
+        }
+
+
         return convertToDTO(updatedUserStory);
     }
 
