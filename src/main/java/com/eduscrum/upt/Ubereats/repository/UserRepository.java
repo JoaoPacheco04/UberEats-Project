@@ -17,11 +17,21 @@ import java.util.Optional;
 public interface UserRepository extends JpaRepository<User, Long> {
 
     Optional<User> findByEmail(String email);
+
     Optional<User> findByUsername(String username);
+
     Optional<User> findByStudentNumber(String studentNumber);
+
     List<User> findByRole(UserRole role);
+
     boolean existsByEmail(String email);
+
     boolean existsByUsername(String username);
+
     boolean existsByStudentNumber(String studentNumber);
+
     List<User> findByIsActiveTrue();
+
+    @org.springframework.data.jpa.repository.Query("SELECT s FROM User s JOIN s.enrollments e WHERE e.course.id = :courseId")
+    List<User> findStudentsByCourseId(@org.springframework.data.repository.query.Param("courseId") Long courseId);
 }

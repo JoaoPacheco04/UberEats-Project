@@ -28,10 +28,9 @@ public class AuthController {
     private final JwtTokenProvider tokenProvider;
     private final UserService userService;
 
-
     public AuthController(AuthenticationManager authenticationManager,
-                          JwtTokenProvider tokenProvider,
-                          UserService userService) {
+            JwtTokenProvider tokenProvider,
+            UserService userService) {
         this.authenticationManager = authenticationManager;
         this.tokenProvider = tokenProvider;
         this.userService = userService;
@@ -43,9 +42,7 @@ public class AuthController {
             Authentication authentication = authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(
                             loginRequest.getEmail(),
-                            loginRequest.getPassword()
-                    )
-            );
+                            loginRequest.getPassword()));
 
             SecurityContextHolder.getContext().setAuthentication(authentication);
             String jwt = tokenProvider.generateToken(authentication);
@@ -60,12 +57,11 @@ public class AuthController {
                     user.getUsername(),
                     user.getEmail(),
                     user.getRole(),
-                    user.getFullName()
-            );
+                    user.getFullName());
 
             return ResponseEntity.ok(loginResponse);
 
-        }  catch (BadCredentialsException e) {
+        } catch (BadCredentialsException e) {
             Map<String, String> response = new HashMap<>();
             response.put("message", "Invalid email or password.");
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
@@ -98,8 +94,7 @@ public class AuthController {
                     registerRequest.getFirstName(),
                     registerRequest.getLastName(),
                     registerRequest.getRole(),
-                    registerRequest.getStudentNumber()
-            );
+                    registerRequest.getStudentNumber());
 
             Map<String, String> response = new HashMap<>();
             response.put("message", "User registered successfully");
@@ -111,5 +106,18 @@ public class AuthController {
             response.put("message", "Registration failed: " + e.getMessage());
             return ResponseEntity.badRequest().body(response);
         }
+    }
+
+    @GetMapping("/me")
+    public ResponseEntity<?> getCurrentUser() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication == null || !authentication.isAuthenticated()) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("User not authenticated");
+        }
+        Map<String, Object> response = new HashMap<>();
+        response.put("principal", authentication.getPrincipal().toString());
+        response.put("authorities", authentication.getAuthorities().toString());
+        response.put("name", authentication.getName());
+        return ResponseEntity.ok(response);
     }
 }

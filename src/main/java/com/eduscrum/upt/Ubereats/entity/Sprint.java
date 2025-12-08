@@ -37,6 +37,9 @@ public class Sprint {
     @Column(name = "end_date", nullable = false)
     private LocalDate endDate;
 
+    @Column(name = "completed_at")
+    private LocalDate completedAt;
+
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, length = 20)
     private SprintStatus status = SprintStatus.PLANNED;
@@ -61,10 +64,11 @@ public class Sprint {
     private List<Achievement> achievements = new ArrayList<>();
 
     // === CONSTRUCTORS ===
-    public Sprint() {}
+    public Sprint() {
+    }
 
     public Sprint(Integer sprintNumber, String name, String goal, LocalDate startDate,
-                  LocalDate endDate, Project project) {
+            LocalDate endDate, Project project) {
         this.sprintNumber = sprintNumber;
         this.name = name;
         this.goal = goal;
@@ -75,41 +79,109 @@ public class Sprint {
     }
 
     // === GETTERS & SETTERS ===
-    public Long getId() { return id; }
-    public void setId(Long id) { this.id = id; }
+    public Long getId() {
+        return id;
+    }
 
-    public Integer getSprintNumber() { return sprintNumber; }
-    public void setSprintNumber(Integer sprintNumber) { this.sprintNumber = sprintNumber; }
+    public void setId(Long id) {
+        this.id = id;
+    }
 
-    public String getName() { return name; }
-    public void setName(String name) { this.name = name; }
+    public Integer getSprintNumber() {
+        return sprintNumber;
+    }
 
-    public String getGoal() { return goal; }
-    public void setGoal(String goal) { this.goal = goal; }
+    public void setSprintNumber(Integer sprintNumber) {
+        this.sprintNumber = sprintNumber;
+    }
 
-    public LocalDate getStartDate() { return startDate; }
-    public void setStartDate(LocalDate startDate) { this.startDate = startDate; }
+    public String getName() {
+        return name;
+    }
 
-    public LocalDate getEndDate() { return endDate; }
-    public void setEndDate(LocalDate endDate) { this.endDate = endDate; }
+    public void setName(String name) {
+        this.name = name;
+    }
 
-    public SprintStatus getStatus() { return status; }
-    public void setStatus(SprintStatus status) { this.status = status; }
+    public String getGoal() {
+        return goal;
+    }
 
-    public LocalDateTime getCreatedAt() { return createdAt; }
-    public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }
+    public void setGoal(String goal) {
+        this.goal = goal;
+    }
 
-    public LocalDateTime getUpdatedAt() { return updatedAt; }
-    public void setUpdatedAt(LocalDateTime updatedAt) { this.updatedAt = updatedAt; }
+    public LocalDate getStartDate() {
+        return startDate;
+    }
 
-    public Project getProject() { return project; }
-    public void setProject(Project project) { this.project = project; }
+    public void setStartDate(LocalDate startDate) {
+        this.startDate = startDate;
+    }
 
-    public List<ProgressMetric> getProgressMetrics() { return progressMetrics; }
-    public void setProgressMetrics(List<ProgressMetric> progressMetrics) { this.progressMetrics = progressMetrics; }
+    public LocalDate getEndDate() {
+        return endDate;
+    }
 
-    public List<Achievement> getAchievements() { return achievements; }
-    public void setAchievements(List<Achievement> achievements) { this.achievements = achievements; }
+    public void setEndDate(LocalDate endDate) {
+        this.endDate = endDate;
+    }
+
+    public LocalDate getCompletedAt() {
+        return completedAt;
+    }
+
+    public void setCompletedAt(LocalDate completedAt) {
+        this.completedAt = completedAt;
+    }
+
+    public SprintStatus getStatus() {
+        return status;
+    }
+
+    public void setStatus(SprintStatus status) {
+        this.status = status;
+    }
+
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public LocalDateTime getUpdatedAt() {
+        return updatedAt;
+    }
+
+    public void setUpdatedAt(LocalDateTime updatedAt) {
+        this.updatedAt = updatedAt;
+    }
+
+    public Project getProject() {
+        return project;
+    }
+
+    public void setProject(Project project) {
+        this.project = project;
+    }
+
+    public List<ProgressMetric> getProgressMetrics() {
+        return progressMetrics;
+    }
+
+    public void setProgressMetrics(List<ProgressMetric> progressMetrics) {
+        this.progressMetrics = progressMetrics;
+    }
+
+    public List<Achievement> getAchievements() {
+        return achievements;
+    }
+
+    public void setAchievements(List<Achievement> achievements) {
+        this.achievements = achievements;
+    }
 
     // === BUSINESS METHODS ===
 
@@ -146,7 +218,8 @@ public class Sprint {
      */
     public Long getDaysRemaining() {
         LocalDate today = LocalDate.now();
-        if (today.isAfter(endDate)) return 0L;
+        if (today.isAfter(endDate))
+            return 0L;
         return ChronoUnit.DAYS.between(today, endDate);
     }
 
@@ -154,7 +227,8 @@ public class Sprint {
      * Calculate team velocity for this sprint
      */
     public BigDecimal getTeamVelocity(Team team) {
-        if (progressMetrics.isEmpty()) return BigDecimal.ZERO;
+        if (progressMetrics.isEmpty())
+            return BigDecimal.ZERO;
 
         BigDecimal totalVelocity = progressMetrics.stream()
                 .filter(metric -> metric.getTeam().equals(team))
@@ -165,9 +239,8 @@ public class Sprint {
                 .filter(metric -> metric.getTeam().equals(team))
                 .count();
 
-        return metricCount > 0 ?
-                totalVelocity.divide(BigDecimal.valueOf(metricCount), 2, RoundingMode.HALF_UP) :
-                BigDecimal.ZERO;
+        return metricCount > 0 ? totalVelocity.divide(BigDecimal.valueOf(metricCount), 2, RoundingMode.HALF_UP)
+                : BigDecimal.ZERO;
     }
 
     /**
@@ -175,13 +248,16 @@ public class Sprint {
      */
     public BigDecimal getTimeProgressPercentage() {
         LocalDate today = LocalDate.now();
-        if (today.isBefore(startDate)) return BigDecimal.ZERO;
-        if (today.isAfter(endDate)) return new BigDecimal("100.00");
+        if (today.isBefore(startDate))
+            return BigDecimal.ZERO;
+        if (today.isAfter(endDate))
+            return new BigDecimal("100.00");
 
         long totalDays = getDurationDays();
         long daysPassed = ChronoUnit.DAYS.between(startDate, today);
 
-        if (totalDays == 0) return BigDecimal.ZERO;
+        if (totalDays == 0)
+            return BigDecimal.ZERO;
 
         return new BigDecimal(daysPassed)
                 .divide(new BigDecimal(totalDays), 4, RoundingMode.HALF_UP)
@@ -251,8 +327,10 @@ public class Sprint {
     // === UTILITY METHODS ===
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof Sprint)) return false;
+        if (this == o)
+            return true;
+        if (!(o instanceof Sprint))
+            return false;
         Sprint sprint = (Sprint) o;
         return Objects.equals(id, sprint.id) &&
                 Objects.equals(sprintNumber, sprint.sprintNumber) &&

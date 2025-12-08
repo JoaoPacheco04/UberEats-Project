@@ -27,9 +27,9 @@ public class TeamService {
     private final UserRepository userRepository;
 
     public TeamService(TeamRepository teamRepository,
-                       TeamMemberRepository teamMemberRepository,
-                       ProjectRepository projectRepository,
-                       UserRepository userRepository) {
+            TeamMemberRepository teamMemberRepository,
+            ProjectRepository projectRepository,
+            UserRepository userRepository) {
         this.teamRepository = teamRepository;
         this.teamMemberRepository = teamMemberRepository;
         this.projectRepository = projectRepository;
@@ -42,6 +42,13 @@ public class TeamService {
             throw new RuntimeException("Team name '" + request.getName() + "' already exists");
         }
         Team team = new Team(request.getName());
+
+        if (request.getProjectId() != null) {
+            Project project = projectRepository.findById(request.getProjectId())
+                    .orElseThrow(() -> new RuntimeException("Project not found with id: " + request.getProjectId()));
+            team.addProject(project);
+        }
+
         return teamRepository.save(team);
     }
 
@@ -65,7 +72,8 @@ public class TeamService {
         User user = userRepository.findById(request.getUserId())
                 .orElseThrow(() -> new RuntimeException("User not found with id: " + request.getUserId()));
 
-        // The validation for a user being in multiple teams per project was removed for now.
+        // The validation for a user being in multiple teams per project was removed for
+        // now.
         // A more complex rule would be needed to check per-project team membership.
 
         if (request.getRole() == ScrumRole.SCRUM_MASTER || request.getRole() == ScrumRole.PRODUCT_OWNER) {

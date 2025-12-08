@@ -7,7 +7,6 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
-import java.util.Optional;
 
 @Repository
 public interface TeamRepository extends JpaRepository<Team, Long> {
@@ -24,9 +23,9 @@ public interface TeamRepository extends JpaRepository<Team, Long> {
 
     // Count the number of completed projects for a team within a specific course
     @Query("SELECT COUNT(p) FROM Team t JOIN t.projects p " +
-           "WHERE t.id = :teamId " +
-           "AND p.course.id = :courseId " +
-           "AND p.status = com.eduscrum.upt.Ubereats.entity.enums.ProjectStatus.COMPLETED")
+            "WHERE t.id = :teamId " +
+            "AND p.course.id = :courseId " +
+            "AND p.status = com.eduscrum.upt.Ubereats.entity.enums.ProjectStatus.COMPLETED")
     Long countCompletedProjectsByTeamInCourse(@Param("teamId") Long teamId, @Param("courseId") Long courseId);
 
 }

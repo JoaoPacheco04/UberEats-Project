@@ -9,6 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @RestController
@@ -54,7 +55,8 @@ public class SprintController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<SprintResponseDTO> updateSprint(@PathVariable Long id, @Valid @RequestBody SprintRequestDTO requestDTO) {
+    public ResponseEntity<SprintResponseDTO> updateSprint(@PathVariable Long id,
+            @Valid @RequestBody SprintRequestDTO requestDTO) {
         SprintResponseDTO updatedSprint = sprintService.updateSprint(id, requestDTO);
         return ResponseEntity.ok(updatedSprint);
     }
@@ -65,9 +67,11 @@ public class SprintController {
         return ResponseEntity.ok(response);
     }
 
-    @PutMapping("/{id}/complete")
-    public ResponseEntity<SprintResponseDTO> completeSprint(@PathVariable Long id) {
-        SprintResponseDTO response = sprintService.completeSprint(id);
+    @PatchMapping("/{id}/complete")
+    public ResponseEntity<SprintResponseDTO> completeSprint(
+            @PathVariable Long id,
+            @RequestParam(required = false) LocalDate completionDate) {
+        SprintResponseDTO response = sprintService.completeSprint(id, completionDate);
         return ResponseEntity.ok(response);
     }
 

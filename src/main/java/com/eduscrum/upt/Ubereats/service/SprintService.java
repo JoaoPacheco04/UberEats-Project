@@ -24,7 +24,8 @@ public class SprintService {
     private final ProjectRepository projectRepository;
     private final AchievementService achievementService;
 
-    public SprintService(SprintRepository sprintRepository, ProjectRepository projectRepository, @Lazy AchievementService achievementService) {
+    public SprintService(SprintRepository sprintRepository, ProjectRepository projectRepository,
+            @Lazy AchievementService achievementService) {
         this.sprintRepository = sprintRepository;
         this.projectRepository = projectRepository;
         this.achievementService = achievementService;
@@ -85,7 +86,8 @@ public class SprintService {
     private void validateSprintUniqueness(Long projectId, Integer sprintNumber, Long excludeId) {
         boolean sprintNumberExists;
         if (excludeId != null) {
-            sprintNumberExists = sprintRepository.existsByProjectIdAndSprintNumberAndIdNot(projectId, sprintNumber, excludeId);
+            sprintNumberExists = sprintRepository.existsByProjectIdAndSprintNumberAndIdNot(projectId, sprintNumber,
+                    excludeId);
         } else {
             sprintNumberExists = sprintRepository.existsByProjectIdAndSprintNumber(projectId, sprintNumber);
         }
@@ -107,8 +109,7 @@ public class SprintService {
                 requestDTO.getGoal(),
                 requestDTO.getStartDate(),
                 requestDTO.getEndDate(),
-                project
-        );
+                project);
 
         // Set status if provided
         if (requestDTO.getStatus() != null) {
@@ -246,7 +247,8 @@ public class SprintService {
         Sprint sprint = getSprintEntity(id);
 
         if (!sprint.canBeStarted()) {
-            throw new IllegalStateException("Sprint cannot be started. It must be in PLANNED status and start date must be reached.");
+            throw new IllegalStateException(
+                    "Sprint cannot be started. It must be in PLANNED status and start date must be reached.");
         }
 
         sprint.setStatus(SprintStatus.IN_PROGRESS);
@@ -257,14 +259,21 @@ public class SprintService {
     /**
      * Completes a sprint (changes status to COMPLETED)
      */
-    public SprintResponseDTO completeSprint(Long id) {
+    public SprintResponseDTO completeSprint(Long id, LocalDate completionDate) {
         Sprint sprint = getSprintEntity(id);
 
         if (!sprint.canBeCompleted()) {
-            throw new IllegalStateException("Sprint cannot be completed. It must be in IN_PROGRESS status and end date must be reached.");
+            throw new IllegalStateException(
+                    "Sprint cannot be completed. It must be in IN_PROGRESS status and end date must be reached.");
         }
 
         sprint.setStatus(SprintStatus.COMPLETED);
+        if (completionDate != null) {
+            sprint.setCompletedAt(completionDate);
+        } else {
+            sprint.setCompletedAt(LocalDate.now());
+        }
+
         Sprint updatedSprint = sprintRepository.save(sprint);
 
         // Trigger automatic badge checks for sprint completion
@@ -329,8 +338,10 @@ public class SprintService {
     // === BUSINESS LOGIC FOR AWARDS ===
 
     /**
-     * Checks if all sprints belonging to a given project were completed on or before their planned end date.
-     * It relies on the 'updatedAt' timestamp as a proxy for the completion date when status is COMPLETED.
+     * Checks if all sprints belonging to a given project were completed on or
+     * before their planned end date.
+     * It relies on the 'updatedAt' timestamp as a proxy for the completion date
+     * when status is COMPLETED.
      */
     @Transactional(readOnly = true)
     public boolean checkIfAllSprintsInProjectCompletedOnTime(Long projectId) {
@@ -347,14 +358,19 @@ public class SprintService {
                 return false; // Fail: A sprint was not completed
             }
 
-            // 2. Check if the completion date (proxy: updatedAt) was after the planned deadline
-            if (sprint.getUpdatedAt() != null) {
-                // We compare the date part only (LocalDate)
+            // 2. Check if the completion date was after the planned deadline
+            if (sprint.getCompletedAt() != null) {
+                if (sprint.getCompletedAt().isAfter(sprint.getEndDate())) {
+                    return false; // Fail: Completed late
+                }
+            } else if (sprint.getUpdatedAt() != null) {
+                // Fallback to updatedAt if completedAt is missing (legacy)
                 if (sprint.getUpdatedAt().toLocalDate().isAfter(sprint.getEndDate())) {
                     return false; // Fail: Completed late
                 }
             } else {
-                // If the status is COMPLETED, but updatedAt is null, it indicates an error or inconsistency.
+                // If the status is COMPLETED, but dates are null, it indicates an error or
+                // inconsistency.
                 // We treat it as a failure for the award criteria.
                 return false;
             }
@@ -362,7 +378,6 @@ public class SprintService {
 
         return true; // All sprints were completed and on time.
     }
-
 
     // === INTERNAL ENTITY METHODS ===
 

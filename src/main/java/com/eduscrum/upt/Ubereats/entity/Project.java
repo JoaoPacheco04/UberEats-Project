@@ -36,6 +36,9 @@ public class Project {
     @Column(name = "end_date", nullable = false)
     private LocalDate endDate;
 
+    @Column(name = "completed_at")
+    private LocalDate completedAt;
+
     @Column(name = "max_score", precision = 5, scale = 2)
     private BigDecimal maxScore = new BigDecimal("100.00");
 
@@ -66,10 +69,11 @@ public class Project {
     private List<Achievement> achievements = new ArrayList<>();
 
     // === CONSTRUCTORS ===
-    public Project() {}
+    public Project() {
+    }
 
     public Project(String name, String description, LocalDate startDate,
-                   LocalDate endDate, Course course) {
+            LocalDate endDate, Course course) {
         this.name = name;
         this.description = description;
         this.startDate = startDate;
@@ -80,52 +84,123 @@ public class Project {
     }
 
     public Project(String name, String description, LocalDate startDate,
-                   LocalDate endDate, Course course, BigDecimal maxScore) {
+            LocalDate endDate, Course course, BigDecimal maxScore) {
         this(name, description, startDate, endDate, course);
         this.maxScore = maxScore != null ? maxScore : new BigDecimal("100.00");
     }
 
     // === GETTERS & SETTERS ===
-    public Long getId() { return id; }
-    public void setId(Long id) { this.id = id; }
+    public Long getId() {
+        return id;
+    }
 
-    public String getName() { return name; }
-    public void setName(String name) { this.name = name; }
+    public void setId(Long id) {
+        this.id = id;
+    }
 
-    public String getDescription() { return description; }
-    public void setDescription(String description) { this.description = description; }
+    public String getName() {
+        return name;
+    }
 
-    public LocalDate getStartDate() { return startDate; }
-    public void setStartDate(LocalDate startDate) { this.startDate = startDate; }
+    public void setName(String name) {
+        this.name = name;
+    }
 
-    public LocalDate getEndDate() { return endDate; }
-    public void setEndDate(LocalDate endDate) { this.endDate = endDate; }
+    public String getDescription() {
+        return description;
+    }
 
-    public BigDecimal getMaxScore() { return maxScore; }
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public LocalDate getStartDate() {
+        return startDate;
+    }
+
+    public void setStartDate(LocalDate startDate) {
+        this.startDate = startDate;
+    }
+
+    public LocalDate getEndDate() {
+        return endDate;
+    }
+
+    public void setEndDate(LocalDate endDate) {
+        this.endDate = endDate;
+    }
+
+    public LocalDate getCompletedAt() {
+        return completedAt;
+    }
+
+    public void setCompletedAt(LocalDate completedAt) {
+        this.completedAt = completedAt;
+    }
+
+    public BigDecimal getMaxScore() {
+        return maxScore;
+    }
+
     public void setMaxScore(BigDecimal maxScore) {
         this.maxScore = maxScore != null ? maxScore : new BigDecimal("100.00");
     }
 
-    public ProjectStatus getStatus() { return status; }
-    public void setStatus(ProjectStatus status) { this.status = status; }
+    public ProjectStatus getStatus() {
+        return status;
+    }
 
-    public LocalDateTime getCreatedAt() { return createdAt; }
-    public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }
+    public void setStatus(ProjectStatus status) {
+        this.status = status;
+    }
 
-    public LocalDateTime getUpdatedAt() { return updatedAt; }
-    public void setUpdatedAt(LocalDateTime updatedAt) { this.updatedAt = updatedAt; }
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
 
-    public Course getCourse() { return course; }
-    public void setCourse(Course course) { this.course = course; }
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
+    }
 
-    public List<Team> getTeams() { return teams; }
-    public void setTeams(List<Team> teams) { this.teams = teams; }
+    public LocalDateTime getUpdatedAt() {
+        return updatedAt;
+    }
 
-    public List<Sprint> getSprints() { return sprints; }
-    public void setSprints(List<Sprint> sprints) { this.sprints = sprints; }
+    public void setUpdatedAt(LocalDateTime updatedAt) {
+        this.updatedAt = updatedAt;
+    }
 
-    public List<Achievement> getAchievements() { return achievements; }
-    public void setAchievements(List<Achievement> achievements) { this.achievements = achievements; }
+    public Course getCourse() {
+        return course;
+    }
+
+    public void setCourse(Course course) {
+        this.course = course;
+    }
+
+    public List<Team> getTeams() {
+        return teams;
+    }
+
+    public void setTeams(List<Team> teams) {
+        this.teams = teams;
+    }
+
+    public List<Sprint> getSprints() {
+        return sprints;
+    }
+
+    public void setSprints(List<Sprint> sprints) {
+        this.sprints = sprints;
+    }
+
+    public List<Achievement> getAchievements() {
+        return achievements;
+    }
+
+    public void setAchievements(List<Achievement> achievements) {
+        this.achievements = achievements;
+    }
 
     // === BUSINESS METHODS ===
 
@@ -156,7 +231,8 @@ public class Project {
      * Calculate progress percentage based on completed sprints
      */
     public BigDecimal getProgressPercentage() {
-        if (sprints.isEmpty()) return BigDecimal.ZERO;
+        if (sprints.isEmpty())
+            return BigDecimal.ZERO;
 
         BigDecimal completed = new BigDecimal(getCompletedSprints());
         BigDecimal total = new BigDecimal(getTotalSprints());
@@ -241,7 +317,8 @@ public class Project {
      * Calculate average team score across all teams
      */
     public BigDecimal getAverageTeamScore() {
-        if (teams.isEmpty()) return BigDecimal.ZERO;
+        if (teams.isEmpty())
+            return BigDecimal.ZERO;
 
         BigDecimal totalScore = teams.stream()
                 .map(team -> {
@@ -280,8 +357,10 @@ public class Project {
     // === UTILITY METHODS ===
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof Project)) return false;
+        if (this == o)
+            return true;
+        if (!(o instanceof Project))
+            return false;
         Project project = (Project) o;
         return Objects.equals(id, project.id) &&
                 Objects.equals(name, project.name);
