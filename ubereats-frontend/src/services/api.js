@@ -37,4 +37,10 @@ export const login = async (email, password) => {
     }
 };
 
+// 4. Teacher Course Services
+export const getTeacherCourses = () => api.get('/courses/teacher/my-courses');
+
+// 5. Project Services
+export const createProject = (projectData) => api.post('/projects', projectData);
+
 export default api;

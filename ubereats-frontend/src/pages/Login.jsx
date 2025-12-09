@@ -17,7 +17,16 @@ const Login = () => {
         try {
             const userData = await login(email, password);
             console.log("Login Success:", userData);
-            alert(`Login Successful! Welcome ${userData.fullName} (${userData.role})`);
+
+            // Navigate based on user role
+            if (userData.role === 'TEACHER') {
+                navigate('/teacher/dashboard');
+            } else if (userData.role === 'STUDENT') {
+                navigate('/student/dashboard'); // TODO: Create student dashboard
+            } else {
+                // Default fallback
+                navigate('/dashboard');
+            }
         } catch (err) {
             setError('Invalid email or password');
             console.error(err);
