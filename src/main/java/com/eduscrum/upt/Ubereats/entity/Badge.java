@@ -61,7 +61,8 @@ public class Badge {
     private List<Achievement> achievements = new ArrayList<>();
 
     // === CONSTRUCTORS ===
-    public Badge() {}
+    public Badge() {
+    }
 
     public Badge(String name, String description, Integer points, BadgeType badgeType, User createdBy) {
         this.name = name;
@@ -73,50 +74,115 @@ public class Badge {
     }
 
     public Badge(String name, String description, Integer points, BadgeType badgeType,
-                 String triggerCondition, User createdBy) {
+            String triggerCondition, User createdBy) {
         this(name, description, points, badgeType, createdBy);
         this.triggerCondition = triggerCondition;
     }
 
     // === GETTERS & SETTERS ===
-    public Long getId() { return id; }
-    public void setId(Long id) { this.id = id; }
+    public Long getId() {
+        return id;
+    }
 
-    public String getName() { return name; }
-    public void setName(String name) { this.name = name; }
+    public void setId(Long id) {
+        this.id = id;
+    }
 
-    public String getDescription() { return description; }
-    public void setDescription(String description) { this.description = description; }
+    public String getName() {
+        return name;
+    }
 
-    public Integer getPoints() { return points; }
-    public void setPoints(Integer points) { this.points = points; }
+    public void setName(String name) {
+        this.name = name;
+    }
 
-    public BadgeType getBadgeType() { return badgeType; }
-    public void setBadgeType(BadgeType badgeType) { this.badgeType = badgeType; }
+    public String getDescription() {
+        return description;
+    }
 
-    public String getTriggerCondition() { return triggerCondition; }
-    public void setTriggerCondition(String triggerCondition) { this.triggerCondition = triggerCondition; }
+    public void setDescription(String description) {
+        this.description = description;
+    }
 
-    public String getIcon() { return icon; }
-    public void setIcon(String icon) { this.icon = icon; }
+    public Integer getPoints() {
+        return points;
+    }
 
-    public String getColor() { return color; }
-    public void setColor(String color) { this.color = color; }
+    public void setPoints(Integer points) {
+        this.points = points;
+    }
 
-    public Boolean getIsActive() { return isActive; }
-    public void setIsActive(Boolean isActive) { this.isActive = isActive; }
+    public BadgeType getBadgeType() {
+        return badgeType;
+    }
 
-    public LocalDateTime getCreatedAt() { return createdAt; }
-    public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }
+    public void setBadgeType(BadgeType badgeType) {
+        this.badgeType = badgeType;
+    }
 
-    public LocalDateTime getUpdatedAt() { return updatedAt; }
-    public void setUpdatedAt(LocalDateTime updatedAt) { this.updatedAt = updatedAt; }
+    public String getTriggerCondition() {
+        return triggerCondition;
+    }
 
-    public User getCreatedBy() { return createdBy; }
-    public void setCreatedBy(User createdBy) { this.createdBy = createdBy; }
+    public void setTriggerCondition(String triggerCondition) {
+        this.triggerCondition = triggerCondition;
+    }
 
-    public List<Achievement> getAchievements() { return achievements; }
-    public void setAchievements(List<Achievement> achievements) { this.achievements = achievements; }
+    public String getIcon() {
+        return icon;
+    }
+
+    public void setIcon(String icon) {
+        this.icon = icon;
+    }
+
+    public String getColor() {
+        return color;
+    }
+
+    public void setColor(String color) {
+        this.color = color;
+    }
+
+    public Boolean getIsActive() {
+        return isActive;
+    }
+
+    public void setIsActive(Boolean isActive) {
+        this.isActive = isActive;
+    }
+
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public LocalDateTime getUpdatedAt() {
+        return updatedAt;
+    }
+
+    public void setUpdatedAt(LocalDateTime updatedAt) {
+        this.updatedAt = updatedAt;
+    }
+
+    public User getCreatedBy() {
+        return createdBy;
+    }
+
+    public void setCreatedBy(User createdBy) {
+        this.createdBy = createdBy;
+    }
+
+    public List<Achievement> getAchievements() {
+        return achievements;
+    }
+
+    public void setAchievements(List<Achievement> achievements) {
+        this.achievements = achievements;
+    }
 
     // === BUSINESS METHODS ===
 
@@ -143,7 +209,8 @@ public class Badge {
         }
         try {
             ObjectMapper mapper = new ObjectMapper();
-            return mapper.readValue(triggerCondition, new TypeReference<Map<String, Object>>() {});
+            return mapper.readValue(triggerCondition, new TypeReference<Map<String, Object>>() {
+            });
         } catch (Exception e) {
             return new HashMap<>();
         }
@@ -153,7 +220,8 @@ public class Badge {
      * Check if user meets conditions for automatic award
      */
     public boolean meetsUserConditions(User user, Project project) {
-        if (!isAutomatic()) return false;
+        if (!isAutomatic())
+            return false;
         Map<String, Object> conditions = getTriggerConditions();
         return checkUserConditions(user, project, conditions);
     }
@@ -162,7 +230,8 @@ public class Badge {
      * Check if team meets conditions for automatic award
      */
     public boolean meetsTeamConditions(Team team) {
-        if (!isAutomatic()) return false;
+        if (!isAutomatic())
+            return false;
         Map<String, Object> conditions = getTriggerConditions();
         return checkTeamConditions(team, conditions);
     }
@@ -183,17 +252,21 @@ public class Badge {
 
     // === PRIVATE HELPER METHODS ===
     private boolean checkUserConditions(User user, Project project, Map<String, Object> conditions) {
-        // Example conditions: {"min_tasks_completed": 10, "min_score": 80, "required_badges": ["OnTime"]}
+        // Example conditions: {"min_tasks_completed": 10, "min_score": 80,
+        // "required_badges": ["OnTime"]}
         // Implementation would depend on specific condition types
-        if (conditions.isEmpty()) return true;
+        if (conditions.isEmpty())
+            return true;
 
         // Placeholder implementation - extend based on your specific conditions
         return conditions.entrySet().stream()
-                .allMatch(condition -> checkSingleUserCondition(user, project, condition.getKey(), condition.getValue()));
+                .allMatch(
+                        condition -> checkSingleUserCondition(user, project, condition.getKey(), condition.getValue()));
     }
 
     private boolean checkTeamConditions(Team team, Map<String, Object> conditions) {
-        if (conditions.isEmpty()) return true;
+        if (conditions.isEmpty())
+            return true;
 
         // Placeholder implementation - extend based on your specific conditions
         return conditions.entrySet().stream()
@@ -222,7 +295,7 @@ public class Badge {
                 return team.getAverageVelocity().compareTo(new BigDecimal(value.toString())) >= 0;
             case "all_tasks_completed":
                 // Check if all tasks are completed
-                ProgressMetric latest = team.getLatestProgressMetric();
+                Analytic latest = team.getLatestAnalytic();
                 return latest != null && latest.getCompletedTasks() >= latest.getTotalTasks();
             default:
                 return true;
@@ -232,8 +305,10 @@ public class Badge {
     // === UTILITY METHODS ===
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof Badge)) return false;
+        if (this == o)
+            return true;
+        if (!(o instanceof Badge))
+            return false;
         Badge badge = (Badge) o;
         return Objects.equals(id, badge.id) &&
                 Objects.equals(name, badge.name);

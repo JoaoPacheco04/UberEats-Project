@@ -92,4 +92,23 @@ public interface UserStoryRepository extends JpaRepository<UserStory, Long> {
                         "AND us.status = com.eduscrum.upt.Ubereats.entity.enums.StoryStatus.DONE " +
                         "GROUP BY us.sprint.id")
         List<Object[]> findCompletedPointsByTeamAndCompletedSprints(@Param("teamId") Long teamId);
+
+        // === Analytics Auto-Trigger Queries ===
+
+        // Count total user stories for a sprint and team
+        @Query("SELECT COUNT(us) FROM UserStory us WHERE us.sprint.id = :sprintId AND us.team.id = :teamId")
+        Integer countBySprintIdAndTeamId(@Param("sprintId") Long sprintId, @Param("teamId") Long teamId);
+
+        // Count completed user stories for a sprint and team
+        @Query("SELECT COUNT(us) FROM UserStory us WHERE us.sprint.id = :sprintId AND us.team.id = :teamId AND us.status = com.eduscrum.upt.Ubereats.entity.enums.StoryStatus.DONE")
+        Integer countCompletedBySprintIdAndTeamId(@Param("sprintId") Long sprintId, @Param("teamId") Long teamId);
+
+        // Sum total story points for a sprint and team
+        @Query("SELECT COALESCE(SUM(us.storyPoints), 0) FROM UserStory us WHERE us.sprint.id = :sprintId AND us.team.id = :teamId")
+        Integer sumStoryPointsBySprintIdAndTeamId(@Param("sprintId") Long sprintId, @Param("teamId") Long teamId);
+
+        // Sum completed story points for a sprint and team
+        @Query("SELECT COALESCE(SUM(us.storyPoints), 0) FROM UserStory us WHERE us.sprint.id = :sprintId AND us.team.id = :teamId AND us.status = com.eduscrum.upt.Ubereats.entity.enums.StoryStatus.DONE")
+        Integer sumCompletedStoryPointsBySprintIdAndTeamId(@Param("sprintId") Long sprintId,
+                        @Param("teamId") Long teamId);
 }

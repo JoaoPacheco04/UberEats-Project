@@ -31,6 +31,7 @@ public class UserStoryService {
     private final TeamMemberRepository teamMemberRepository;
     private final AchievementService achievementService;
     private final ProjectRepository projectRepository;
+    private final AnalyticsService analyticsService;
 
     public UserStoryService(UserStoryRepository userStoryRepository,
             SprintService sprintService,
@@ -38,7 +39,8 @@ public class UserStoryService {
             UserService userService,
             TeamMemberRepository teamMemberRepository,
             @Lazy AchievementService achievementService,
-            ProjectRepository projectRepository) {
+            ProjectRepository projectRepository,
+            @Lazy AnalyticsService analyticsService) {
         this.userStoryRepository = userStoryRepository;
         this.sprintService = sprintService;
         this.teamService = teamService;
@@ -46,6 +48,7 @@ public class UserStoryService {
         this.teamMemberRepository = teamMemberRepository;
         this.achievementService = achievementService;
         this.projectRepository = projectRepository;
+        this.analyticsService = analyticsService;
     }
 
     // === USER STORY CREATION ===
@@ -60,6 +63,10 @@ public class UserStoryService {
         UserStory userStory = createUserStoryEntity(requestDTO);
         UserStory savedUserStory = userStoryRepository.save(userStory);
         updateProjectProgress(savedUserStory.getSprint().getProject().getId());
+
+        // Trigger daily analytics update
+        analyticsService.updateDailyAnalytic(savedUserStory.getSprint().getId(), savedUserStory.getTeam().getId());
+
         return convertToDTO(savedUserStory);
     }
 
@@ -284,6 +291,10 @@ public class UserStoryService {
 
         UserStory updatedUserStory = userStoryRepository.save(userStory);
         updateProjectProgress(updatedUserStory.getSprint().getProject().getId());
+
+        // Trigger daily analytics update
+        analyticsService.updateDailyAnalytic(updatedUserStory.getSprint().getId(), updatedUserStory.getTeam().getId());
+
         return convertToDTO(updatedUserStory);
     }
 
@@ -334,6 +345,9 @@ public class UserStoryService {
 
         updateProjectProgress(updatedUserStory.getSprint().getProject().getId());
 
+        // Trigger daily analytics update
+        analyticsService.updateDailyAnalytic(updatedUserStory.getSprint().getId(), updatedUserStory.getTeam().getId());
+
         return convertToDTO(updatedUserStory);
     }
 
@@ -350,6 +364,10 @@ public class UserStoryService {
         userStory.moveToPreviousStatus();
         UserStory updatedUserStory = userStoryRepository.save(userStory);
         updateProjectProgress(updatedUserStory.getSprint().getProject().getId());
+
+        // Trigger daily analytics update
+        analyticsService.updateDailyAnalytic(updatedUserStory.getSprint().getId(), updatedUserStory.getTeam().getId());
+
         return convertToDTO(updatedUserStory);
     }
 
@@ -359,8 +377,13 @@ public class UserStoryService {
     public void deleteUserStory(Long id) {
         UserStory userStory = getUserStoryEntity(id);
         Long projectId = userStory.getSprint().getProject().getId();
+        Long sprintId = userStory.getSprint().getId();
+        Long teamId = userStory.getTeam().getId();
         userStoryRepository.deleteById(id);
         updateProjectProgress(projectId);
+
+        // Trigger daily analytics update
+        analyticsService.updateDailyAnalytic(sprintId, teamId);
     }
 
     // === STATISTICS AND ANALYTICS ===

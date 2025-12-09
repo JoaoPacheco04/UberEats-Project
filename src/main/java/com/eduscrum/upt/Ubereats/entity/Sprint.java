@@ -58,7 +58,7 @@ public class Sprint {
     private Project project;
 
     @OneToMany(mappedBy = "sprint", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List<ProgressMetric> progressMetrics = new ArrayList<>();
+    private List<Analytic> analytics = new ArrayList<>();
 
     @OneToMany(mappedBy = "sprint", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Achievement> achievements = new ArrayList<>();
@@ -167,12 +167,12 @@ public class Sprint {
         this.project = project;
     }
 
-    public List<ProgressMetric> getProgressMetrics() {
-        return progressMetrics;
+    public List<Analytic> getAnalytics() {
+        return analytics;
     }
 
-    public void setProgressMetrics(List<ProgressMetric> progressMetrics) {
-        this.progressMetrics = progressMetrics;
+    public void setAnalytics(List<Analytic> analytics) {
+        this.analytics = analytics;
     }
 
     public List<Achievement> getAchievements() {
@@ -227,15 +227,15 @@ public class Sprint {
      * Calculate team velocity for this sprint
      */
     public BigDecimal getTeamVelocity(Team team) {
-        if (progressMetrics.isEmpty())
+        if (analytics.isEmpty())
             return BigDecimal.ZERO;
 
-        BigDecimal totalVelocity = progressMetrics.stream()
+        BigDecimal totalVelocity = analytics.stream()
                 .filter(metric -> metric.getTeam().equals(team))
-                .map(ProgressMetric::getVelocity)
+                .map(Analytic::getVelocity)
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
 
-        long metricCount = progressMetrics.stream()
+        long metricCount = analytics.stream()
                 .filter(metric -> metric.getTeam().equals(team))
                 .count();
 

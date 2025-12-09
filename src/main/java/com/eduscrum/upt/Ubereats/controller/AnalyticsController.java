@@ -25,18 +25,18 @@ public class AnalyticsController {
     }
 
     @PostMapping
-    public ResponseEntity<AnalyticsResponseDTO> createAnalyticsMetric(
+    public ResponseEntity<AnalyticsResponseDTO> createAnalytic(
             @Valid @RequestBody AnalyticsRequestDTO requestDTO) {
-        AnalyticsResponseDTO createdMetric = analyticsService.createProgressMetric(requestDTO);
-        return new ResponseEntity<>(createdMetric, HttpStatus.CREATED);
+        AnalyticsResponseDTO createdAnalytic = analyticsService.createAnalytic(requestDTO);
+        return new ResponseEntity<>(createdAnalytic, HttpStatus.CREATED);
     }
 
     @GetMapping
-    public ResponseEntity<List<AnalyticsResponseDTO>> getAnalyticsMetrics(
+    public ResponseEntity<List<AnalyticsResponseDTO>> getAnalytics(
             @RequestParam Long sprintId,
             @RequestParam Long teamId) {
-        List<AnalyticsResponseDTO> metrics = analyticsService.getProgressMetricsBySprintAndTeam(sprintId, teamId);
-        return ResponseEntity.ok(metrics);
+        List<AnalyticsResponseDTO> analytics = analyticsService.getAnalyticsBySprintAndTeam(sprintId, teamId);
+        return ResponseEntity.ok(analytics);
     }
 
     @GetMapping("/project/{projectId}/burndown")

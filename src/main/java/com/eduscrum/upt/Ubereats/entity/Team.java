@@ -36,53 +36,90 @@ public class Team {
 
     // === RELATIONS ===
     @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(
-            name = "team_projects",
-            joinColumns = @JoinColumn(name = "team_id"),
-            inverseJoinColumns = @JoinColumn(name = "project_id")
-    )
+    @JoinTable(name = "team_projects", joinColumns = @JoinColumn(name = "team_id"), inverseJoinColumns = @JoinColumn(name = "project_id"))
     private List<Project> projects = new ArrayList<>();
 
     @OneToMany(mappedBy = "team", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<TeamMember> members = new ArrayList<>();
 
     @OneToMany(mappedBy = "team", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List<ProgressMetric> progressMetrics = new ArrayList<>();
+    private List<Analytic> analytics = new ArrayList<>();
 
     @OneToMany(mappedBy = "awardedToTeam", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Achievement> teamAchievements = new ArrayList<>();
 
     // === CONSTRUCTORS ===
-    public Team() {}
+    public Team() {
+    }
 
     public Team(String name) {
         this.name = name;
     }
 
     // === GETTERS & SETTERS ===
-    public Long getId() { return id; }
-    public void setId(Long id) { this.id = id; }
+    public Long getId() {
+        return id;
+    }
 
-    public String getName() { return name; }
-    public void setName(String name) { this.name = name; }
+    public void setId(Long id) {
+        this.id = id;
+    }
 
-    public LocalDateTime getCreatedAt() { return createdAt; }
-    public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }
+    public String getName() {
+        return name;
+    }
 
-    public LocalDateTime getUpdatedAt() { return updatedAt; }
-    public void setUpdatedAt(LocalDateTime updatedAt) { this.updatedAt = updatedAt; }
+    public void setName(String name) {
+        this.name = name;
+    }
 
-    public List<Project> getProjects() { return projects; }
-    public void setProjects(List<Project> projects) { this.projects = projects; }
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
 
-    public List<TeamMember> getMembers() { return members; }
-    public void setMembers(List<TeamMember> members) { this.members = members; }
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
+    }
 
-    public List<ProgressMetric> getProgressMetrics() { return progressMetrics; }
-    public void setProgressMetrics(List<ProgressMetric> progressMetrics) { this.progressMetrics = progressMetrics; }
+    public LocalDateTime getUpdatedAt() {
+        return updatedAt;
+    }
 
-    public List<Achievement> getTeamAchievements() { return teamAchievements; }
-    public void setTeamAchievements(List<Achievement> teamAchievements) { this.teamAchievements = teamAchievements; }
+    public void setUpdatedAt(LocalDateTime updatedAt) {
+        this.updatedAt = updatedAt;
+    }
+
+    public List<Project> getProjects() {
+        return projects;
+    }
+
+    public void setProjects(List<Project> projects) {
+        this.projects = projects;
+    }
+
+    public List<TeamMember> getMembers() {
+        return members;
+    }
+
+    public void setMembers(List<TeamMember> members) {
+        this.members = members;
+    }
+
+    public List<Analytic> getAnalytics() {
+        return analytics;
+    }
+
+    public void setAnalytics(List<Analytic> analytics) {
+        this.analytics = analytics;
+    }
+
+    public List<Achievement> getTeamAchievements() {
+        return teamAchievements;
+    }
+
+    public void setTeamAchievements(List<Achievement> teamAchievements) {
+        this.teamAchievements = teamAchievements;
+    }
 
     // === BUSINESS METHODS ===
 
@@ -145,26 +182,28 @@ public class Team {
      * Calculate average velocity from progress metrics
      */
     public BigDecimal getAverageVelocity() {
-        if (progressMetrics.isEmpty()) return BigDecimal.ZERO;
+        if (analytics.isEmpty())
+            return BigDecimal.ZERO;
 
-        BigDecimal totalVelocity = progressMetrics.stream()
+        BigDecimal totalVelocity = analytics.stream()
                 .map(metric -> metric.getVelocity() != null ? metric.getVelocity() : BigDecimal.ZERO)
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
 
         return totalVelocity.divide(
-                new BigDecimal(progressMetrics.size()),
+                new BigDecimal(analytics.size()),
                 2,
-                RoundingMode.HALF_UP
-        );
+                RoundingMode.HALF_UP);
     }
 
     /**
      * Calculate current progress percentage
      */
     public BigDecimal getCurrentProgress() {
-        if (progressMetrics.isEmpty()) return BigDecimal.ZERO;
-        ProgressMetric latest = getLatestProgressMetric();
-        if (latest == null || latest.getTotalTasks() == 0) return BigDecimal.ZERO;
+        if (analytics.isEmpty())
+            return BigDecimal.ZERO;
+        Analytic latest = getLatestAnalytic();
+        if (latest == null || latest.getTotalTasks() == 0)
+            return BigDecimal.ZERO;
 
         return new BigDecimal(latest.getCompletedTasks())
                 .divide(new BigDecimal(latest.getTotalTasks()), 4, RoundingMode.HALF_UP)
@@ -190,19 +229,19 @@ public class Team {
     }
 
     /**
-     * Get latest progress metric
+     * Get latest analytic
      */
-    public ProgressMetric getLatestProgressMetric() {
-        return progressMetrics.stream()
-                .max(Comparator.comparing(ProgressMetric::getRecordedDate))
+    public Analytic getLatestAnalytic() {
+        return analytics.stream()
+                .max(Comparator.comparing(Analytic::getRecordedDate))
                 .orElse(null);
     }
 
     /**
-     * Get team mood from latest progress metric
+     * Get team mood from latest analytic
      */
     public TeamMood getCurrentTeamMood() {
-        ProgressMetric latest = getLatestProgressMetric();
+        Analytic latest = getLatestAnalytic();
         return latest != null ? latest.getTeamMood() : null;
     }
 
@@ -213,7 +252,8 @@ public class Team {
         int totalPoints = getTotalPoints();
         int memberCount = getMemberCount();
 
-        if (memberCount == 0) return BigDecimal.ZERO;
+        if (memberCount == 0)
+            return BigDecimal.ZERO;
 
         return new BigDecimal(totalPoints)
                 .divide(new BigDecimal(memberCount), 2, RoundingMode.HALF_UP);
@@ -273,8 +313,10 @@ public class Team {
     // === UTILITY METHODS ===
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof Team)) return false;
+        if (this == o)
+            return true;
+        if (!(o instanceof Team))
+            return false;
         Team team = (Team) o;
         return Objects.equals(id, team.id) &&
                 Objects.equals(name, team.name);

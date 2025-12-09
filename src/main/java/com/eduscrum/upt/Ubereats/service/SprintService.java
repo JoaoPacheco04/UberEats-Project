@@ -306,7 +306,7 @@ public class SprintService {
         Sprint sprint = getSprintEntity(id);
 
         // Check if sprint has related data
-        if (!sprint.getAchievements().isEmpty() || !sprint.getProgressMetrics().isEmpty()) {
+        if (!sprint.getAchievements().isEmpty() || !sprint.getAnalytics().isEmpty()) {
             throw new BusinessLogicException("Cannot delete sprint that has related data. Cancel it instead.");
         }
 

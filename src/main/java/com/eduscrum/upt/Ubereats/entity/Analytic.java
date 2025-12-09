@@ -16,8 +16,8 @@ import java.util.Map;
 import java.util.Objects;
 
 @Entity
-@Table(name = "progress_metrics")
-public class ProgressMetric {
+@Table(name = "analytics")
+public class Analytic {
     // === ATTRIBUTES ===
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -65,9 +65,10 @@ public class ProgressMetric {
     private Team team;
 
     // === CONSTRUCTORS ===
-    public ProgressMetric() {}
+    public Analytic() {
+    }
 
-    public ProgressMetric(Sprint sprint, Team team, LocalDate recordedDate) {
+    public Analytic(Sprint sprint, Team team, LocalDate recordedDate) {
         this.sprint = sprint;
         this.team = team;
         this.recordedDate = recordedDate;
@@ -79,50 +80,109 @@ public class ProgressMetric {
     }
 
     // === GETTERS & SETTERS ===
-    public Long getId() { return id; }
-    public void setId(Long id) { this.id = id; }
+    public Long getId() {
+        return id;
+    }
 
-    public Integer getCompletedTasks() { return completedTasks; }
-    public void setCompletedTasks(Integer completedTasks) { this.completedTasks = completedTasks; }
+    public void setId(Long id) {
+        this.id = id;
+    }
 
-    public Integer getTotalTasks() { return totalTasks; }
-    public void setTotalTasks(Integer totalTasks) { this.totalTasks = totalTasks; }
+    public Integer getCompletedTasks() {
+        return completedTasks;
+    }
 
-    public BigDecimal getStoryPointsCompleted() { return storyPointsCompleted; }
+    public void setCompletedTasks(Integer completedTasks) {
+        this.completedTasks = completedTasks;
+    }
+
+    public Integer getTotalTasks() {
+        return totalTasks;
+    }
+
+    public void setTotalTasks(Integer totalTasks) {
+        this.totalTasks = totalTasks;
+    }
+
+    public BigDecimal getStoryPointsCompleted() {
+        return storyPointsCompleted;
+    }
+
     public void setStoryPointsCompleted(BigDecimal storyPointsCompleted) {
         this.storyPointsCompleted = storyPointsCompleted != null ? storyPointsCompleted : BigDecimal.ZERO;
     }
 
-    public BigDecimal getTotalStoryPoints() { return totalStoryPoints; }
+    public BigDecimal getTotalStoryPoints() {
+        return totalStoryPoints;
+    }
+
     public void setTotalStoryPoints(BigDecimal totalStoryPoints) {
         this.totalStoryPoints = totalStoryPoints != null ? totalStoryPoints : BigDecimal.ZERO;
     }
 
-    public BigDecimal getVelocity() { return velocity; }
+    public BigDecimal getVelocity() {
+        return velocity;
+    }
+
     public void setVelocity(BigDecimal velocity) {
         this.velocity = velocity != null ? velocity : BigDecimal.ZERO;
     }
 
-    public String getBurnDownData() { return burnDownData; }
-    public void setBurnDownData(String burnDownData) { this.burnDownData = burnDownData; }
+    public String getBurnDownData() {
+        return burnDownData;
+    }
 
-    public TeamMood getTeamMood() { return teamMood; }
-    public void setTeamMood(TeamMood teamMood) { this.teamMood = teamMood; }
+    public void setBurnDownData(String burnDownData) {
+        this.burnDownData = burnDownData;
+    }
 
-    public String getNotes() { return notes; }
-    public void setNotes(String notes) { this.notes = notes; }
+    public TeamMood getTeamMood() {
+        return teamMood;
+    }
 
-    public LocalDate getRecordedDate() { return recordedDate; }
-    public void setRecordedDate(LocalDate recordedDate) { this.recordedDate = recordedDate; }
+    public void setTeamMood(TeamMood teamMood) {
+        this.teamMood = teamMood;
+    }
 
-    public LocalDateTime getCreatedAt() { return createdAt; }
-    public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }
+    public String getNotes() {
+        return notes;
+    }
 
-    public Sprint getSprint() { return sprint; }
-    public void setSprint(Sprint sprint) { this.sprint = sprint; }
+    public void setNotes(String notes) {
+        this.notes = notes;
+    }
 
-    public Team getTeam() { return team; }
-    public void setTeam(Team team) { this.team = team; }
+    public LocalDate getRecordedDate() {
+        return recordedDate;
+    }
+
+    public void setRecordedDate(LocalDate recordedDate) {
+        this.recordedDate = recordedDate;
+    }
+
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public Sprint getSprint() {
+        return sprint;
+    }
+
+    public void setSprint(Sprint sprint) {
+        this.sprint = sprint;
+    }
+
+    public Team getTeam() {
+        return team;
+    }
+
+    public void setTeam(Team team) {
+        this.team = team;
+    }
 
     // === BUSINESS METHODS ===
 
@@ -130,7 +190,8 @@ public class ProgressMetric {
      * Calculate task completion percentage
      */
     public BigDecimal getCompletionPercentage() {
-        if (totalTasks == 0) return BigDecimal.ZERO;
+        if (totalTasks == 0)
+            return BigDecimal.ZERO;
         return new BigDecimal(completedTasks)
                 .divide(new BigDecimal(totalTasks), 4, RoundingMode.HALF_UP)
                 .multiply(new BigDecimal("100.0"))
@@ -151,7 +212,8 @@ public class ProgressMetric {
     }
 
     /**
-     * Check if team is on track (more than 50% completion when halfway through sprint)
+     * Check if team is on track (more than 50% completion when halfway through
+     * sprint)
      */
     public boolean isOnTrack() {
         BigDecimal sprintProgress = sprint.getTimeProgressPercentage();
@@ -171,7 +233,8 @@ public class ProgressMetric {
         }
         try {
             ObjectMapper mapper = new ObjectMapper();
-            return mapper.readValue(burnDownData, new TypeReference<Map<String, Integer>>() {});
+            return mapper.readValue(burnDownData, new TypeReference<Map<String, Integer>>() {
+            });
         } catch (Exception e) {
             return new HashMap<>();
         }
@@ -206,7 +269,6 @@ public class ProgressMetric {
     public boolean isAllStoryPointsCompleted() {
         return storyPointsCompleted.compareTo(totalStoryPoints) >= 0;
     }
-
 
     /**
      * Update metrics with new task completion
@@ -278,9 +340,11 @@ public class ProgressMetric {
     // === UTILITY METHODS ===
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof ProgressMetric)) return false;
-        ProgressMetric that = (ProgressMetric) o;
+        if (this == o)
+            return true;
+        if (!(o instanceof Analytic))
+            return false;
+        Analytic that = (Analytic) o;
         return Objects.equals(id, that.id) &&
                 Objects.equals(sprint, that.sprint) &&
                 Objects.equals(team, that.team) &&
@@ -294,7 +358,7 @@ public class ProgressMetric {
 
     @Override
     public String toString() {
-        return "ProgressMetric{" +
+        return "Analytic{" +
                 "id=" + id +
                 ", sprint=" + (sprint != null ? sprint.getName() : "null") +
                 ", team=" + (team != null ? team.getName() : "null") +
