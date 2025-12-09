@@ -12,6 +12,8 @@ import com.eduscrum.upt.Ubereats.repository.TeamRepository;
 import com.eduscrum.upt.Ubereats.repository.TeamMemberRepository;
 import com.eduscrum.upt.Ubereats.repository.ProjectRepository;
 import com.eduscrum.upt.Ubereats.repository.UserRepository;
+import com.eduscrum.upt.Ubereats.exception.ResourceNotFoundException;
+import com.eduscrum.upt.Ubereats.exception.BusinessLogicException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -39,13 +41,14 @@ public class TeamService {
     // Create new team
     public Team createTeam(CreateTeamRequest request) {
         if (teamRepository.existsByName(request.getName())) {
-            throw new RuntimeException("Team name '" + request.getName() + "' already exists");
+            throw new BusinessLogicException("Team name '" + request.getName() + "' already exists");
         }
         Team team = new Team(request.getName());
 
         if (request.getProjectId() != null) {
             Project project = projectRepository.findById(request.getProjectId())
-                    .orElseThrow(() -> new RuntimeException("Project not found with id: " + request.getProjectId()));
+                    .orElseThrow(() -> new ResourceNotFoundException(
+                            "Project not found with id: " + request.getProjectId()));
             team.addProject(project);
         }
 
@@ -56,10 +59,10 @@ public class TeamService {
     public Team addTeamToProject(Long teamId, Long projectId) {
         Team team = getTeamById(teamId);
         Project project = projectRepository.findById(projectId)
-                .orElseThrow(() -> new RuntimeException("Project not found with id: " + projectId));
+                .orElseThrow(() -> new ResourceNotFoundException("Project not found with id: " + projectId));
 
         if (team.getProjects().contains(project)) {
-            throw new IllegalStateException("Team is already in this project.");
+            throw new BusinessLogicException("Team is already in this project.");
         }
 
         team.addProject(project);
@@ -70,7 +73,7 @@ public class TeamService {
     public TeamMember addMemberToTeam(Long teamId, AddMemberRequest request) {
         Team team = getTeamById(teamId);
         User user = userRepository.findById(request.getUserId())
-                .orElseThrow(() -> new RuntimeException("User not found with id: " + request.getUserId()));
+                .orElseThrow(() -> new ResourceNotFoundException("User not found with id: " + request.getUserId()));
 
         // The validation for a user being in multiple teams per project was removed for
         // now.
@@ -83,7 +86,7 @@ public class TeamService {
                     .isPresent();
 
             if (roleTaken) {
-                throw new RuntimeException(request.getRole() + " role is already taken in this team");
+                throw new BusinessLogicException(request.getRole() + " role is already taken in this team");
             }
         }
 
@@ -104,7 +107,7 @@ public class TeamService {
     // Remove member from team
     public void removeMemberFromTeam(Long teamId, Long userId) {
         TeamMember member = teamMemberRepository.findByUserIdAndTeamId(userId, teamId)
-                .orElseThrow(() -> new RuntimeException("Team member not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Team member not found"));
 
         member.leaveTeam();
         teamMemberRepository.save(member);
@@ -113,7 +116,7 @@ public class TeamService {
     // Update member role
     public TeamMember updateMemberRole(Long teamId, Long userId, UpdateMemberRoleRequest request) {
         TeamMember member = teamMemberRepository.findByUserIdAndTeamId(userId, teamId)
-                .orElseThrow(() -> new RuntimeException("Team member not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Team member not found"));
 
         if (request.getRole() == ScrumRole.SCRUM_MASTER || request.getRole() == ScrumRole.PRODUCT_OWNER) {
             boolean roleTaken = teamMemberRepository.findByTeamIdAndRoleAndIsActiveTrue(teamId, request.getRole())
@@ -121,7 +124,7 @@ public class TeamService {
                     .anyMatch(existingMember -> !existingMember.getId().equals(member.getId()));
 
             if (roleTaken) {
-                throw new RuntimeException(request.getRole() + " role is already taken in this team");
+                throw new BusinessLogicException(request.getRole() + " role is already taken in this team");
             }
         }
 
@@ -137,7 +140,7 @@ public class TeamService {
     // Get team by ID
     public Team getTeamById(Long teamId) {
         return teamRepository.findById(teamId)
-                .orElseThrow(() -> new RuntimeException("Team not found with id: " + teamId));
+                .orElseThrow(() -> new ResourceNotFoundException("Team not found with id: " + teamId));
     }
 
     // Delete team (soft delete - deactivate all members)
@@ -145,6 +148,13 @@ public class TeamService {
         Team team = getTeamById(teamId);
         List<TeamMember> members = teamMemberRepository.findByTeamIdAndIsActiveTrue(teamId);
 
+        members.forEach(TeamMember::leaveTeam);
+        teamMemberRepository.saveAll(members);
+    }
+
+    // Close all team memberships (for project completion)
+    public void closeTeamMemberships(Long teamId) {
+        List<TeamMember> members = teamMemberRepository.findByTeamIdAndIsActiveTrue(teamId);
         members.forEach(TeamMember::leaveTeam);
         teamMemberRepository.saveAll(members);
     }

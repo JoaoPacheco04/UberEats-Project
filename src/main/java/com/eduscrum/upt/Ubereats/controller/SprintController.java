@@ -37,8 +37,7 @@ public class SprintController {
 
     @GetMapping("/{id}")
     public ResponseEntity<SprintResponseDTO> getSprintById(@PathVariable Long id) {
-        SprintResponseDTO sprint = sprintService.getSprintById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Sprint not found with id: " + id));
+        SprintResponseDTO sprint = sprintService.getSprintById(id);
         return ResponseEntity.ok(sprint);
     }
 

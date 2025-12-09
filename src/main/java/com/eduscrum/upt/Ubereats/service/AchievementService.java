@@ -1,5 +1,7 @@
 package com.eduscrum.upt.Ubereats.service;
 
+import com.eduscrum.upt.Ubereats.config.AppConstants;
+
 import com.eduscrum.upt.Ubereats.dto.request.AchievementRequestDTO;
 import com.eduscrum.upt.Ubereats.dto.response.AchievementResponseDTO;
 import com.eduscrum.upt.Ubereats.entity.*;
@@ -19,7 +21,7 @@ import java.util.Objects;
 @Transactional
 public class AchievementService {
 
-    private static final int MIN_STORY_POINTS = 3;
+    // MIN_STORY_POINTS moved to AppConstants
 
     private final AchievementRepository achievementRepository;
     private final BadgeService badgeService;
@@ -409,8 +411,8 @@ public class AchievementService {
      */
     private void checkConsistentContributor(Long projectId) {
         Project project = getProjectEntity(projectId);
-        final double MIN_CONSISTENCY_PERCENTAGE = 0.75;
-        // MIN_STORY_POINTS is now a class constant
+        final double MIN_CONSISTENCY_PERCENTAGE = AppConstants.CONSISTENCY_RATIO;
+        // MIN_STORY_POINTS is now in AppConstants
 
         // 1. Get the target Badge entity
         Badge consistentContributorBadge = badgeService.getBadgeByName("Consistent Contributor")
@@ -453,7 +455,7 @@ public class AchievementService {
                 Long storyPointsCompletedLong = (Long) data[1];
                 int storyPointsCompleted = storyPointsCompletedLong != null ? storyPointsCompletedLong.intValue() : 0;
 
-                if (storyPointsCompleted >= MIN_STORY_POINTS) {
+                if (storyPointsCompleted >= AppConstants.MIN_STORY_POINTS_FOR_CONSISTENCY) {
                     successfulSprints++;
                 }
             }

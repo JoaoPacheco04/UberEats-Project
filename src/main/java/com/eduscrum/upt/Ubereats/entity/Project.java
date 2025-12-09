@@ -42,6 +42,9 @@ public class Project {
     @Column(name = "max_score", precision = 5, scale = 2)
     private BigDecimal maxScore = new BigDecimal("100.00");
 
+    @Column(name = "progress", nullable = false)
+    private Double progress = 0.0;
+
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, length = 20)
     private ProjectStatus status = ProjectStatus.PLANNING;
@@ -146,6 +149,14 @@ public class Project {
         this.maxScore = maxScore != null ? maxScore : new BigDecimal("100.00");
     }
 
+    public Double getProgress() {
+        return progress;
+    }
+
+    public void setProgress(Double progress) {
+        this.progress = progress;
+    }
+
     public ProjectStatus getStatus() {
         return status;
     }
@@ -230,17 +241,11 @@ public class Project {
     /**
      * Calculate progress percentage based on completed sprints
      */
+    /**
+     * Get progress percentage (stored field)
+     */
     public BigDecimal getProgressPercentage() {
-        if (sprints.isEmpty())
-            return BigDecimal.ZERO;
-
-        BigDecimal completed = new BigDecimal(getCompletedSprints());
-        BigDecimal total = new BigDecimal(getTotalSprints());
-
-        return completed
-                .divide(total, 4, RoundingMode.HALF_UP)
-                .multiply(new BigDecimal("100.0"))
-                .setScale(2, RoundingMode.HALF_UP);
+        return BigDecimal.valueOf(this.progress).setScale(2, RoundingMode.HALF_UP);
     }
 
     /**

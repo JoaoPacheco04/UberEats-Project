@@ -8,7 +8,10 @@ import com.eduscrum.upt.Ubereats.entity.Team;
 import com.eduscrum.upt.Ubereats.entity.User;
 import com.eduscrum.upt.Ubereats.entity.enums.StoryStatus;
 import com.eduscrum.upt.Ubereats.repository.UserStoryRepository;
-import com.eduscrum.upt.Ubereats.repository.TeamMemberRepository; // Add this import
+import com.eduscrum.upt.Ubereats.repository.TeamMemberRepository;
+import com.eduscrum.upt.Ubereats.repository.ProjectRepository;
+import com.eduscrum.upt.Ubereats.exception.ResourceNotFoundException;
+import com.eduscrum.upt.Ubereats.exception.BusinessLogicException;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -25,22 +28,24 @@ public class UserStoryService {
     private final SprintService sprintService;
     private final TeamService teamService;
     private final UserService userService;
-    private final TeamMemberRepository teamMemberRepository; // Add this
+    private final TeamMemberRepository teamMemberRepository;
     private final AchievementService achievementService;
-
+    private final ProjectRepository projectRepository;
 
     public UserStoryService(UserStoryRepository userStoryRepository,
-                            SprintService sprintService,
-                            TeamService teamService,
-                            UserService userService,
-                            TeamMemberRepository teamMemberRepository,
-                            @Lazy AchievementService achievementService) { // Add this parameter
+            SprintService sprintService,
+            TeamService teamService,
+            UserService userService,
+            TeamMemberRepository teamMemberRepository,
+            @Lazy AchievementService achievementService,
+            ProjectRepository projectRepository) {
         this.userStoryRepository = userStoryRepository;
         this.sprintService = sprintService;
         this.teamService = teamService;
         this.userService = userService;
         this.teamMemberRepository = teamMemberRepository;
         this.achievementService = achievementService;
+        this.projectRepository = projectRepository;
     }
 
     // === USER STORY CREATION ===
@@ -54,6 +59,7 @@ public class UserStoryService {
         // Create and save new user story
         UserStory userStory = createUserStoryEntity(requestDTO);
         UserStory savedUserStory = userStoryRepository.save(userStory);
+        updateProjectProgress(savedUserStory.getSprint().getProject().getId());
         return convertToDTO(savedUserStory);
     }
 
@@ -62,28 +68,28 @@ public class UserStoryService {
      */
     private void validateUserStoryInput(UserStoryRequestDTO requestDTO) {
         if (requestDTO.getTitle() == null || requestDTO.getTitle().trim().isEmpty()) {
-            throw new IllegalArgumentException("User story title cannot be empty");
+            throw new BusinessLogicException("User story title cannot be empty");
         }
 
         if (requestDTO.getSprintId() == null) {
-            throw new IllegalArgumentException("Sprint ID is required");
+            throw new BusinessLogicException("Sprint ID is required");
         }
 
         if (requestDTO.getTeamId() == null) {
-            throw new IllegalArgumentException("Team ID is required");
+            throw new BusinessLogicException("Team ID is required");
         }
 
         if (requestDTO.getCreatedByUserId() == null) {
-            throw new IllegalArgumentException("Created by user ID is required");
+            throw new BusinessLogicException("Created by user ID is required");
         }
 
         if (requestDTO.getStoryPoints() != null && requestDTO.getStoryPoints() < 0) {
-            throw new IllegalArgumentException("Story points cannot be negative");
+            throw new BusinessLogicException("Story points cannot be negative");
         }
 
         // Validate title length
         if (requestDTO.getTitle().length() > 200) {
-            throw new IllegalArgumentException("User story title cannot exceed 200 characters");
+            throw new BusinessLogicException("User story title cannot exceed 200 characters");
         }
     }
 
@@ -99,7 +105,7 @@ public class UserStoryService {
         }
 
         if (titleExists) {
-            throw new IllegalArgumentException("User story title '" + title + "' already exists in this sprint");
+            throw new BusinessLogicException("User story title '" + title + "' already exists in this sprint");
         }
     }
 
@@ -117,8 +123,7 @@ public class UserStoryService {
                 requestDTO.getStoryPoints(),
                 sprint,
                 team,
-                createdBy
-        );
+                createdBy);
 
         // Set optional fields
         if (requestDTO.getStatus() != null) {
@@ -135,7 +140,7 @@ public class UserStoryService {
             if (isUserMemberOfTeam(assignedTo.getId(), team.getId())) {
                 userStory.assignTo(assignedTo);
             } else {
-                throw new IllegalArgumentException("User is not a member of the assigned team");
+                throw new BusinessLogicException("User is not a member of the assigned team");
             }
         }
 
@@ -207,7 +212,8 @@ public class UserStoryService {
      * Finds user stories by multiple criteria
      */
     @Transactional(readOnly = true)
-    public List<UserStoryResponseDTO> getUserStoriesByCriteria(Long sprintId, Long teamId, StoryStatus status, Long assignedToId) {
+    public List<UserStoryResponseDTO> getUserStoriesByCriteria(Long sprintId, Long teamId, StoryStatus status,
+            Long assignedToId) {
         return userStoryRepository.findByCriteria(sprintId, teamId, status, assignedToId).stream()
                 .map(this::convertToDTO)
                 .collect(Collectors.toList());
@@ -270,13 +276,14 @@ public class UserStoryService {
             if (isUserMemberOfTeam(assignedTo.getId(), team.getId())) {
                 userStory.assignTo(assignedTo);
             } else {
-                throw new IllegalArgumentException("User is not a member of the assigned team");
+                throw new BusinessLogicException("User is not a member of the assigned team");
             }
         } else {
             userStory.unassign();
         }
 
         UserStory updatedUserStory = userStoryRepository.save(userStory);
+        updateProjectProgress(updatedUserStory.getSprint().getProject().getId());
         return convertToDTO(updatedUserStory);
     }
 
@@ -289,7 +296,7 @@ public class UserStoryService {
 
         // Check if user is member of the team using repository
         if (!isUserMemberOfTeam(assignedTo.getId(), userStory.getTeam().getId())) {
-            throw new IllegalArgumentException("User is not a member of the team");
+            throw new BusinessLogicException("User is not a member of the team");
         }
 
         userStory.assignTo(assignedTo);
@@ -314,7 +321,7 @@ public class UserStoryService {
         UserStory userStory = getUserStoryEntity(id);
 
         if (!userStory.canMoveToNextStatus()) {
-            throw new IllegalStateException("User story cannot be moved to next status");
+            throw new BusinessLogicException("User story cannot be moved to next status");
         }
 
         userStory.moveToNextStatus();
@@ -325,6 +332,7 @@ public class UserStoryService {
             achievementService.checkAutomaticTeamBadgesOnSprintCompletion(updatedUserStory.getSprint().getId());
         }
 
+        updateProjectProgress(updatedUserStory.getSprint().getProject().getId());
 
         return convertToDTO(updatedUserStory);
     }
@@ -336,11 +344,12 @@ public class UserStoryService {
         UserStory userStory = getUserStoryEntity(id);
 
         if (!userStory.canMoveToPreviousStatus()) {
-            throw new IllegalStateException("User story cannot be moved to previous status");
+            throw new BusinessLogicException("User story cannot be moved to previous status");
         }
 
         userStory.moveToPreviousStatus();
         UserStory updatedUserStory = userStoryRepository.save(userStory);
+        updateProjectProgress(updatedUserStory.getSprint().getProject().getId());
         return convertToDTO(updatedUserStory);
     }
 
@@ -348,10 +357,10 @@ public class UserStoryService {
      * Deletes a user story
      */
     public void deleteUserStory(Long id) {
-        if (!userStoryRepository.existsById(id)) {
-            throw new IllegalArgumentException("User story not found with id: " + id);
-        }
+        UserStory userStory = getUserStoryEntity(id);
+        Long projectId = userStory.getSprint().getProject().getId();
         userStoryRepository.deleteById(id);
+        updateProjectProgress(projectId);
     }
 
     // === STATISTICS AND ANALYTICS ===
@@ -380,23 +389,28 @@ public class UserStoryService {
         Integer totalPoints = getTotalStoryPointsBySprint(sprintId);
         Integer completedPoints = getCompletedStoryPointsBySprint(sprintId);
 
-        if (totalPoints == 0) return 0.0;
+        if (totalPoints == 0)
+            return 0.0;
         return (completedPoints.doubleValue() / totalPoints.doubleValue()) * 100.0;
     }
 
     /**
-     * Retrieves completed Story Points per sprint for a specific user within a project.
-     * This method is used by AchievementService to calculate consistency (Consistent Contributor badge).
+     * Retrieves completed Story Points per sprint for a specific user within a
+     * project.
+     * This method is used by AchievementService to calculate consistency
+     * (Consistent Contributor badge).
      * Returns a list of arrays: [Sprint ID (Long), Total SPs Completed (Long)]
      */
     @Transactional(readOnly = true)
     public List<Object[]> getCompletedStoryPointsPerSprintInProject(Long userId, Long projectId) {
-        // Assume Long instead of Integer for sum, as per repository definition convention
+        // Assume Long instead of Integer for sum, as per repository definition
+        // convention
         return userStoryRepository.sumCompletedStoryPointsPerSprintInProject(userId, projectId);
     }
 
     /**
-     * Retrieves the sum of HIGH/CRITICAL Story Points completed by a user in a project.
+     * Retrieves the sum of HIGH/CRITICAL Story Points completed by a user in a
+     * project.
      */
     @Transactional(readOnly = true)
     public Integer sumHighPriorityCompletedStoryPointsByProject(Long userId, Long projectId) {
@@ -404,6 +418,31 @@ public class UserStoryService {
     }
 
     // === UTILITY METHODS ===
+
+    private void updateProjectProgress(Long projectId) {
+        com.eduscrum.upt.Ubereats.entity.Project project = projectRepository.findById(projectId)
+                .orElseThrow(() -> new ResourceNotFoundException("Project not found"));
+
+        List<Sprint> sprints = sprintService.getSprintsByProject(projectId).stream()
+                .map(dto -> sprintService.getSprintEntity(dto.getId()))
+                .collect(Collectors.toList());
+
+        double totalPoints = 0;
+        double donePoints = 0;
+
+        for (Sprint sprint : sprints) {
+            Integer sPoints = getTotalStoryPointsBySprint(sprint.getId());
+            Integer dPoints = getCompletedStoryPointsBySprint(sprint.getId());
+            if (sPoints != null)
+                totalPoints += sPoints;
+            if (dPoints != null)
+                donePoints += dPoints;
+        }
+
+        double progress = (totalPoints > 0) ? (donePoints / totalPoints) * 100.0 : 0.0;
+        project.setProgress(progress);
+        projectRepository.save(project);
+    }
 
     /**
      * Checks if user is a member of the team
@@ -421,7 +460,7 @@ public class UserStoryService {
      */
     public UserStory getUserStoryEntity(Long id) {
         return userStoryRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("User story not found with id: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("User story not found with id: " + id));
     }
 
     /**
@@ -443,7 +482,7 @@ public class UserStoryService {
      */
     public User getUserEntity(Long userId) {
         return userService.findById(userId)
-                .orElseThrow(() -> new IllegalArgumentException("User not found with id: " + userId));
+                .orElseThrow(() -> new ResourceNotFoundException("User not found with id: " + userId));
     }
 
     // === CONVERSION METHODS ===

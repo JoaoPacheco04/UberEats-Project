@@ -96,8 +96,7 @@ public class BadgeService {
                 requestDTO.getDescription(),
                 requestDTO.getPoints(),
                 requestDTO.getBadgeType(),
-                createdBy
-        );
+                createdBy);
 
         // Set optional fields
         if (requestDTO.getTriggerCondition() != null) {

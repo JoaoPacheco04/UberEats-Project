@@ -8,7 +8,6 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
-import java.util.Optional;
 
 @Repository
 public interface AchievementRepository extends JpaRepository<Achievement, Long> {
@@ -33,7 +32,8 @@ public interface AchievementRepository extends JpaRepository<Achievement, Long> 
 
     // Check if user has specific badge in project
     @Query("SELECT COUNT(a) > 0 FROM Achievement a WHERE a.awardedToUser.id = :userId AND a.badge.id = :badgeId AND a.project.id = :projectId")
-    boolean existsByUserIdAndBadgeIdAndProjectId(@Param("userId") Long userId, @Param("badgeId") Long badgeId, @Param("projectId") Long projectId);
+    boolean existsByUserIdAndBadgeIdAndProjectId(@Param("userId") Long userId, @Param("badgeId") Long badgeId,
+            @Param("projectId") Long projectId);
 
     // Check if team has specific badge
     @Query("SELECT COUNT(a) > 0 FROM Achievement a WHERE a.awardedToTeam.id = :teamId AND a.badge.id = :badgeId")

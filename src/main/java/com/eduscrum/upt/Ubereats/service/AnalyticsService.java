@@ -1,7 +1,7 @@
 package com.eduscrum.upt.Ubereats.service;
 
-import com.eduscrum.upt.Ubereats.dto.request.ProgressMetricRequestDTO;
-import com.eduscrum.upt.Ubereats.dto.response.ProgressMetricResponseDTO;
+import com.eduscrum.upt.Ubereats.dto.request.AnalyticsRequestDTO;
+import com.eduscrum.upt.Ubereats.dto.response.AnalyticsResponseDTO;
 import com.eduscrum.upt.Ubereats.entity.ProgressMetric;
 import com.eduscrum.upt.Ubereats.entity.Sprint;
 import com.eduscrum.upt.Ubereats.entity.Team;
@@ -14,19 +14,20 @@ import java.util.stream.Collectors;
 
 @Service
 @Transactional
-public class ProgressMetricService {
+public class AnalyticsService {
 
     private final ProgressMetricRepository progressMetricRepository;
     private final SprintService sprintService;
     private final TeamService teamService;
 
-    public ProgressMetricService(ProgressMetricRepository progressMetricRepository, SprintService sprintService, TeamService teamService) {
+    public AnalyticsService(ProgressMetricRepository progressMetricRepository, SprintService sprintService,
+            TeamService teamService) {
         this.progressMetricRepository = progressMetricRepository;
         this.sprintService = sprintService;
         this.teamService = teamService;
     }
 
-    public ProgressMetricResponseDTO createProgressMetric(ProgressMetricRequestDTO requestDTO) {
+    public AnalyticsResponseDTO createProgressMetric(AnalyticsRequestDTO requestDTO) {
         Sprint sprint = sprintService.getSprintEntity(requestDTO.getSprintId());
         Team team = teamService.getTeamById(requestDTO.getTeamId());
 
@@ -43,15 +44,15 @@ public class ProgressMetricService {
     }
 
     @Transactional(readOnly = true)
-    public List<ProgressMetricResponseDTO> getProgressMetricsBySprintAndTeam(Long sprintId, Long teamId) {
+    public List<AnalyticsResponseDTO> getProgressMetricsBySprintAndTeam(Long sprintId, Long teamId) {
         List<ProgressMetric> metrics = progressMetricRepository.findLatestByTeamAndSprint(teamId, sprintId);
         return metrics.stream()
                 .map(this::convertToDTO)
                 .collect(Collectors.toList());
     }
 
-    private ProgressMetricResponseDTO convertToDTO(ProgressMetric metric) {
-        ProgressMetricResponseDTO dto = new ProgressMetricResponseDTO();
+    private AnalyticsResponseDTO convertToDTO(ProgressMetric metric) {
+        AnalyticsResponseDTO dto = new AnalyticsResponseDTO();
         dto.setId(metric.getId());
         dto.setCompletedTasks(metric.getCompletedTasks());
         dto.setTotalTasks(metric.getTotalTasks());

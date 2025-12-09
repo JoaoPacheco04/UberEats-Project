@@ -7,13 +7,14 @@ import com.eduscrum.upt.Ubereats.entity.Project;
 import com.eduscrum.upt.Ubereats.entity.enums.SprintStatus;
 import com.eduscrum.upt.Ubereats.repository.SprintRepository;
 import com.eduscrum.upt.Ubereats.repository.ProjectRepository;
+import com.eduscrum.upt.Ubereats.exception.ResourceNotFoundException;
+import com.eduscrum.upt.Ubereats.exception.BusinessLogicException;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -23,12 +24,16 @@ public class SprintService {
     private final SprintRepository sprintRepository;
     private final ProjectRepository projectRepository;
     private final AchievementService achievementService;
+    private final com.eduscrum.upt.Ubereats.repository.UserStoryRepository userStoryRepository; // Need this for
+                                                                                                // velocity
 
     public SprintService(SprintRepository sprintRepository, ProjectRepository projectRepository,
-            @Lazy AchievementService achievementService) {
+            @Lazy AchievementService achievementService,
+            com.eduscrum.upt.Ubereats.repository.UserStoryRepository userStoryRepository) {
         this.sprintRepository = sprintRepository;
         this.projectRepository = projectRepository;
         this.achievementService = achievementService;
+        this.userStoryRepository = userStoryRepository;
     }
 
     // === SPRINT CREATION ===
@@ -50,33 +55,33 @@ public class SprintService {
      */
     private void validateSprintInput(SprintRequestDTO requestDTO) {
         if (requestDTO.getSprintNumber() == null || requestDTO.getSprintNumber() <= 0) {
-            throw new IllegalArgumentException("Sprint number must be positive");
+            throw new BusinessLogicException("Sprint number must be positive");
         }
 
         if (requestDTO.getName() == null || requestDTO.getName().trim().isEmpty()) {
-            throw new IllegalArgumentException("Sprint name cannot be empty");
+            throw new BusinessLogicException("Sprint name cannot be empty");
         }
 
         if (requestDTO.getStartDate() == null) {
-            throw new IllegalArgumentException("Start date is required");
+            throw new BusinessLogicException("Start date is required");
         }
 
         if (requestDTO.getEndDate() == null) {
-            throw new IllegalArgumentException("End date is required");
+            throw new BusinessLogicException("End date is required");
         }
 
         if (requestDTO.getProjectId() == null) {
-            throw new IllegalArgumentException("Project ID is required");
+            throw new BusinessLogicException("Project ID is required");
         }
 
         // Validate date range
         if (requestDTO.getEndDate().isBefore(requestDTO.getStartDate())) {
-            throw new IllegalArgumentException("End date cannot be before start date");
+            throw new BusinessLogicException("End date cannot be before start date");
         }
 
         // Validate name length
         if (requestDTO.getName().length() > 100) {
-            throw new IllegalArgumentException("Sprint name cannot exceed 100 characters");
+            throw new BusinessLogicException("Sprint name cannot exceed 100 characters");
         }
     }
 
@@ -93,7 +98,7 @@ public class SprintService {
         }
 
         if (sprintNumberExists) {
-            throw new IllegalArgumentException("Sprint number " + sprintNumber + " already exists in this project");
+            throw new BusinessLogicException("Sprint number " + sprintNumber + " already exists in this project");
         }
     }
 
@@ -135,9 +140,10 @@ public class SprintService {
      * Finds sprint by ID
      */
     @Transactional(readOnly = true)
-    public Optional<SprintResponseDTO> getSprintById(Long id) {
+    public SprintResponseDTO getSprintById(Long id) {
         return sprintRepository.findById(id)
-                .map(this::convertToDTO);
+                .map(this::convertToDTO)
+                .orElseThrow(() -> new ResourceNotFoundException("Sprint not found with id: " + id));
     }
 
     /**
@@ -184,9 +190,10 @@ public class SprintService {
      * Finds latest sprint for project
      */
     @Transactional(readOnly = true)
-    public Optional<SprintResponseDTO> getLatestSprintByProject(Long projectId) {
+    public SprintResponseDTO getLatestSprintByProject(Long projectId) {
         return sprintRepository.findLatestSprintByProject(projectId)
-                .map(this::convertToDTO);
+                .map(this::convertToDTO)
+                .orElseThrow(() -> new ResourceNotFoundException("No sprints found for project id: " + projectId));
     }
 
     // === SPRINT EXISTENCE CHECKS ===
@@ -247,7 +254,7 @@ public class SprintService {
         Sprint sprint = getSprintEntity(id);
 
         if (!sprint.canBeStarted()) {
-            throw new IllegalStateException(
+            throw new BusinessLogicException(
                     "Sprint cannot be started. It must be in PLANNED status and start date must be reached.");
         }
 
@@ -263,7 +270,7 @@ public class SprintService {
         Sprint sprint = getSprintEntity(id);
 
         if (!sprint.canBeCompleted()) {
-            throw new IllegalStateException(
+            throw new BusinessLogicException(
                     "Sprint cannot be completed. It must be in IN_PROGRESS status and end date must be reached.");
         }
 
@@ -300,7 +307,7 @@ public class SprintService {
 
         // Check if sprint has related data
         if (!sprint.getAchievements().isEmpty() || !sprint.getProgressMetrics().isEmpty()) {
-            throw new IllegalStateException("Cannot delete sprint that has related data. Cancel it instead.");
+            throw new BusinessLogicException("Cannot delete sprint that has related data. Cancel it instead.");
         }
 
         sprintRepository.delete(sprint);
@@ -379,6 +386,46 @@ public class SprintService {
         return true; // All sprints were completed and on time.
     }
 
+    // === VELOCITY CALCULATION ===
+
+    /**
+     * Calculates team velocity based on COMPLETED sprints only.
+     * Returns the average of completed story points per completed sprint.
+     */
+    @Transactional(readOnly = true)
+    public Double calculateTeamVelocity(Long teamId) {
+        List<Object[]> sprintPoints = userStoryRepository.findCompletedPointsByTeamAndCompletedSprints(teamId);
+
+        if (sprintPoints.isEmpty()) {
+            return 0.0;
+        }
+
+        double totalPoints = 0;
+        for (Object[] record : sprintPoints) {
+            Long points = (Long) record[1];
+            if (points != null) {
+                totalPoints += points.doubleValue();
+            }
+        }
+
+        return totalPoints / sprintPoints.size();
+    }
+
+    // === ANALYTICS ===
+
+    public java.util.Map<String, Integer> getProjectBurndown(Long projectId) {
+        List<Sprint> sprints = sprintRepository.findByProjectId(projectId);
+        java.util.Map<String, Integer> burndown = new java.util.LinkedHashMap<>();
+
+        for (Sprint sprint : sprints) {
+            Integer total = userStoryRepository.sumStoryPointsBySprint(sprint.getId());
+            Integer completed = userStoryRepository.sumCompletedStoryPointsBySprint(sprint.getId());
+            int remaining = (total != null ? total : 0) - (completed != null ? completed : 0);
+            burndown.put(sprint.getName(), remaining);
+        }
+        return burndown;
+    }
+
     // === INTERNAL ENTITY METHODS ===
 
     /**
@@ -386,7 +433,7 @@ public class SprintService {
      */
     public Sprint getSprintEntity(Long id) {
         return sprintRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Sprint not found with id: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Sprint not found with id: " + id));
     }
 
     /**
@@ -394,7 +441,7 @@ public class SprintService {
      */
     public Project getProjectEntity(Long projectId) {
         return projectRepository.findById(projectId)
-                .orElseThrow(() -> new IllegalArgumentException("Project not found with id: " + projectId));
+                .orElseThrow(() -> new ResourceNotFoundException("Project not found with id: " + projectId));
     }
 
     // === CONVERSION METHODS ===
