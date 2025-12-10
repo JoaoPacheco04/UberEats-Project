@@ -4,6 +4,8 @@ import com.eduscrum.upt.Ubereats.entity.enums.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.ArrayList;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -244,5 +246,168 @@ class TeamEntityTest {
         badge.setName(name);
         badge.setPoints(points);
         return badge;
+    }
+
+    private Analytic createAnalytic(LocalDate date, BigDecimal velocity, int completed, int total) {
+        Analytic analytic = new Analytic();
+        analytic.setRecordedDate(date);
+        analytic.setVelocity(velocity);
+        analytic.setCompletedTasks(completed);
+        analytic.setTotalTasks(total);
+        analytic.setTeam(team);
+        return analytic;
+    }
+
+    // ===================== AVERAGE VELOCITY TESTS =====================
+
+    @Test
+    void getAverageVelocity_NoAnalytics_ReturnsZero() {
+        assertEquals(BigDecimal.ZERO, team.getAverageVelocity());
+    }
+
+    @Test
+    void getAverageVelocity_WithAnalytics_ReturnsAverage() {
+        Analytic a1 = createAnalytic(LocalDate.now().minusDays(2), new BigDecimal("10.00"), 5, 10);
+        Analytic a2 = createAnalytic(LocalDate.now().minusDays(1), new BigDecimal("20.00"), 8, 10);
+        team.getAnalytics().add(a1);
+        team.getAnalytics().add(a2);
+
+        BigDecimal expected = new BigDecimal("15.00");
+        assertEquals(0, expected.compareTo(team.getAverageVelocity()));
+    }
+
+    // ===================== CURRENT PROGRESS TESTS =====================
+
+    @Test
+    void getCurrentProgress_NoAnalytics_ReturnsZero() {
+        assertEquals(BigDecimal.ZERO, team.getCurrentProgress());
+    }
+
+    @Test
+    void getCurrentProgress_WithAnalytics_ReturnsPercentage() {
+        Analytic a1 = createAnalytic(LocalDate.now().minusDays(1), new BigDecimal("10.00"), 5, 10);
+        Analytic a2 = createAnalytic(LocalDate.now(), new BigDecimal("15.00"), 8, 10);
+        team.getAnalytics().add(a1);
+        team.getAnalytics().add(a2);
+
+        BigDecimal expected = new BigDecimal("80.00");
+        assertEquals(0, expected.compareTo(team.getCurrentProgress()));
+    }
+
+    @Test
+    void getCurrentProgress_ZeroTotalTasks_ReturnsZero() {
+        Analytic analytic = createAnalytic(LocalDate.now(), new BigDecimal("0.00"), 0, 0);
+        team.getAnalytics().add(analytic);
+
+        assertEquals(BigDecimal.ZERO, team.getCurrentProgress());
+    }
+
+    // ===================== LATEST ANALYTIC TESTS =====================
+
+    @Test
+    void getLatestAnalytic_NoAnalytics_ReturnsNull() {
+        assertNull(team.getLatestAnalytic());
+    }
+
+    @Test
+    void getLatestAnalytic_WithAnalytics_ReturnsLatest() {
+        Analytic older = createAnalytic(LocalDate.now().minusDays(5), new BigDecimal("5.00"), 2, 10);
+        Analytic latest = createAnalytic(LocalDate.now(), new BigDecimal("15.00"), 8, 10);
+        team.getAnalytics().add(older);
+        team.getAnalytics().add(latest);
+
+        assertEquals(latest, team.getLatestAnalytic());
+    }
+
+    // ===================== CURRENT TEAM MOOD TESTS =====================
+
+    @Test
+    void getCurrentTeamMood_NoAnalytics_ReturnsNull() {
+        assertNull(team.getCurrentTeamMood());
+    }
+
+    @Test
+    void getCurrentTeamMood_WithAnalytics_ReturnsMood() {
+        Analytic analytic = createAnalytic(LocalDate.now(), new BigDecimal("10.00"), 5, 10);
+        analytic.setTeamMood(TeamMood.HAPPY);
+        team.getAnalytics().add(analytic);
+
+        assertEquals(TeamMood.HAPPY, team.getCurrentTeamMood());
+    }
+
+    // ===================== PERFORMANCE RATING TESTS =====================
+
+    @Test
+    void getPerformanceRating_NoData_ReturnsZero() {
+        BigDecimal rating = team.getPerformanceRating();
+        assertEquals(0, BigDecimal.ZERO.compareTo(rating));
+    }
+
+    @Test
+    void getPerformanceRating_WithData_ReturnsWeightedValue() {
+        Analytic analytic = createAnalytic(LocalDate.now(), new BigDecimal("10.00"), 5, 10);
+        team.getAnalytics().add(analytic);
+
+        Badge badge = createBadge("TestBadge", 100);
+        Achievement ach = new Achievement();
+        ach.setBadge(badge);
+        team.getTeamAchievements().add(ach);
+
+        BigDecimal rating = team.getPerformanceRating();
+        assertTrue(rating.compareTo(BigDecimal.ZERO) > 0);
+    }
+
+    // ===================== TEAM STATUS TESTS =====================
+
+    @Test
+    void getTeamStatus_NoProgress_ReturnsGettingStarted() {
+        assertEquals("Getting Started", team.getTeamStatus());
+    }
+
+    @Test
+    void getTeamStatus_FullProgress_ReturnsCompleted() {
+        Analytic analytic = createAnalytic(LocalDate.now(), new BigDecimal("20.00"), 10, 10);
+        team.getAnalytics().add(analytic);
+
+        assertEquals("Completed", team.getTeamStatus());
+    }
+
+    @Test
+    void getTeamStatus_75Percent_ReturnsAlmostDone() {
+        Analytic analytic = createAnalytic(LocalDate.now(), new BigDecimal("20.00"), 8, 10);
+        team.getAnalytics().add(analytic);
+
+        assertEquals("Almost Done", team.getTeamStatus());
+    }
+
+    @Test
+    void getTeamStatus_50Percent_ReturnsGoodProgress() {
+        Analytic analytic = createAnalytic(LocalDate.now(), new BigDecimal("15.00"), 5, 10);
+        team.getAnalytics().add(analytic);
+
+        assertEquals("Good Progress", team.getTeamStatus());
+    }
+
+    // ===================== ACHIEVEMENT COUNT TESTS =====================
+
+    @Test
+    void getAchievementCount_NoAchievements_ReturnsZero() {
+        assertEquals(0, team.getAchievementCount());
+    }
+
+    @Test
+    void getAchievementCount_WithAchievements_ReturnsCount() {
+        Badge badge1 = createBadge("Badge1", 50);
+        Badge badge2 = createBadge("Badge2", 30);
+
+        Achievement ach1 = new Achievement();
+        ach1.setBadge(badge1);
+        Achievement ach2 = new Achievement();
+        ach2.setBadge(badge2);
+
+        team.getTeamAchievements().add(ach1);
+        team.getTeamAchievements().add(ach2);
+
+        assertEquals(2, team.getAchievementCount());
     }
 }

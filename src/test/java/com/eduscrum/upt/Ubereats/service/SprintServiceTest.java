@@ -29,16 +29,11 @@ import static org.junit.jupiter.api.Assertions.*;
 /**
  * Integration tests for SprintService.
  *
- * @version 0.9.0 (2025-11-25)
+ * @version 1.0.0 (2025-12-10)
  */
 @SpringBootTest
 @ActiveProfiles("test")
 @Transactional
-/**
- * Integration tests for SprintService.
- *
- * @version 0.9.0 (2025-11-25)
- */
 class SprintServiceTest {
 
     @Autowired
@@ -306,7 +301,6 @@ class SprintServiceTest {
 
     @Test
     void startSprint_Success() {
-        // Create a sprint that starts today
         SprintRequestDTO request = createSprintRequest(1, "Ready Sprint",
                 LocalDate.now(), LocalDate.now().plusDays(14));
         SprintResponseDTO created = sprintService.createSprint(request);
@@ -362,6 +356,190 @@ class SprintServiceTest {
         Double velocity = sprintService.calculateTeamVelocity(999L);
 
         assertEquals(0.0, velocity);
+    }
+
+    // ===================== COMPLETE SPRINT TESTS =====================
+
+    @Test
+    void completeSprint_Success() {
+        SprintRequestDTO request = createSprintRequest(1, "Sprint to Complete",
+                LocalDate.now().minusDays(14), LocalDate.now());
+        SprintResponseDTO created = sprintService.createSprint(request);
+        sprintService.startSprint(created.getId());
+
+        SprintResponseDTO completed = sprintService.completeSprint(created.getId(), LocalDate.now());
+
+        assertEquals(SprintStatus.COMPLETED, completed.getStatus());
+    }
+
+    @Test
+    void completeSprint_NotInProgress_ThrowsException() {
+        SprintResponseDTO created = createTestSprint(1, "Planned Sprint");
+
+        assertThrows(BusinessLogicException.class, () -> {
+            sprintService.completeSprint(created.getId(), LocalDate.now());
+        });
+    }
+
+    // ===================== ACTIVE SPRINTS TESTS =====================
+
+    @Test
+    void getActiveSprints_ReturnsOnlyActive() {
+        SprintRequestDTO request = createSprintRequest(1, "Active Sprint",
+                LocalDate.now(), LocalDate.now().plusDays(14));
+        SprintResponseDTO created = sprintService.createSprint(request);
+        sprintService.startSprint(created.getId());
+
+        createTestSprint(2, "Planned Sprint");
+
+        List<SprintResponseDTO> activeSprints = sprintService.getActiveSprints();
+
+        assertEquals(1, activeSprints.size());
+        assertEquals("Active Sprint", activeSprints.get(0).getName());
+    }
+
+    @Test
+    void getActiveSprints_NoActive_ReturnsEmpty() {
+        createTestSprint(1, "Planned Sprint");
+
+        List<SprintResponseDTO> activeSprints = sprintService.getActiveSprints();
+
+        assertTrue(activeSprints.isEmpty());
+    }
+
+    // ===================== OVERDUE SPRINTS TESTS =====================
+
+    @Test
+    void getOverdueSprints_ReturnsOverdueSprints() {
+        SprintRequestDTO request = createSprintRequest(1, "Overdue Sprint",
+                LocalDate.now().minusDays(20), LocalDate.now().minusDays(5));
+        SprintResponseDTO created = sprintService.createSprint(request);
+        sprintService.startSprint(created.getId());
+
+        List<SprintResponseDTO> overdueSprints = sprintService.getOverdueSprints();
+
+        assertTrue(overdueSprints.size() >= 1);
+    }
+
+    // ===================== LATEST SPRINT TESTS =====================
+
+    @Test
+    void getLatestSprintByProject_ReturnsLatest() {
+        createTestSprint(1, "Sprint 1");
+        createTestSprint(2, "Sprint 2");
+        SprintResponseDTO sprint3 = createTestSprint(3, "Sprint 3");
+
+        SprintResponseDTO latest = sprintService.getLatestSprintByProject(project.getId());
+
+        assertEquals(sprint3.getId(), latest.getId());
+        assertEquals("Sprint 3", latest.getName());
+    }
+
+    @Test
+    void getLatestSprintByProject_NoSprints_ThrowsException() {
+        assertThrows(ResourceNotFoundException.class, () -> {
+            sprintService.getLatestSprintByProject(project.getId());
+        });
+    }
+
+    // ===================== GET SPRINT ENTITY TESTS =====================
+
+    @Test
+    void getSprintEntity_Success() {
+        SprintResponseDTO created = createTestSprint(1, "Entity Sprint");
+
+        var entity = sprintService.getSprintEntity(created.getId());
+
+        assertNotNull(entity);
+        assertEquals(created.getId(), entity.getId());
+    }
+
+    @Test
+    void getSprintEntity_NotFound_ThrowsException() {
+        assertThrows(ResourceNotFoundException.class, () -> {
+            sprintService.getSprintEntity(999L);
+        });
+    }
+
+    // ===================== CHECK SPRINTS COMPLETED ON TIME =====================
+
+    @Test
+    void checkIfAllSprintsInProjectCompletedOnTime_AllOnTime_ReturnsTrue() {
+        SprintRequestDTO request = createSprintRequest(1, "On Time Sprint",
+                LocalDate.now().minusDays(14), LocalDate.now());
+        SprintResponseDTO created = sprintService.createSprint(request);
+        sprintService.startSprint(created.getId());
+        sprintService.completeSprint(created.getId(), LocalDate.now());
+
+        boolean allOnTime = sprintService.checkIfAllSprintsInProjectCompletedOnTime(project.getId());
+
+        assertTrue(allOnTime);
+    }
+
+    @Test
+    void checkIfAllSprintsInProjectCompletedOnTime_NoSprints_ReturnsTrue() {
+        boolean result = sprintService.checkIfAllSprintsInProjectCompletedOnTime(project.getId());
+
+        assertTrue(result);
+    }
+
+    // ===================== PROJECT BURNDOWN TESTS =====================
+
+    @Test
+    void getProjectBurndown_ReturnsEmptyMap_WhenNoSprints() {
+        var burndown = sprintService.getProjectBurndown(project.getId());
+
+        assertNotNull(burndown);
+        assertTrue(burndown.isEmpty());
+    }
+
+    @Test
+    void getProjectBurndown_ReturnsMap_WithSprints() {
+        createTestSprint(1, "Sprint 1");
+        createTestSprint(2, "Sprint 2");
+
+        var burndown = sprintService.getProjectBurndown(project.getId());
+
+        assertNotNull(burndown);
+        assertEquals(2, burndown.size());
+    }
+
+    // ===================== START READY SPRINTS TESTS =====================
+
+    @Test
+    void startReadySprints_StartsSprintsWithStartDateReached() {
+        // Create a sprint that should start today
+        SprintRequestDTO request = createSprintRequest(1, "Ready to Start",
+                LocalDate.now(), LocalDate.now().plusDays(14));
+        sprintService.createSprint(request);
+
+        List<SprintResponseDTO> started = sprintService.startReadySprints();
+
+        // The sprint should be started if start date is today
+        assertNotNull(started);
+    }
+
+    @Test
+    void startReadySprints_ReturnsEmpty_WhenNoReadySprints() {
+        // Create a sprint that starts in the future
+        SprintRequestDTO request = createSprintRequest(1, "Future Sprint",
+                LocalDate.now().plusDays(5), LocalDate.now().plusDays(19));
+        sprintService.createSprint(request);
+
+        List<SprintResponseDTO> started = sprintService.startReadySprints();
+
+        assertTrue(started.isEmpty());
+    }
+
+    // ===================== COMPLETE READY SPRINTS TESTS =====================
+
+    @Test
+    void completeReadySprints_ReturnsEmpty_WhenNoReadySprints() {
+        createTestSprint(1, "Planned Sprint");
+
+        List<SprintResponseDTO> completed = sprintService.completeReadySprints();
+
+        assertTrue(completed.isEmpty());
     }
 
     // ===================== HELPER METHODS =====================

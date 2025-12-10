@@ -13,7 +13,7 @@ import static org.junit.jupiter.api.Assertions.*;
  * Pure unit tests for User entity business logic methods.
  * No Spring context needed - tests entity methods directly.
  *
- * @version 0.2.0 (2025-10-20)
+ * @version 0.3.0 (2025-12-10)
  */
 class UserEntityTest {
 
@@ -253,6 +253,139 @@ class UserEntityTest {
         assertTrue(str.contains("student"));
         assertTrue(str.contains("student@test.com"));
         assertTrue(str.contains("John Doe"));
+    }
+
+    // ===================== TEAM POINTS IN PROJECT TESTS =====================
+
+    @Test
+    void getTeamPointsInProject_NoTeamMembership_ReturnsZero() {
+        Project project = createProject("Test Project");
+        project.setId(1L);
+        assertEquals(0, user.getTeamPointsInProject(project));
+    }
+
+    @Test
+    void getTeamPointsInProject_WithTeamAchievement_ReturnsSharePerMember() {
+        Project project = createProject("Test Project");
+        project.setId(1L);
+        project.setTeams(new ArrayList<>());
+
+        Team team = new Team("Test Team");
+        team.setId(1L);
+        team.setProjects(new ArrayList<>());
+        team.getProjects().add(project);
+        team.setMembers(new ArrayList<>());
+        team.setTeamAchievements(new ArrayList<>());
+
+        TeamMember member1 = new TeamMember();
+        member1.setUser(user);
+        member1.setTeam(team);
+        member1.setIsActive(true);
+        member1.setRole(ScrumRole.DEVELOPER);
+
+        User user2 = new User();
+        user2.setId(3L);
+        TeamMember member2 = new TeamMember();
+        member2.setUser(user2);
+        member2.setTeam(team);
+        member2.setIsActive(true);
+        member2.setRole(ScrumRole.DEVELOPER);
+
+        team.getMembers().add(member1);
+        team.getMembers().add(member2);
+
+        Badge badge = createBadge("Team Badge", 100);
+        Achievement teamAchievement = new Achievement();
+        teamAchievement.setBadge(badge);
+        teamAchievement.setAwardedToTeam(team);
+        team.getTeamAchievements().add(teamAchievement);
+
+        user.getTeamMemberships().add(member1);
+        project.getTeams().add(team);
+
+        assertEquals(50, user.getTeamPointsInProject(project));
+    }
+
+    @Test
+    void getTeamPointsInProject_InactiveTeamMember_ReturnsZero() {
+        Project project = createProject("Test Project");
+        project.setId(1L);
+        project.setTeams(new ArrayList<>());
+
+        Team team = new Team("Test Team");
+        team.setId(1L);
+        team.setProjects(new ArrayList<>());
+        team.getProjects().add(project);
+        team.setMembers(new ArrayList<>());
+
+        TeamMember inactiveMember = new TeamMember();
+        inactiveMember.setUser(user);
+        inactiveMember.setTeam(team);
+        inactiveMember.setIsActive(false);
+
+        team.getMembers().add(inactiveMember);
+        user.getTeamMemberships().add(inactiveMember);
+
+        assertEquals(0, user.getTeamPointsInProject(project));
+    }
+
+    // ===================== COMBINED POINTS IN PROJECT TESTS =====================
+
+    @Test
+    void getCombinedPointsInProject_NoPoints_ReturnsZero() {
+        Project project = createProject("Test Project");
+        project.setId(1L);
+        assertEquals(0, user.getCombinedPointsInProject(project));
+    }
+
+    @Test
+    void getCombinedPointsInProject_IndividualOnly_ReturnsIndividualPoints() {
+        Project project = createProject("Test Project");
+        project.setId(1L);
+
+        Badge badge = createBadge("Badge", 75);
+        Achievement achievement = createAchievement(badge);
+        achievement.setProject(project);
+        user.getIndividualAchievements().add(achievement);
+
+        assertEquals(75, user.getCombinedPointsInProject(project));
+    }
+
+    @Test
+    void getCombinedPointsInProject_WithBothIndividualAndTeam_ReturnsCombined() {
+        Project project = createProject("Test Project");
+        project.setId(1L);
+        project.setTeams(new ArrayList<>());
+
+        Badge individualBadge = createBadge("Individual Badge", 50);
+        Achievement individualAch = createAchievement(individualBadge);
+        individualAch.setProject(project);
+        user.getIndividualAchievements().add(individualAch);
+
+        Team team = new Team("Test Team");
+        team.setId(1L);
+        team.setProjects(new ArrayList<>());
+        team.getProjects().add(project);
+        team.setMembers(new ArrayList<>());
+        team.setTeamAchievements(new ArrayList<>());
+
+        TeamMember member = new TeamMember();
+        member.setUser(user);
+        member.setTeam(team);
+        member.setIsActive(true);
+        member.setRole(ScrumRole.DEVELOPER);
+        team.getMembers().add(member);
+
+        Badge teamBadge = createBadge("Team Badge", 100);
+        Achievement teamAchievement = new Achievement();
+        teamAchievement.setBadge(teamBadge);
+        teamAchievement.setAwardedToTeam(team);
+        team.getTeamAchievements().add(teamAchievement);
+
+        user.getTeamMemberships().add(member);
+        project.getTeams().add(team);
+
+        assertEquals(150, user.getCombinedPointsInProject(project));
     }
 
     // ===================== HELPER METHODS =====================

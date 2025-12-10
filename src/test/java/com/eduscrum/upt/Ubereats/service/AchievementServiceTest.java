@@ -9,6 +9,7 @@ import com.eduscrum.upt.Ubereats.entity.enums.BadgeType;
 import com.eduscrum.upt.Ubereats.entity.enums.Semester;
 import com.eduscrum.upt.Ubereats.entity.enums.UserRole;
 import com.eduscrum.upt.Ubereats.repository.*;
+import com.eduscrum.upt.Ubereats.entity.enums.SprintStatus;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -60,6 +61,9 @@ class AchievementServiceTest {
 
     @Autowired
     private ProjectRepository projectRepository;
+
+    @Autowired
+    private SprintRepository sprintRepository;
 
     private User teacher;
     private User student;
@@ -450,6 +454,176 @@ class AchievementServiceTest {
 
         assertEquals(0, stats.getTotalPoints());
         assertEquals(0, stats.getTotalAchievements());
+    }
+
+    // ===================== SPRINT ACHIEVEMENTS TESTS =====================
+
+    @Test
+    void getSprintAchievements_ReturnsAchievementsForSprint() {
+        // Create a sprint
+        Sprint sprint = new Sprint();
+        sprint.setName("Sprint 1");
+        sprint.setSprintNumber(1);
+        sprint.setStartDate(LocalDate.now());
+        sprint.setEndDate(LocalDate.now().plusDays(14));
+        sprint.setStatus(SprintStatus.IN_PROGRESS);
+        sprint.setProject(project);
+        sprint = sprintRepository.save(sprint);
+
+        // Create achievement with sprint
+        AchievementRequestDTO request = new AchievementRequestDTO(
+                "Sprint achievement",
+                manualBadge.getId(),
+                student.getId(),
+                null,
+                project.getId(),
+                sprint.getId(),
+                teacher.getId());
+        achievementService.createAchievement(request);
+
+        // Act
+        List<AchievementResponseDTO> sprintAchievements = achievementService.getSprintAchievements(sprint.getId());
+
+        // Assert
+        assertEquals(1, sprintAchievements.size());
+        assertEquals(sprint.getId(), sprintAchievements.get(0).getSprintId());
+    }
+
+    @Test
+    void getSprintAchievements_EmptySprint_ReturnsEmptyList() {
+        // Create a sprint with no achievements
+        Sprint sprint = new Sprint();
+        sprint.setName("Empty Sprint");
+        sprint.setSprintNumber(2);
+        sprint.setStartDate(LocalDate.now());
+        sprint.setEndDate(LocalDate.now().plusDays(14));
+        sprint.setStatus(SprintStatus.PLANNED);
+        sprint.setProject(project);
+        sprint = sprintRepository.save(sprint);
+
+        // Act
+        List<AchievementResponseDTO> sprintAchievements = achievementService.getSprintAchievements(sprint.getId());
+
+        // Assert
+        assertTrue(sprintAchievements.isEmpty());
+    }
+
+    // ===================== RECENT ACHIEVEMENTS TESTS =====================
+
+    @Test
+    void getRecentAchievements_ReturnsLimitedList() {
+        // Create 5 achievements
+        for (int i = 1; i <= 5; i++) {
+            BadgeRequestDTO badgeRequest = new BadgeRequestDTO();
+            badgeRequest.setName("Badge " + i);
+            badgeRequest.setDescription("Desc " + i);
+            badgeRequest.setPoints(i * 10);
+            badgeRequest.setBadgeType(BadgeType.MANUAL);
+            badgeRequest.setCreatedByUserId(teacher.getId());
+            BadgeResponseDTO badge = badgeService.createBadge(badgeRequest);
+
+            AchievementRequestDTO request = new AchievementRequestDTO(
+                    "Achievement " + i,
+                    badge.getId(),
+                    student.getId(),
+                    null,
+                    project.getId(),
+                    null,
+                    teacher.getId());
+            achievementService.createAchievement(request);
+        }
+
+        // Act
+        List<AchievementResponseDTO> recent = achievementService.getRecentAchievements(3);
+
+        // Assert
+        assertEquals(3, recent.size());
+    }
+
+    @Test
+    void getRecentAchievements_NoAchievements_ReturnsEmptyList() {
+        List<AchievementResponseDTO> recent = achievementService.getRecentAchievements(5);
+
+        assertTrue(recent.isEmpty());
+    }
+
+    // ===================== GET ACHIEVEMENT ENTITY TESTS =====================
+
+    @Test
+    void getAchievementEntity_Success() {
+        AchievementResponseDTO created = createTestUserAchievement();
+
+        Achievement entity = achievementService.getAchievementEntity(created.getId());
+
+        assertNotNull(entity);
+        assertEquals(created.getId(), entity.getId());
+    }
+
+    @Test
+    void getAchievementEntity_NotFound_ThrowsException() {
+        assertThrows(IllegalArgumentException.class, () -> {
+            achievementService.getAchievementEntity(999L);
+        });
+    }
+
+    // ===================== CREATE WITH SPRINT TESTS =====================
+
+    @Test
+    void createAchievement_WithSprint_Success() {
+        // Create a sprint
+        Sprint sprint = new Sprint();
+        sprint.setName("Test Sprint");
+        sprint.setSprintNumber(3);
+        sprint.setStartDate(LocalDate.now());
+        sprint.setEndDate(LocalDate.now().plusDays(14));
+        sprint.setStatus(SprintStatus.IN_PROGRESS);
+        sprint.setProject(project);
+        sprint = sprintRepository.save(sprint);
+
+        // Create a new badge for this test
+        BadgeRequestDTO badgeRequest = new BadgeRequestDTO();
+        badgeRequest.setName("Sprint Badge");
+        badgeRequest.setDescription("Sprint Desc");
+        badgeRequest.setPoints(75);
+        badgeRequest.setBadgeType(BadgeType.MANUAL);
+        badgeRequest.setCreatedByUserId(teacher.getId());
+        BadgeResponseDTO sprintBadge = badgeService.createBadge(badgeRequest);
+
+        AchievementRequestDTO request = new AchievementRequestDTO(
+                "Sprint-related achievement",
+                sprintBadge.getId(),
+                student.getId(),
+                null,
+                project.getId(),
+                sprint.getId(),
+                teacher.getId());
+
+        AchievementResponseDTO response = achievementService.createAchievement(request);
+
+        assertNotNull(response.getId());
+        assertEquals(sprint.getId(), response.getSprintId());
+        assertEquals("Test Sprint", response.getSprintName());
+    }
+
+    // ===================== AUTOMATIC BADGE QUALIFICATION TESTS
+    // =====================
+
+    @Test
+    void userQualifiesForAutomaticBadge_ReturnsFalse() {
+        // This method currently returns false as a placeholder
+        boolean result = achievementService.userQualifiesForAutomaticBadge(
+                student.getId(), project.getId(), manualBadge.getId());
+
+        assertFalse(result);
+    }
+
+    @Test
+    void teamQualifiesForAutomaticBadge_ReturnsFalse() {
+        // This method currently returns false as a placeholder
+        boolean result = achievementService.teamQualifiesForAutomaticBadge(
+                team.getId(), manualBadge.getId());
+
+        assertFalse(result);
     }
 
     // ===================== HELPER METHODS =====================

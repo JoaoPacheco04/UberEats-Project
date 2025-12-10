@@ -15,7 +15,7 @@ import static org.junit.jupiter.api.Assertions.*;
 /**
  * Unit tests for Sprint entity.
  *
- * @version 0.3.1 (2025-10-28)
+ * @version 0.4.0 (2025-12-10)
  */
 class SprintEntityTest {
 
@@ -217,5 +217,59 @@ class SprintEntityTest {
         assertEquals(1, newSprint.getSprintNumber());
         assertEquals("Test Sprint", newSprint.getName());
         assertEquals(project, newSprint.getProject());
+    }
+
+    // ===================== DAYS SINCE START TESTS =====================
+
+    @Test
+    void getDaysSinceStart_Today_ReturnsZero() {
+        sprint.setStartDate(LocalDate.now());
+        assertEquals(0L, sprint.getDaysSinceStart());
+    }
+
+    @Test
+    void getDaysSinceStart_FiveDaysAgo_ReturnsFive() {
+        sprint.setStartDate(LocalDate.now().minusDays(5));
+        assertEquals(5L, sprint.getDaysSinceStart());
+    }
+
+    @Test
+    void getDaysSinceStart_FutureSprint_ReturnsNegative() {
+        sprint.setStartDate(LocalDate.now().plusDays(3));
+        assertEquals(-3L, sprint.getDaysSinceStart());
+    }
+
+    // ===================== STATUS DESCRIPTION TESTS =====================
+
+    @Test
+    void getStatusDescription_Planned_ReturnsPlannedMessage() {
+        sprint.setStatus(SprintStatus.PLANNED);
+        assertTrue(sprint.getStatusDescription().contains("planned"));
+    }
+
+    @Test
+    void getStatusDescription_InProgress_ReturnsInProgressMessage() {
+        sprint.setStatus(SprintStatus.IN_PROGRESS);
+        sprint.setEndDate(LocalDate.now().plusDays(7));
+        assertTrue(sprint.getStatusDescription().contains("in progress"));
+    }
+
+    @Test
+    void getStatusDescription_InProgressOverdue_ReturnsOverdueMessage() {
+        sprint.setStatus(SprintStatus.IN_PROGRESS);
+        sprint.setEndDate(LocalDate.now().minusDays(1));
+        assertTrue(sprint.getStatusDescription().contains("overdue"));
+    }
+
+    @Test
+    void getStatusDescription_Completed_ReturnsCompletedMessage() {
+        sprint.setStatus(SprintStatus.COMPLETED);
+        assertTrue(sprint.getStatusDescription().contains("completed"));
+    }
+
+    @Test
+    void getStatusDescription_Cancelled_ReturnsCancelledMessage() {
+        sprint.setStatus(SprintStatus.CANCELLED);
+        assertTrue(sprint.getStatusDescription().contains("cancelled"));
     }
 }
