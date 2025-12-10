@@ -14,7 +14,8 @@ import java.util.Optional;
  * Repository interface for Analytic entity.
  * Provides CRUD operations and analytics queries.
  *
- * @version 0.8.0 (2025-11-20)
+ * @author UberEats
+ * @version 0.8.0
  */
 @Repository
 public interface AnalyticRepository extends JpaRepository<Analytic, Long> {

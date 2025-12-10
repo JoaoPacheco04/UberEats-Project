@@ -16,7 +16,8 @@ import java.util.Optional;
  * Repository interface for Sprint entity.
  * Provides CRUD operations and sprint-specific queries.
  *
- * @version 0.1.0 (2025-10-15)
+ * @author UberEats
+ * @version 0.1.0
  */
 @Repository
 public interface SprintRepository extends JpaRepository<Sprint, Long> {

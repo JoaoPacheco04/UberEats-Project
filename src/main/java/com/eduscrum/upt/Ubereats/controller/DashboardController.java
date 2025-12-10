@@ -9,7 +9,8 @@ import org.springframework.web.bind.annotation.*;
  * REST controller for dashboard statistics in the EduScrum platform.
  * Provides endpoints for retrieving student dashboard data.
  *
- * @version 0.1.0 (2025-10-15)
+ * @author UberEats
+ * @version 0.1.0
  */
 @RestController
 @RequestMapping("/api/dashboard")

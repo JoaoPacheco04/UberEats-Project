@@ -19,7 +19,8 @@ import static org.junit.jupiter.api.Assertions.*;
  * Integration tests for UserService.
  * Tests user registration, lookup, and authentication.
  *
- * @version 0.5.1 (2025-11-08)
+ * @author UberEats
+ * @version 0.5.1
  */
 @SpringBootTest
 @ActiveProfiles("test")

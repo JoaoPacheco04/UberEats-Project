@@ -15,7 +15,8 @@ import java.util.Optional;
  * Repository interface for Badge entity.
  * Provides CRUD operations and badge-specific queries.
  *
- * @version 0.9.1 (2025-11-28)
+ * @author UberEats
+ * @version 0.9.1
  */
 @Repository
 public interface BadgeRepository extends JpaRepository<Badge, Long> {

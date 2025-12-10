@@ -9,7 +9,8 @@ import jakarta.validation.constraints.Size;
  * Data Transfer Object for creating a new Course.
  * Contains necessary fields and validation annotations.
  *
- * @version 0.5.0 (2025-11-05)
+ * @author UberEats
+ * @version 0.5.0
  */
 public class CreateCourseRequest {
 

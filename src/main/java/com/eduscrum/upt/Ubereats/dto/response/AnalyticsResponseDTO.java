@@ -10,7 +10,8 @@ import java.util.Map;
  * Data Transfer Object for analytics/progress metrics response.
  * Contains task progress, story points, velocity, and team data.
  *
- * @version 0.8.0 (2025-11-20)
+ * @author UberEats
+ * @version 0.8.0
  */
 public class AnalyticsResponseDTO {
     private Long id;

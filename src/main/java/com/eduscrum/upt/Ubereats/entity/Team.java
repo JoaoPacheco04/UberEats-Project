@@ -19,7 +19,8 @@ import java.util.stream.Collectors;
  * JPA entity representing a team in the EduScrum platform.
  * Contains members with Scrum roles, projects, analytics, and achievements.
  *
- * @version 0.9.1 (2025-11-28)
+ * @author UberEats
+ * @version 0.9.1
  */
 @Entity
 @Table(name = "teams")

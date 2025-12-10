@@ -7,12 +7,11 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
 /**
- * Pure unit tests for TeamMember entity.
- */
-/**
+ * Pure unit tests for TeamMember entity
  * Unit tests for TeamMember entity.
  *
- * @version 0.5.0 (2025-11-05)
+ * @author UberEats
+ * @version 0.5.0
  */
 class TeamMemberEntityTest {
 

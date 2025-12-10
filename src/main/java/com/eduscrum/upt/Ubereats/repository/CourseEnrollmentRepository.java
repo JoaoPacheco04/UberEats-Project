@@ -11,7 +11,8 @@ import java.util.Optional;
  * Repository interface for CourseEnrollment entity.
  * Provides CRUD operations and enrollment queries.
  *
- * @version 1.0.1 (2025-12-03)
+ * @author UberEats
+ * @version 1.0.1
  */
 @Repository
 public interface CourseEnrollmentRepository extends JpaRepository<CourseEnrollment, Long> {

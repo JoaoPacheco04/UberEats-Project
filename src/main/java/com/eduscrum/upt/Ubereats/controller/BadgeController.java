@@ -17,7 +17,8 @@ import java.util.Map;
  * REST controller for managing badges in the EduScrum platform.
  * Provides endpoints for badge CRUD operations and status management.
  *
- * @version 1.0.1 (2025-12-03)
+ * @author UberEats
+ * @version 1.0.1
  */
 @RestController
 @RequestMapping("/api/badges")

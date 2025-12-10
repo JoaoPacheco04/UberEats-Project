@@ -33,16 +33,12 @@ import static org.junit.jupiter.api.Assertions.*;
 /**
  * Integration tests for TeamService.
  *
- * @version 0.8.1 (2025-11-22)
+ * @author UberEats
+ * @version 0.8.1
  */
 @SpringBootTest
 @ActiveProfiles("test")
 @Transactional
-/**
- * Integration tests for TeamService.
- *
- * @version 0.8.1 (2025-11-22)
- */
 class TeamServiceTest {
 
     @Autowired

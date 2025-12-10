@@ -15,7 +15,8 @@ import java.util.*;
  * JPA entity representing a badge in the EduScrum platform.
  * Can be awarded to users or teams for achievements.
  *
- * @version 0.1.0 (2025-10-15)
+ * @author UberEats
+ * @version 0.1.0
  */
 @Entity
 @Table(name = "badges")

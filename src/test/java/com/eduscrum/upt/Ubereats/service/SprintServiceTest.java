@@ -29,7 +29,8 @@ import static org.junit.jupiter.api.Assertions.*;
 /**
  * Integration tests for SprintService.
  *
- * @version 1.0.0 (2025-12-10)
+ * @author UberEats
+ * @version 1.0.0
  */
 @SpringBootTest
 @ActiveProfiles("test")

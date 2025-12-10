@@ -16,7 +16,8 @@ import java.util.stream.Collectors;
  * JPA entity representing a user in the EduScrum platform.
  * Can be either a TEACHER or STUDENT with different capabilities.
  *
- * @version 1.1.0 (2025-12-08)
+ * @author UberEats
+ * @version 1.1.0
  */
 @Entity
 @Table(name = "users")

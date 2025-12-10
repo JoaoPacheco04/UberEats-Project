@@ -32,16 +32,12 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 /**
  * Tests for team access security.
  *
- * @version 1.0.2 (2025-12-05)
+ * @author UberEats
+ * @version 1.0.2
  */
 @SpringBootTest
 @AutoConfigureMockMvc
 @Transactional
-/**
- * Tests for team access security.
- *
- * @version 1.0.2 (2025-12-05)
- */
 class TeamAccessTest {
 
     @Autowired

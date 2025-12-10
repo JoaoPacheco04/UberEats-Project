@@ -12,7 +12,8 @@ import org.springframework.stereotype.Service;
  * Implements UserDetailsService to integrate with Spring Security
  * authentication.
  *
- * @version 0.9.1 (2025-11-28)
+ * @author UberEats
+ * @version 0.9.1
  */
 @Service
 public class CustomUserDetailsService implements UserDetailsService {

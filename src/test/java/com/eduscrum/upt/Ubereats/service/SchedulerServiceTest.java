@@ -17,20 +17,13 @@ import static org.junit.jupiter.api.Assertions.*;
 /**
  * Integration tests for SchedulerService.
  * Uses H2 in-memory database for testing.
- */
-/**
- * Integration tests for SchedulerService.
  *
- * @version 1.1.0 (2025-12-08)
+ * @author UberEats
+ * @version 1.1.0
  */
 @SpringBootTest
 @ActiveProfiles("test")
 @Transactional
-/**
- * Integration tests for SchedulerService.
- *
- * @version 1.1.0 (2025-12-08)
- */
 class SchedulerServiceTest {
 
     @Autowired

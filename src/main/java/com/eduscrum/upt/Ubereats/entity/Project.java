@@ -20,7 +20,8 @@ import java.util.stream.Collectors;
  * JPA entity representing a project in the EduScrum platform.
  * Contains sprints, teams, and achievements. Belongs to a course.
  *
- * @version 0.6.1 (2025-11-12)
+ * @author UberEats
+ * @version 0.6.1
  */
 @Entity
 @Table(name = "projects")
@@ -252,8 +253,6 @@ public class Project {
 
     /**
      * Calculate progress percentage based on completed sprints
-     */
-    /**
      * Get progress percentage (stored field)
      */
     public BigDecimal getProgressPercentage() {

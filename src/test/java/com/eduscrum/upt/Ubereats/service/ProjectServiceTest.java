@@ -29,16 +29,12 @@ import static org.junit.jupiter.api.Assertions.*;
 /**
  * Integration tests for ProjectService.
  *
- * @version 0.8.0 (2025-11-20)
+ * @author UberEats
+ * @version 0.8.0
  */
 @SpringBootTest
 @ActiveProfiles("test")
 @Transactional
-/**
- * Integration tests for ProjectService.
- *
- * @version 0.8.0 (2025-11-20)
- */
 class ProjectServiceTest {
 
     @Autowired

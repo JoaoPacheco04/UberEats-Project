@@ -18,7 +18,8 @@ import static org.junit.jupiter.api.Assertions.*;
 /**
  * Integration tests for DashboardService.
  *
- * @version 1.0.4 (2025-12-10)
+ * @author UberEats
+ * @version 1.0.4
  */
 @SpringBootTest
 @ActiveProfiles("test")

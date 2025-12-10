@@ -16,7 +16,8 @@ import java.util.Map;
  * REST controller for managing user stories in the EduScrum platform.
  * Provides endpoints for user story CRUD operations and status transitions.
  *
- * @version 0.9.1 (2025-11-28)
+ * @author UberEats
+ * @version 0.9.1
  */
 @RestController
 @RequestMapping("/api/user-stories")

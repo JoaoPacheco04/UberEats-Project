@@ -12,7 +12,8 @@ import java.util.List;
  * Repository interface for Team entity.
  * Provides CRUD operations and team-specific queries.
  *
- * @version 0.5.0 (2025-11-05)
+ * @author UberEats
+ * @version 0.5.0
  */
 @Repository
 public interface TeamRepository extends JpaRepository<Team, Long> {

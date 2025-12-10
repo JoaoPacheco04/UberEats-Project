@@ -13,7 +13,8 @@ import java.util.Objects;
  * JPA entity representing a user story in the EduScrum platform.
  * Contains task details, status, priority, and assignment info.
  *
- * @version 1.2.0 (2025-12-10)
+ * @author UberEats
+ * @version 1.2.0
  */
 @Entity
 @Table(name = "user_stories")

@@ -6,7 +6,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 /**
  * Main Spring Boot application entry point for EduScrum platform.
  *
- * @version 0.1.0 (2025-10-15)
+ * @author UberEats
+ * @version 0.1.0
  */
 @SpringBootApplication
 public class UbereatsApplication {

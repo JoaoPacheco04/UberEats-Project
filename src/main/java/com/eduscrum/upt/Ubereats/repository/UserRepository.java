@@ -12,7 +12,8 @@ import java.util.Optional;
  * Repository interface for User entity.
  * Extends JpaRepository to inherit basic CRUD operations.
  *
- * @version 0.6.1 (2025-11-12)
+ * @author UberEats
+ * @version 0.6.1
  */
 @Repository
 public interface UserRepository extends JpaRepository<User, Long> {

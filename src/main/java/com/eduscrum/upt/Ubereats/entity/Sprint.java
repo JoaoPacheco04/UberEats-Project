@@ -18,7 +18,8 @@ import java.util.Objects;
  * JPA entity representing a sprint in the EduScrum platform.
  * Contains user stories, analytics, and achievements. Belongs to a project.
  *
- * @version 0.8.0 (2025-11-20)
+ * @author UberEats
+ * @version 0.8.0
  */
 @Entity
 @Table(name = "sprints")

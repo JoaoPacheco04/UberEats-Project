@@ -8,7 +8,8 @@ import java.time.LocalDate;
  * Data Transfer Object for creating a new Project.
  * Contains project details and validation annotations.
  *
- * @version 0.6.1 (2025-11-12)
+ * @author UberEats
+ * @version 0.6.1
  */
 public class CreateProjectRequest {
 

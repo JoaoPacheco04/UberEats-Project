@@ -27,7 +27,8 @@ import static org.junit.jupiter.api.Assertions.*;
  * Integration tests for CourseService.
  * Tests course CRUD operations with database.
  *
- * @version 0.5.0 (2025-11-05)
+ * @author UberEats
+ * @version 0.5.0
  */
 @SpringBootTest
 @ActiveProfiles("test")

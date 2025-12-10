@@ -18,7 +18,8 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
  * Main security configuration class for Spring Security.
  * Configures JWT authentication, password encoding, and endpoint security.
  *
- * @version 0.9.1 (2025-11-28)
+ * @author UberEats
+ * @version 0.9.1
  */
 @Configuration
 @EnableWebSecurity

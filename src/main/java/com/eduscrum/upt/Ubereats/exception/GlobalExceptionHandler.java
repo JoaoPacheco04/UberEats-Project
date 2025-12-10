@@ -17,7 +17,8 @@ import java.util.Map;
  * Global exception handler for REST API.
  * Provides consistent error responses for all exceptions.
  *
- * @version 0.6.0 (2025-11-10)
+ * @author UberEats
+ * @version 0.6.0
  */
 @ControllerAdvice
 public class GlobalExceptionHandler {

@@ -7,7 +7,8 @@ import java.time.LocalDateTime;
  * Data Transfer Object for badge response data.
  * Contains badge details, status, and creation info.
  *
- * @version 0.9.1 (2025-11-28)
+ * @author UberEats
+ * @version 0.9.1
  */
 public class BadgeResponseDTO {
     private Long id;

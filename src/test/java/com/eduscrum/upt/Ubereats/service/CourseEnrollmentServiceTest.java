@@ -22,16 +22,13 @@ import static org.junit.jupiter.api.Assertions.*;
 /**
  * Integration tests for CourseEnrollmentService.
  *
- * @version 1.1.1 (2025-12-09)
+ * @author UberEats
+ * @version 1.1.1
  */
 @SpringBootTest
 @ActiveProfiles("test")
 @Transactional
-/**
- * Integration tests for CourseEnrollmentService.
- *
- * @version 1.1.1 (2025-12-09)
- */
+
 class CourseEnrollmentServiceTest {
 
     @Autowired

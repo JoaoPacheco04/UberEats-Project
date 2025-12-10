@@ -25,14 +25,10 @@ import static org.mockito.Mockito.*;
 /**
  * Tests for global exception handler.
  *
- * @version 0.7.1 (2025-11-18)
+ * @author UberEats
+ * @version 0.7.1
  */
 @ExtendWith(MockitoExtension.class)
-/**
- * Tests for global exception handler.
- *
- * @version 0.7.1 (2025-11-18)
- */
 class GlobalExceptionHandlerTest {
 
     @InjectMocks

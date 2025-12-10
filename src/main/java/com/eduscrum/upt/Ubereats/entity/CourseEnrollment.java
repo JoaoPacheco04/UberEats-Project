@@ -11,7 +11,8 @@ import java.util.Objects;
  * JPA entity representing a student's enrollment in a course.
  * Links a student to a course with enrollment date.
  *
- * @version 0.5.0 (2025-11-05)
+ * @author UberEats
+ * @version 0.5.0
  */
 @Entity
 @Table(name = "course_enrollments")

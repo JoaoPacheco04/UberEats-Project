@@ -8,7 +8,8 @@ import static org.junit.jupiter.api.Assertions.*;
  * Unit tests for custom exception classes.
  * Tests ResourceNotFoundException and BusinessLogicException behavior.
  *
- * @version 0.7.0 (2025-11-15)
+ * @author UberEats
+ * @version 0.7.0
  */
 class ExceptionTest {
 

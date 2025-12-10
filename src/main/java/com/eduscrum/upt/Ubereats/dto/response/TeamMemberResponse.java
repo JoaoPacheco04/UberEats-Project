@@ -9,7 +9,8 @@ import java.time.LocalDateTime;
  * Data Transfer Object for team member response data.
  * Includes member details, role, and status information.
  *
- * @version 0.8.0 (2025-11-20)
+ * @author UberEats
+ * @version 0.8.0
  */
 public class TeamMemberResponse {
     private Long id;
