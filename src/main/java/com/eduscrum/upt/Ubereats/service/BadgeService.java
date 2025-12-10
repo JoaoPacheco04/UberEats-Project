@@ -17,8 +17,7 @@ import java.util.stream.Collectors;
  * Service class for managing badges in the EduScrum platform.
  * Handles badge creation, updates, retrieval, and automatic badge logic.
  *
- * @author
- * @version 1.0 (2025-12-10)
+ * @version 0.6.1 (2025-11-12)
  */
 @Service
 @Transactional
@@ -59,7 +58,10 @@ public class BadgeService {
     }
 
     /**
-     * Validates all badge input parameters
+     * Validates all badge input parameters.
+     *
+     * @param requestDTO The badge request to validate
+     * @throws IllegalArgumentException if any validation fails
      */
     private void validateBadgeInput(BadgeRequestDTO requestDTO) {
         if (requestDTO.getName() == null || requestDTO.getName().trim().isEmpty()) {
@@ -89,7 +91,11 @@ public class BadgeService {
     }
 
     /**
-     * Checks if badge name already exists
+     * Checks if badge name already exists.
+     *
+     * @param name      The badge name to check
+     * @param excludeId The ID to exclude from check (for updates)
+     * @throws IllegalArgumentException if name already exists
      */
     private void validateBadgeUniqueness(String name, Long excludeId) {
         boolean nameExists;
@@ -105,7 +111,10 @@ public class BadgeService {
     }
 
     /**
-     * Creates a new Badge entity with the provided data
+     * Creates a new Badge entity with the provided data.
+     *
+     * @param requestDTO The badge request containing details
+     * @return The new Badge entity (not yet persisted)
      */
     private Badge createBadgeEntity(BadgeRequestDTO requestDTO) {
         User createdBy = getUserEntity(requestDTO.getCreatedByUserId());
@@ -133,10 +142,10 @@ public class BadgeService {
         return badge;
     }
 
-    // === BADGE RETRIEVAL METHODS ===
-
     /**
-     * Finds all badges
+     * Finds all badges in the system.
+     *
+     * @return List of all badges as response DTOs
      */
     @Transactional(readOnly = true)
     public List<BadgeResponseDTO> getAllBadges() {
@@ -146,7 +155,10 @@ public class BadgeService {
     }
 
     /**
-     * Finds badge by ID
+     * Finds a badge by its ID.
+     *
+     * @param id The ID of the badge to find
+     * @return Optional containing the badge if found
      */
     @Transactional(readOnly = true)
     public Optional<BadgeResponseDTO> getBadgeById(Long id) {
@@ -155,7 +167,10 @@ public class BadgeService {
     }
 
     /**
-     * Finds badge by name
+     * Finds a badge by its name.
+     *
+     * @param name The name of the badge to find
+     * @return Optional containing the badge if found
      */
     @Transactional(readOnly = true)
     public Optional<BadgeResponseDTO> getBadgeByName(String name) {
@@ -164,7 +179,9 @@ public class BadgeService {
     }
 
     /**
-     * Finds all active badges
+     * Finds all active badges.
+     *
+     * @return List of active badges
      */
     @Transactional(readOnly = true)
     public List<BadgeResponseDTO> getActiveBadges() {
@@ -174,7 +191,10 @@ public class BadgeService {
     }
 
     /**
-     * Finds badges by type
+     * Finds all badges of a specific type.
+     *
+     * @param badgeType The badge type to filter by
+     * @return List of badges with the specified type
      */
     @Transactional(readOnly = true)
     public List<BadgeResponseDTO> getBadgesByType(BadgeType badgeType) {
@@ -184,7 +204,10 @@ public class BadgeService {
     }
 
     /**
-     * Finds badges by creator
+     * Finds all badges created by a specific user.
+     *
+     * @param createdById The ID of the creator
+     * @return List of badges created by the user
      */
     @Transactional(readOnly = true)
     public List<BadgeResponseDTO> getBadgesByCreator(Long createdById) {
@@ -193,10 +216,11 @@ public class BadgeService {
                 .collect(Collectors.toList());
     }
 
-    // === BADGE EXISTENCE CHECKS ===
-
     /**
-     * Checks if badge name already exists
+     * Checks if a badge with the given name exists.
+     *
+     * @param name The badge name to check
+     * @return true if name exists, false otherwise
      */
     @Transactional(readOnly = true)
     public boolean existsByName(String name) {
@@ -204,17 +228,23 @@ public class BadgeService {
     }
 
     /**
-     * Checks if badge exists by ID
+     * Checks if a badge with the given ID exists.
+     *
+     * @param id The badge ID to check
+     * @return true if badge exists, false otherwise
      */
     @Transactional(readOnly = true)
     public boolean existsById(Long id) {
         return badgeRepository.existsById(id);
     }
 
-    // === BADGE UPDATE OPERATIONS ===
-
     /**
-     * Updates an existing badge
+     * Updates an existing badge with the provided details.
+     *
+     * @param id         The ID of the badge to update
+     * @param requestDTO The request containing updated details
+     * @return The updated badge as a response DTO
+     * @throws IllegalArgumentException if validation fails
      */
     public BadgeResponseDTO updateBadge(Long id, BadgeRequestDTO requestDTO) {
         // Validate input
@@ -246,7 +276,10 @@ public class BadgeService {
     }
 
     /**
-     * Toggles badge active status
+     * Toggles a badge's active status.
+     *
+     * @param id The ID of the badge to toggle
+     * @return The updated badge as a response DTO
      */
     public BadgeResponseDTO toggleBadgeStatus(Long id) {
         Badge badge = getBadgeEntity(id);

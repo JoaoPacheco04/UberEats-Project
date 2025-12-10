@@ -9,6 +9,11 @@ import static org.junit.jupiter.api.Assertions.*;
 /**
  * Pure unit tests for CourseEnrollment entity.
  */
+/**
+ * Unit tests for CourseEnrollment entity.
+ *
+ * @version 0.7.1 (2025-11-18)
+ */
 class CourseEnrollmentEntityTest {
 
     private CourseEnrollment enrollment;

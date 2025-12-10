@@ -20,9 +20,19 @@ import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+/**
+ * Integration tests for BadgeService.
+ *
+ * @version 1.0.0 (2025-12-01)
+ */
 @SpringBootTest
 @ActiveProfiles("test")
 @Transactional
+/**
+ * Integration tests for BadgeService.
+ *
+ * @version 1.0.0 (2025-12-01)
+ */
 class BadgeServiceTest {
 
     @Autowired

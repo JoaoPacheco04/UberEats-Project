@@ -7,7 +7,7 @@ import jakarta.validation.constraints.NotNull;
  * Data Transfer Object for creating an Achievement.
  * Contains achievement details and validation annotations.
  *
- * @version 1.0 (2025-12-10)
+ * @version 1.0.1 (2025-12-03)
  */
 public class AchievementRequestDTO {
 

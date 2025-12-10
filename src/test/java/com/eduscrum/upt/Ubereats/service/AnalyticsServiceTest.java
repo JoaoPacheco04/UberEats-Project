@@ -17,9 +17,19 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+/**
+ * Integration tests for AnalyticsService.
+ *
+ * @version 1.0.2 (2025-12-05)
+ */
 @SpringBootTest
 @ActiveProfiles("test")
 @Transactional
+/**
+ * Integration tests for AnalyticsService.
+ *
+ * @version 1.0.2 (2025-12-05)
+ */
 class AnalyticsServiceTest {
 
     @Autowired

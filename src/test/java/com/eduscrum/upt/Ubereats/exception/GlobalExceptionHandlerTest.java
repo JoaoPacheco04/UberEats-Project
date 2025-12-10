@@ -22,7 +22,17 @@ import static org.mockito.Mockito.*;
 /**
  * Unit tests for GlobalExceptionHandler.
  */
+/**
+ * Tests for global exception handler.
+ *
+ * @version 0.7.1 (2025-11-18)
+ */
 @ExtendWith(MockitoExtension.class)
+/**
+ * Tests for global exception handler.
+ *
+ * @version 0.7.1 (2025-11-18)
+ */
 class GlobalExceptionHandlerTest {
 
     @InjectMocks

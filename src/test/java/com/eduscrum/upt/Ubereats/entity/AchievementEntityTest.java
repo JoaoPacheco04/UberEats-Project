@@ -11,6 +11,11 @@ import static org.junit.jupiter.api.Assertions.*;
 /**
  * Pure unit tests for Achievement entity.
  */
+/**
+ * Unit tests for Achievement entity.
+ *
+ * @version 0.6.1 (2025-11-12)
+ */
 class AchievementEntityTest {
 
     private Achievement achievement;

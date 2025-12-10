@@ -8,7 +8,7 @@ import java.time.LocalDateTime;
  * Data Transfer Object for user story response data.
  * Contains story details, status info, and related sprint/team data.
  *
- * @version 1.0 (2025-12-10)
+ * @version 1.0.1 (2025-12-03)
  */
 public class UserStoryResponseDTO {
     private Long id;

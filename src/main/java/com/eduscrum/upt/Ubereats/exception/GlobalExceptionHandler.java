@@ -13,6 +13,12 @@ import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Global exception handler for REST API.
+ * Provides consistent error responses for all exceptions.
+ *
+ * @version 0.6.0 (2025-11-10)
+ */
 @ControllerAdvice
 public class GlobalExceptionHandler {
 

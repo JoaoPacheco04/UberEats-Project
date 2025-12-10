@@ -9,6 +9,11 @@ import static org.junit.jupiter.api.Assertions.*;
 /**
  * Pure unit tests for TeamMember entity.
  */
+/**
+ * Unit tests for TeamMember entity.
+ *
+ * @version 0.5.0 (2025-11-05)
+ */
 class TeamMemberEntityTest {
 
     private TeamMember teamMember;

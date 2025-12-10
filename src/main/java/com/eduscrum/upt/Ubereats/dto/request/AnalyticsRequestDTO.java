@@ -9,7 +9,7 @@ import java.time.LocalDate;
  * Data Transfer Object for creating Analytics/Progress metrics.
  * Contains sprint progress, velocity, and team mood data.
  *
- * @version 1.0 (2025-12-10)
+ * @version 1.2.0 (2025-12-10)
  */
 public class AnalyticsRequestDTO {
 

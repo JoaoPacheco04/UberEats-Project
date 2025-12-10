@@ -6,6 +6,12 @@ import org.hibernate.annotations.CreationTimestamp;
 import java.time.LocalDateTime;
 import java.util.Objects;
 
+/**
+ * JPA entity representing an achievement in the EduScrum platform.
+ * Links a badge to a user or team with context (project, sprint).
+ *
+ * @version 1.1.0 (2025-12-08)
+ */
 @Entity
 @Table(name = "achievements")
 public class Achievement {
@@ -47,7 +53,8 @@ public class Achievement {
     private User awardedBy;
 
     // === CONSTRUCTORS ===
-    public Achievement() {}
+    public Achievement() {
+    }
 
     // Individual achievement constructor
     public Achievement(Badge badge, User awardedToUser, Project project, User awardedBy, String reason) {
@@ -70,32 +77,77 @@ public class Achievement {
     }
 
     // === GETTERS & SETTERS ===
-    public Long getId() { return id; }
-    public void setId(Long id) { this.id = id; }
+    public Long getId() {
+        return id;
+    }
 
-    public String getReason() { return reason; }
-    public void setReason(String reason) { this.reason = reason; }
+    public void setId(Long id) {
+        this.id = id;
+    }
 
-    public LocalDateTime getAwardedAt() { return awardedAt; }
-    public void setAwardedAt(LocalDateTime awardedAt) { this.awardedAt = awardedAt; }
+    public String getReason() {
+        return reason;
+    }
 
-    public Badge getBadge() { return badge; }
-    public void setBadge(Badge badge) { this.badge = badge; }
+    public void setReason(String reason) {
+        this.reason = reason;
+    }
 
-    public User getAwardedToUser() { return awardedToUser; }
-    public void setAwardedToUser(User awardedToUser) { this.awardedToUser = awardedToUser; }
+    public LocalDateTime getAwardedAt() {
+        return awardedAt;
+    }
 
-    public Team getAwardedToTeam() { return awardedToTeam; }
-    public void setAwardedToTeam(Team awardedToTeam) { this.awardedToTeam = awardedToTeam; }
+    public void setAwardedAt(LocalDateTime awardedAt) {
+        this.awardedAt = awardedAt;
+    }
 
-    public Project getProject() { return project; }
-    public void setProject(Project project) { this.project = project; }
+    public Badge getBadge() {
+        return badge;
+    }
 
-    public Sprint getSprint() { return sprint; }
-    public void setSprint(Sprint sprint) { this.sprint = sprint; }
+    public void setBadge(Badge badge) {
+        this.badge = badge;
+    }
 
-    public User getAwardedBy() { return awardedBy; }
-    public void setAwardedBy(User awardedBy) { this.awardedBy = awardedBy; }
+    public User getAwardedToUser() {
+        return awardedToUser;
+    }
+
+    public void setAwardedToUser(User awardedToUser) {
+        this.awardedToUser = awardedToUser;
+    }
+
+    public Team getAwardedToTeam() {
+        return awardedToTeam;
+    }
+
+    public void setAwardedToTeam(Team awardedToTeam) {
+        this.awardedToTeam = awardedToTeam;
+    }
+
+    public Project getProject() {
+        return project;
+    }
+
+    public void setProject(Project project) {
+        this.project = project;
+    }
+
+    public Sprint getSprint() {
+        return sprint;
+    }
+
+    public void setSprint(Sprint sprint) {
+        this.sprint = sprint;
+    }
+
+    public User getAwardedBy() {
+        return awardedBy;
+    }
+
+    public void setAwardedBy(User awardedBy) {
+        this.awardedBy = awardedBy;
+    }
 
     // === BUSINESS METHODS ===
 
@@ -149,8 +201,10 @@ public class Achievement {
     // === UTILITY METHODS ===
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof Achievement)) return false;
+        if (this == o)
+            return true;
+        if (!(o instanceof Achievement))
+            return false;
         Achievement that = (Achievement) o;
         return Objects.equals(id, that.id) &&
                 Objects.equals(badge, that.badge) &&

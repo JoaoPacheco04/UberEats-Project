@@ -29,10 +29,20 @@ import java.time.LocalDate;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 
+/**
+ * Tests for team access security.
+ *
+ * @version 1.0.2 (2025-12-05)
+ */
 @SpringBootTest
 @AutoConfigureMockMvc
 @Transactional
-public class TeamAccessTest {
+/**
+ * Tests for team access security.
+ *
+ * @version 1.0.2 (2025-12-05)
+ */
+class TeamAccessTest {
 
     @Autowired
     private MockMvc mockMvc;

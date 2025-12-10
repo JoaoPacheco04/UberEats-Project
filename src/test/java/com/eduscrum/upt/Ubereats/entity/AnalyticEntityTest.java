@@ -14,6 +14,11 @@ import static org.junit.jupiter.api.Assertions.*;
  * Pure unit tests for Analytic entity business logic methods.
  * No Spring context needed - tests entity methods directly.
  */
+/**
+ * Unit tests for Analytic entity.
+ *
+ * @version 0.7.0 (2025-11-15)
+ */
 class AnalyticEntityTest {
 
     private Analytic analytic;

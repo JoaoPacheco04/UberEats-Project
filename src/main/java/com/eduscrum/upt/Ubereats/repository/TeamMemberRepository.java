@@ -10,6 +10,12 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * Repository interface for TeamMember entity.
+ * Provides CRUD operations and team membership queries.
+ *
+ * @version 0.2.1 (2025-10-22)
+ */
 @Repository
 public interface TeamMemberRepository extends JpaRepository<TeamMember, Long> {
 

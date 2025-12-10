@@ -20,8 +20,7 @@ import java.util.stream.Collectors;
  * REST controller for managing teams and team memberships.
  * Provides endpoints for team CRUD operations and member management.
  *
- * @author
- * @version 1.0 (2025-12-10)
+ * @version 0.8.0 (2025-11-20)
  */
 @RestController
 @RequestMapping("/api/teams")

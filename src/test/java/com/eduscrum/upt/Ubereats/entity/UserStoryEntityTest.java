@@ -11,6 +11,11 @@ import static org.junit.jupiter.api.Assertions.*;
 /**
  * Pure unit tests for UserStory entity.
  */
+/**
+ * Unit tests for UserStory entity.
+ *
+ * @version 0.5.1 (2025-11-08)
+ */
 class UserStoryEntityTest {
 
     private UserStory userStory;

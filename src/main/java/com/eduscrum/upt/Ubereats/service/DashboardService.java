@@ -19,8 +19,7 @@ import java.util.stream.Collectors;
  * Provides aggregated data for student dashboards including scores and
  * achievements.
  *
- * @author
- * @version 1.0 (2025-12-10)
+ * @version 1.0.1 (2025-12-03)
  */
 @Service
 @Transactional

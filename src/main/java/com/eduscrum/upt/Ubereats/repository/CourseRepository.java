@@ -11,15 +11,18 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 import java.util.Optional;
 
-/*
-    * Repository interface for Course entity.
-    * Provides methods to perform CRUD operations and custom queries.
+/**
+ * Repository interface for Course entity.
+ * Provides methods to perform CRUD operations and custom queries.
+ *
+ * @version 1.1.0 (2025-12-08)
  */
 @Repository
 public interface CourseRepository extends JpaRepository<Course, Long> {
 
     // Find courses by teacher
     List<Course> findByTeacherAndIsActiveTrue(User teacher);
+
     List<Course> findByTeacher(User teacher);
 
     // Find active courses

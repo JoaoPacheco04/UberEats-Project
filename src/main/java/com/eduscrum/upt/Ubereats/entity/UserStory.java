@@ -9,6 +9,12 @@ import org.hibernate.annotations.UpdateTimestamp;
 import java.time.LocalDateTime;
 import java.util.Objects;
 
+/**
+ * JPA entity representing a user story in the EduScrum platform.
+ * Contains task details, status, priority, and assignment info.
+ *
+ * @version 1.2.0 (2025-12-10)
+ */
 @Entity
 @Table(name = "user_stories")
 public class UserStory {
@@ -60,10 +66,11 @@ public class UserStory {
     private User createdBy;
 
     // === CONSTRUCTORS ===
-    public UserStory() {}
+    public UserStory() {
+    }
 
     public UserStory(String title, String description, Integer storyPoints,
-                     Sprint sprint, Team team, User createdBy) {
+            Sprint sprint, Team team, User createdBy) {
         this.title = title;
         this.description = description;
         this.storyPoints = storyPoints;
@@ -75,47 +82,107 @@ public class UserStory {
     }
 
     public UserStory(String title, String description, Integer storyPoints,
-                     StoryPriority priority, Sprint sprint, Team team, User createdBy) {
+            StoryPriority priority, Sprint sprint, Team team, User createdBy) {
         this(title, description, storyPoints, sprint, team, createdBy);
         this.priority = priority;
     }
 
     // === GETTERS & SETTERS ===
-    public Long getId() { return id; }
-    public void setId(Long id) { this.id = id; }
+    public Long getId() {
+        return id;
+    }
 
-    public String getTitle() { return title; }
-    public void setTitle(String title) { this.title = title; }
+    public void setId(Long id) {
+        this.id = id;
+    }
 
-    public String getDescription() { return description; }
-    public void setDescription(String description) { this.description = description; }
+    public String getTitle() {
+        return title;
+    }
 
-    public Integer getStoryPoints() { return storyPoints; }
-    public void setStoryPoints(Integer storyPoints) { this.storyPoints = storyPoints; }
+    public void setTitle(String title) {
+        this.title = title;
+    }
 
-    public StoryStatus getStatus() { return status; }
-    public void setStatus(StoryStatus status) { this.status = status; }
+    public String getDescription() {
+        return description;
+    }
 
-    public StoryPriority getPriority() { return priority; }
-    public void setPriority(StoryPriority priority) { this.priority = priority; }
+    public void setDescription(String description) {
+        this.description = description;
+    }
 
-    public LocalDateTime getCreatedAt() { return createdAt; }
-    public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }
+    public Integer getStoryPoints() {
+        return storyPoints;
+    }
 
-    public LocalDateTime getUpdatedAt() { return updatedAt; }
-    public void setUpdatedAt(LocalDateTime updatedAt) { this.updatedAt = updatedAt; }
+    public void setStoryPoints(Integer storyPoints) {
+        this.storyPoints = storyPoints;
+    }
 
-    public Sprint getSprint() { return sprint; }
-    public void setSprint(Sprint sprint) { this.sprint = sprint; }
+    public StoryStatus getStatus() {
+        return status;
+    }
 
-    public Team getTeam() { return team; }
-    public void setTeam(Team team) { this.team = team; }
+    public void setStatus(StoryStatus status) {
+        this.status = status;
+    }
 
-    public User getAssignedTo() { return assignedTo; }
-    public void setAssignedTo(User assignedTo) { this.assignedTo = assignedTo; }
+    public StoryPriority getPriority() {
+        return priority;
+    }
 
-    public User getCreatedBy() { return createdBy; }
-    public void setCreatedBy(User createdBy) { this.createdBy = createdBy; }
+    public void setPriority(StoryPriority priority) {
+        this.priority = priority;
+    }
+
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public LocalDateTime getUpdatedAt() {
+        return updatedAt;
+    }
+
+    public void setUpdatedAt(LocalDateTime updatedAt) {
+        this.updatedAt = updatedAt;
+    }
+
+    public Sprint getSprint() {
+        return sprint;
+    }
+
+    public void setSprint(Sprint sprint) {
+        this.sprint = sprint;
+    }
+
+    public Team getTeam() {
+        return team;
+    }
+
+    public void setTeam(Team team) {
+        this.team = team;
+    }
+
+    public User getAssignedTo() {
+        return assignedTo;
+    }
+
+    public void setAssignedTo(User assignedTo) {
+        this.assignedTo = assignedTo;
+    }
+
+    public User getCreatedBy() {
+        return createdBy;
+    }
+
+    public void setCreatedBy(User createdBy) {
+        this.createdBy = createdBy;
+    }
 
     // === BUSINESS METHODS ===
 
@@ -152,11 +219,16 @@ public class UserStory {
      */
     public String getStatusColor() {
         switch (status) {
-            case DONE: return "green";
-            case IN_REVIEW: return "blue";
-            case IN_PROGRESS: return "orange";
-            case TODO: return "gray";
-            default: return "gray";
+            case DONE:
+                return "green";
+            case IN_REVIEW:
+                return "blue";
+            case IN_PROGRESS:
+                return "orange";
+            case TODO:
+                return "gray";
+            default:
+                return "gray";
         }
     }
 
@@ -165,11 +237,16 @@ public class UserStory {
      */
     public String getPriorityColor() {
         switch (priority) {
-            case CRITICAL: return "red";
-            case HIGH: return "orange";
-            case MEDIUM: return "yellow";
-            case LOW: return "green";
-            default: return "gray";
+            case CRITICAL:
+                return "red";
+            case HIGH:
+                return "orange";
+            case MEDIUM:
+                return "yellow";
+            case LOW:
+                return "green";
+            default:
+                return "gray";
         }
     }
 
@@ -178,11 +255,16 @@ public class UserStory {
      */
     public String getPriorityIcon() {
         switch (priority) {
-            case CRITICAL: return "🔥";
-            case HIGH: return "⚠️";
-            case MEDIUM: return "📋";
-            case LOW: return "📝";
-            default: return "📋";
+            case CRITICAL:
+                return "🔥";
+            case HIGH:
+                return "⚠️";
+            case MEDIUM:
+                return "📋";
+            case LOW:
+                return "📝";
+            default:
+                return "📋";
         }
     }
 
@@ -286,10 +368,14 @@ public class UserStory {
      * Get estimated effort level based on story points
      */
     public String getEffortLevel() {
-        if (storyPoints == null || storyPoints == 0) return "Not estimated";
-        if (storyPoints <= 3) return "Small";
-        if (storyPoints <= 8) return "Medium";
-        if (storyPoints <= 13) return "Large";
+        if (storyPoints == null || storyPoints == 0)
+            return "Not estimated";
+        if (storyPoints <= 3)
+            return "Small";
+        if (storyPoints <= 8)
+            return "Medium";
+        if (storyPoints <= 13)
+            return "Large";
         return "Very Large";
     }
 
@@ -304,8 +390,10 @@ public class UserStory {
     // === UTILITY METHODS ===
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof UserStory)) return false;
+        if (this == o)
+            return true;
+        if (!(o instanceof UserStory))
+            return false;
         UserStory userStory = (UserStory) o;
         return Objects.equals(id, userStory.id) &&
                 Objects.equals(title, userStory.title) &&

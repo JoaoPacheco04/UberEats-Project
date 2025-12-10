@@ -12,6 +12,11 @@ import static org.junit.jupiter.api.Assertions.*;
 /**
  * Pure unit tests for Sprint entity business logic methods.
  */
+/**
+ * Unit tests for Sprint entity.
+ *
+ * @version 0.3.1 (2025-10-28)
+ */
 class SprintEntityTest {
 
     private Sprint sprint;

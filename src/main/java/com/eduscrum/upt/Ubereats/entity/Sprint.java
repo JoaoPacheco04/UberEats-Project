@@ -14,6 +14,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+/**
+ * JPA entity representing a sprint in the EduScrum platform.
+ * Contains user stories, analytics, and achievements. Belongs to a project.
+ *
+ * @version 0.8.0 (2025-11-20)
+ */
 @Entity
 @Table(name = "sprints")
 public class Sprint {

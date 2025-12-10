@@ -12,7 +12,7 @@ import java.util.stream.Collectors;
  * Data Transfer Object for team response data.
  * Contains team details, member counts, and performance metrics.
  *
- * @version 1.0 (2025-12-10)
+ * @version 0.9.1 (2025-11-28)
  */
 public class TeamResponse {
     private Long id;
@@ -27,6 +27,11 @@ public class TeamResponse {
     private BigDecimal performanceRating;
     private LocalDateTime createdAt;
 
+    /**
+     * Constructs a TeamResponse from a Team entity.
+     *
+     * @param team The team entity to convert
+     */
     public TeamResponse(Team team) {
         this.id = team.getId();
         this.name = team.getName();

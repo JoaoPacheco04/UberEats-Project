@@ -15,6 +15,12 @@ import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+/**
+ * Integration tests for UserService.
+ * Tests user registration, lookup, and authentication.
+ *
+ * @version 0.5.1 (2025-11-08)
+ */
 @SpringBootTest
 @ActiveProfiles("test")
 @Transactional

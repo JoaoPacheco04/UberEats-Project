@@ -11,43 +11,49 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * Repository interface for Badge entity.
+ * Provides CRUD operations and badge-specific queries.
+ *
+ * @version 0.9.1 (2025-11-28)
+ */
 @Repository
 public interface BadgeRepository extends JpaRepository<Badge, Long> {
 
-    // Find by name
-    Optional<Badge> findByName(String name);
+        // Find by name
+        Optional<Badge> findByName(String name);
 
-    // Find by badge type
-    List<Badge> findByBadgeType(BadgeType badgeType);
+        // Find by badge type
+        List<Badge> findByBadgeType(BadgeType badgeType);
 
-    // Find active badges
-    List<Badge> findByIsActiveTrue();
+        // Find active badges
+        List<Badge> findByIsActiveTrue();
 
-    // Find by creator
-    List<Badge> findByCreatedById(Long createdById);
+        // Find by creator
+        List<Badge> findByCreatedById(Long createdById);
 
-    // Find automatic badges
-    List<Badge> findByBadgeTypeAndIsActiveTrue(BadgeType badgeType);
+        // Find automatic badges
+        List<Badge> findByBadgeTypeAndIsActiveTrue(BadgeType badgeType);
 
-    // Check if name exists (for creation/update validation)
-    boolean existsByName(String name);
+        // Check if name exists (for creation/update validation)
+        boolean existsByName(String name);
 
-    // Check if name exists excluding current badge (for update validation)
-    boolean existsByNameAndIdNot(String name, Long id);
+        // Check if name exists excluding current badge (for update validation)
+        boolean existsByNameAndIdNot(String name, Long id);
 
-    // Find badges with award count
-    @Query("SELECT b FROM Badge b LEFT JOIN FETCH b.achievements WHERE b.id = :id")
-    Optional<Badge> findByIdWithAchievements(@Param("id") Long id);
+        // Find badges with award count
+        @Query("SELECT b FROM Badge b LEFT JOIN FETCH b.achievements WHERE b.id = :id")
+        Optional<Badge> findByIdWithAchievements(@Param("id") Long id);
 
-    // Find most awarded badges
-    @Query("SELECT b, COUNT(a) as awardCount FROM Badge b LEFT JOIN b.achievements a GROUP BY b ORDER BY awardCount DESC")
-    List<Object[]> findMostAwardedBadges();
+        // Find most awarded badges
+        @Query("SELECT b, COUNT(a) as awardCount FROM Badge b LEFT JOIN b.achievements a GROUP BY b ORDER BY awardCount DESC")
+        List<Object[]> findMostAwardedBadges();
 
-    @Query("SELECT COALESCE(SUM(us.storyPoints), 0) FROM UserStory us " +
-            "WHERE us.assignedTo.id = :userId " +
-            "AND us.sprint.project.id = :projectId " +
-            "AND us.status = 'DONE'")
-    Integer sumCompletedStoryPointsByProject(
-            @Param("userId") Long userId,
-            @Param("projectId") Long projectId);
+        @Query("SELECT COALESCE(SUM(us.storyPoints), 0) FROM UserStory us " +
+                        "WHERE us.assignedTo.id = :userId " +
+                        "AND us.sprint.project.id = :projectId " +
+                        "AND us.status = 'DONE'")
+        Integer sumCompletedStoryPointsByProject(
+                        @Param("userId") Long userId,
+                        @Param("projectId") Long projectId);
 }

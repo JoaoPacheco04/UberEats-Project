@@ -9,6 +9,12 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
+/**
+ * Repository interface for Achievement entity.
+ * Provides CRUD operations and achievement-specific queries.
+ *
+ * @version 0.6.1 (2025-11-12)
+ */
 @Repository
 public interface AchievementRepository extends JpaRepository<Achievement, Long> {
 

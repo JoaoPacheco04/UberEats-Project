@@ -9,7 +9,7 @@ import jakarta.validation.constraints.NotNull;
  * Data Transfer Object for creating or updating a User Story.
  * Contains user story details and validation annotations.
  *
- * @version 1.0 (2025-12-10)
+ * @version 0.5.0 (2025-11-05)
  */
 public class UserStoryRequestDTO {
 

@@ -19,9 +19,19 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+/**
+ * Integration tests for UserStoryService.
+ *
+ * @version 0.9.1 (2025-11-28)
+ */
 @SpringBootTest
 @ActiveProfiles("test")
 @Transactional
+/**
+ * Integration tests for UserStoryService.
+ *
+ * @version 0.9.1 (2025-11-28)
+ */
 class UserStoryServiceTest {
 
     @Autowired

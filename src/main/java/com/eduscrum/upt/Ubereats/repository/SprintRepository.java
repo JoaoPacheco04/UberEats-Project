@@ -12,6 +12,12 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * Repository interface for Sprint entity.
+ * Provides CRUD operations and sprint-specific queries.
+ *
+ * @version 0.1.0 (2025-10-15)
+ */
 @Repository
 public interface SprintRepository extends JpaRepository<Sprint, Long> {
 
@@ -29,7 +35,8 @@ public interface SprintRepository extends JpaRepository<Sprint, Long> {
     List<Sprint> findActiveSprints();
 
     // Find sprints by date range
-    List<Sprint> findByStartDateBetweenOrEndDateBetween(LocalDate start1, LocalDate end1, LocalDate start2, LocalDate end2);
+    List<Sprint> findByStartDateBetweenOrEndDateBetween(LocalDate start1, LocalDate end1, LocalDate start2,
+            LocalDate end2);
 
     // Find overdue sprints
     @Query("SELECT s FROM Sprint s WHERE s.endDate < :today AND s.status != 'COMPLETED'")

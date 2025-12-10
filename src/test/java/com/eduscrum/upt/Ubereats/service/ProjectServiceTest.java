@@ -26,10 +26,20 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+/**
+ * Integration tests for ProjectService.
+ *
+ * @version 0.8.0 (2025-11-20)
+ */
 @SpringBootTest
 @ActiveProfiles("test")
 @Transactional
-public class ProjectServiceTest {
+/**
+ * Integration tests for ProjectService.
+ *
+ * @version 0.8.0 (2025-11-20)
+ */
+class ProjectServiceTest {
 
     @Autowired
     private ProjectService projectService;

@@ -26,9 +26,19 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+/**
+ * Integration tests for SprintService.
+ *
+ * @version 0.9.0 (2025-11-25)
+ */
 @SpringBootTest
 @ActiveProfiles("test")
 @Transactional
+/**
+ * Integration tests for SprintService.
+ *
+ * @version 0.9.0 (2025-11-25)
+ */
 class SprintServiceTest {
 
     @Autowired

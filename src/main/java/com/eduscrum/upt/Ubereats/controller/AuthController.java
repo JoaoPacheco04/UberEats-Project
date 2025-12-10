@@ -23,8 +23,7 @@ import java.util.Map;
  * REST controller for authentication operations.
  * Provides endpoints for login, registration, and current user retrieval.
  *
- * @author
- * @version 1.0 (2025-12-10)
+ * @version 0.9.1 (2025-11-28)
  */
 @RestController
 @RequestMapping("/api/auth")

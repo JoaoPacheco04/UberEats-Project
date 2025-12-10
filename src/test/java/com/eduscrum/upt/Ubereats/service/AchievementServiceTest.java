@@ -22,9 +22,19 @@ import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+/**
+ * Integration tests for AchievementService.
+ *
+ * @version 1.0.1 (2025-12-03)
+ */
 @SpringBootTest
 @ActiveProfiles("test")
 @Transactional
+/**
+ * Integration tests for AchievementService.
+ *
+ * @version 1.0.1 (2025-12-03)
+ */
 class AchievementServiceTest {
 
     @Autowired

@@ -7,6 +7,12 @@ import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.Objects;
 
+/**
+ * JPA entity representing a student's enrollment in a course.
+ * Links a student to a course with enrollment date.
+ *
+ * @version 0.5.0 (2025-11-05)
+ */
 @Entity
 @Table(name = "course_enrollments")
 public class CourseEnrollment {
@@ -29,7 +35,8 @@ public class CourseEnrollment {
     private User student;
 
     // === CONSTRUCTORS ===
-    public CourseEnrollment() {}
+    public CourseEnrollment() {
+    }
 
     public CourseEnrollment(Course course, User student) {
         this.course = course;
@@ -38,17 +45,37 @@ public class CourseEnrollment {
     }
 
     // === GETTERS & SETTERS ===
-    public Long getId() { return id; }
-    public void setId(Long id) { this.id = id; }
+    public Long getId() {
+        return id;
+    }
 
-    public LocalDateTime getEnrolledAt() { return enrolledAt; }
-    public void setEnrolledAt(LocalDateTime enrolledAt) { this.enrolledAt = enrolledAt; }
+    public void setId(Long id) {
+        this.id = id;
+    }
 
-    public Course getCourse() { return course; }
-    public void setCourse(Course course) { this.course = course; }
+    public LocalDateTime getEnrolledAt() {
+        return enrolledAt;
+    }
 
-    public User getStudent() { return student; }
-    public void setStudent(User student) { this.student = student; }
+    public void setEnrolledAt(LocalDateTime enrolledAt) {
+        this.enrolledAt = enrolledAt;
+    }
+
+    public Course getCourse() {
+        return course;
+    }
+
+    public void setCourse(Course course) {
+        this.course = course;
+    }
+
+    public User getStudent() {
+        return student;
+    }
+
+    public void setStudent(User student) {
+        this.student = student;
+    }
 
     // === BUSINESS METHODS ===
 
@@ -78,8 +105,10 @@ public class CourseEnrollment {
     // === UTILITY METHODS ===
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof CourseEnrollment)) return false;
+        if (this == o)
+            return true;
+        if (!(o instanceof CourseEnrollment))
+            return false;
         CourseEnrollment that = (CourseEnrollment) o;
         return Objects.equals(id, that.id) &&
                 Objects.equals(course, that.course) &&

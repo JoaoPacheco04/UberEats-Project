@@ -20,9 +20,19 @@ import static org.junit.jupiter.api.Assertions.*;
  * Integration tests for ExportService.
  * Uses H2 in-memory database for testing.
  */
+/**
+ * Integration tests for ExportService.
+ *
+ * @version 1.0.4 (2025-12-07)
+ */
 @SpringBootTest
 @ActiveProfiles("test")
 @Transactional
+/**
+ * Integration tests for ExportService.
+ *
+ * @version 1.0.4 (2025-12-07)
+ */
 class ExportServiceTest {
 
     @Autowired

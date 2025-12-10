@@ -7,6 +7,11 @@ import static org.junit.jupiter.api.Assertions.*;
 /**
  * Unit tests for custom exceptions.
  */
+/**
+ * Tests for custom exception classes.
+ *
+ * @version 0.7.0 (2025-11-15)
+ */
 class ExceptionTest {
 
     // ===================== RESOURCE NOT FOUND EXCEPTION =====================

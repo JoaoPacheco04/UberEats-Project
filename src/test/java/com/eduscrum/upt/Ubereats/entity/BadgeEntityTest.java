@@ -9,6 +9,11 @@ import static org.junit.jupiter.api.Assertions.*;
 /**
  * Pure unit tests for Badge entity business logic methods.
  */
+/**
+ * Unit tests for Badge entity.
+ *
+ * @version 0.6.0 (2025-11-10)
+ */
 class BadgeEntityTest {
 
     private Badge badge;

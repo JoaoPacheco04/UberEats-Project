@@ -12,6 +12,12 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+/**
+ * JPA entity representing a user in the EduScrum platform.
+ * Can be either a TEACHER or STUDENT with different capabilities.
+ *
+ * @version 1.1.0 (2025-12-08)
+ */
 @Entity
 @Table(name = "users")
 public class User {
@@ -67,10 +73,11 @@ public class User {
     private List<CourseEnrollment> enrollments = new ArrayList<>();
 
     // === CONSTRUCTORS ===
-    public User() {}
+    public User() {
+    }
 
     public User(String username, String email, String password, UserRole role,
-                String firstName, String lastName) {
+            String firstName, String lastName) {
         this.username = username;
         this.email = email;
         this.password = password;
@@ -81,56 +88,131 @@ public class User {
     }
 
     public User(String username, String email, String password, UserRole role,
-                String firstName, String lastName, String studentNumber) {
+            String firstName, String lastName, String studentNumber) {
         this(username, email, password, role, firstName, lastName);
         this.studentNumber = studentNumber;
     }
 
     // === GETTERS & SETTERS ===
-    public Long getId() { return id; }
-    public void setId(Long id) { this.id = id; }
+    public Long getId() {
+        return id;
+    }
 
-    public String getUsername() { return username; }
-    public void setUsername(String username) { this.username = username; }
+    public void setId(Long id) {
+        this.id = id;
+    }
 
-    public String getEmail() { return email; }
-    public void setEmail(String email) { this.email = email; }
+    public String getUsername() {
+        return username;
+    }
 
-    public String getPassword() { return password; }
-    public void setPassword(String password) { this.password = password; }
+    public void setUsername(String username) {
+        this.username = username;
+    }
 
-    public UserRole getRole() { return role; }
-    public void setRole(UserRole role) { this.role = role; }
+    public String getEmail() {
+        return email;
+    }
 
-    public String getFirstName() { return firstName; }
-    public void setFirstName(String firstName) { this.firstName = firstName; }
+    public void setEmail(String email) {
+        this.email = email;
+    }
 
-    public String getLastName() { return lastName; }
-    public void setLastName(String lastName) { this.lastName = lastName; }
+    public String getPassword() {
+        return password;
+    }
 
-    public String getStudentNumber() { return studentNumber; }
-    public void setStudentNumber(String studentNumber) { this.studentNumber = studentNumber; }
+    public void setPassword(String password) {
+        this.password = password;
+    }
 
-    public Boolean getIsActive() { return isActive; }
-    public void setIsActive(Boolean isActive) { this.isActive = isActive; }
+    public UserRole getRole() {
+        return role;
+    }
 
-    public LocalDateTime getCreatedAt() { return createdAt; }
-    public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }
+    public void setRole(UserRole role) {
+        this.role = role;
+    }
 
-    public LocalDateTime getUpdatedAt() { return updatedAt; }
-    public void setUpdatedAt(LocalDateTime updatedAt) { this.updatedAt = updatedAt; }
+    public String getFirstName() {
+        return firstName;
+    }
 
-    public List<Course> getTaughtCourses() { return taughtCourses; }
-    public void setTaughtCourses(List<Course> taughtCourses) { this.taughtCourses = taughtCourses; }
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
 
-    public List<TeamMember> getTeamMemberships() { return teamMemberships; }
-    public void setTeamMemberships(List<TeamMember> teamMemberships) { this.teamMemberships = teamMemberships; }
+    public String getLastName() {
+        return lastName;
+    }
 
-    public List<Achievement> getIndividualAchievements() { return individualAchievements; }
-    public void setIndividualAchievements(List<Achievement> individualAchievements) { this.individualAchievements = individualAchievements; }
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
 
-    public List<CourseEnrollment> getEnrollments() { return enrollments; }
-    public void setEnrollments(List<CourseEnrollment> enrollments) { this.enrollments = enrollments; }
+    public String getStudentNumber() {
+        return studentNumber;
+    }
+
+    public void setStudentNumber(String studentNumber) {
+        this.studentNumber = studentNumber;
+    }
+
+    public Boolean getIsActive() {
+        return isActive;
+    }
+
+    public void setIsActive(Boolean isActive) {
+        this.isActive = isActive;
+    }
+
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public LocalDateTime getUpdatedAt() {
+        return updatedAt;
+    }
+
+    public void setUpdatedAt(LocalDateTime updatedAt) {
+        this.updatedAt = updatedAt;
+    }
+
+    public List<Course> getTaughtCourses() {
+        return taughtCourses;
+    }
+
+    public void setTaughtCourses(List<Course> taughtCourses) {
+        this.taughtCourses = taughtCourses;
+    }
+
+    public List<TeamMember> getTeamMemberships() {
+        return teamMemberships;
+    }
+
+    public void setTeamMemberships(List<TeamMember> teamMemberships) {
+        this.teamMemberships = teamMemberships;
+    }
+
+    public List<Achievement> getIndividualAchievements() {
+        return individualAchievements;
+    }
+
+    public void setIndividualAchievements(List<Achievement> individualAchievements) {
+        this.individualAchievements = individualAchievements;
+    }
+
+    public List<CourseEnrollment> getEnrollments() {
+        return enrollments;
+    }
+
+    public void setEnrollments(List<CourseEnrollment> enrollments) {
+        this.enrollments = enrollments;
+    }
 
     // === BUSINESS METHODS ===
 
@@ -157,7 +239,8 @@ public class User {
      * Calculate average score across all achievements
      */
     public Double getAverageScore() {
-        if (individualAchievements.isEmpty()) return 0.0;
+        if (individualAchievements.isEmpty())
+            return 0.0;
         return individualAchievements.stream()
                 .mapToInt(achievement -> achievement.getBadge().getPoints())
                 .average()
@@ -239,8 +322,10 @@ public class User {
     // === UTILITY METHODS ===
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof User)) return false;
+        if (this == o)
+            return true;
+        if (!(o instanceof User))
+            return false;
         User user = (User) o;
         return Objects.equals(id, user.id) &&
                 Objects.equals(email, user.email);

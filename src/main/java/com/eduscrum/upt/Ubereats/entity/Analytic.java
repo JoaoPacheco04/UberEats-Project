@@ -15,6 +15,12 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
+/**
+ * JPA entity representing progress analytics/metrics in the EduScrum platform.
+ * Tracks sprint/team progress including velocity, tasks, and team mood.
+ *
+ * @version 1.2.0 (2025-12-10)
+ */
 @Entity
 @Table(name = "analytics")
 public class Analytic {

@@ -25,8 +25,7 @@ import java.util.stream.Collectors;
  * Handles creation, updates, assignment, status transitions, and analytics for
  * user stories.
  *
- * @author
- * @version 1.0 (2025-12-10)
+ * @version 0.8.0 (2025-11-20)
  */
 @Service
 @Transactional

@@ -11,6 +11,11 @@ import static org.junit.jupiter.api.Assertions.*;
 /**
  * Pure unit tests for Team entity business logic methods.
  */
+/**
+ * Unit tests for Team entity.
+ *
+ * @version 0.4.0 (2025-11-02)
+ */
 class TeamEntityTest {
 
     private Team team;

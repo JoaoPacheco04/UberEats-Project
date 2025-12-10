@@ -12,6 +12,11 @@ import static org.junit.jupiter.api.Assertions.*;
 /**
  * Pure unit tests for Project entity business logic methods.
  */
+/**
+ * Unit tests for Project entity.
+ *
+ * @version 0.3.0 (2025-10-25)
+ */
 class ProjectEntityTest {
 
     private Project project;

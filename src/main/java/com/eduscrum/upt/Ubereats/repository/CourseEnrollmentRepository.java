@@ -7,6 +7,12 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * Repository interface for CourseEnrollment entity.
+ * Provides CRUD operations and enrollment queries.
+ *
+ * @version 1.0.1 (2025-12-03)
+ */
 @Repository
 public interface CourseEnrollmentRepository extends JpaRepository<CourseEnrollment, Long> {
 

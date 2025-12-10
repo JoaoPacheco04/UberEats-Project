@@ -1,5 +1,10 @@
 package com.eduscrum.upt.Ubereats.config;
 
+/**
+ * Application-wide constants for EduScrum platform.
+ *
+ * @version 0.3.0 (2025-10-25)
+ */
 public final class AppConstants {
 
     private AppConstants() {

@@ -12,6 +12,8 @@ import static org.junit.jupiter.api.Assertions.*;
 /**
  * Pure unit tests for User entity business logic methods.
  * No Spring context needed - tests entity methods directly.
+ *
+ * @version 0.2.0 (2025-10-20)
  */
 class UserEntityTest {
 

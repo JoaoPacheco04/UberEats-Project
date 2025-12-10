@@ -5,6 +5,12 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.jdbc.core.JdbcTemplate;
 
+/**
+ * Configuration class for database schema fixes.
+ * Runs at startup to apply necessary schema modifications.
+ *
+ * @version 0.5.0 (2025-11-05)
+ */
 @Configuration
 public class SchemaFixConfig {
 

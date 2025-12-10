@@ -9,9 +9,10 @@ import java.util.List;
 import java.util.Optional;
 
 /**
- * Repository interface for User entity
- * Extends JpaRepository to inherit basic CRUD operations
- * Spring Data JPA automatically implements these methods
+ * Repository interface for User entity.
+ * Extends JpaRepository to inherit basic CRUD operations.
+ *
+ * @version 0.6.1 (2025-11-12)
  */
 @Repository
 public interface UserRepository extends JpaRepository<User, Long> {

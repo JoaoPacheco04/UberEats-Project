@@ -10,6 +10,12 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
+/**
+ * Repository interface for UserStory entity.
+ * Provides CRUD operations and user story queries.
+ *
+ * @version 0.8.0 (2025-11-20)
+ */
 @Repository
 public interface UserStoryRepository extends JpaRepository<UserStory, Long> {
 

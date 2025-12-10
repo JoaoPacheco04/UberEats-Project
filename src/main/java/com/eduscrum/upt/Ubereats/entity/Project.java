@@ -16,6 +16,12 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
+/**
+ * JPA entity representing a project in the EduScrum platform.
+ * Contains sprints, teams, and achievements. Belongs to a course.
+ *
+ * @version 0.6.1 (2025-11-12)
+ */
 @Entity
 @Table(name = "projects")
 public class Project {

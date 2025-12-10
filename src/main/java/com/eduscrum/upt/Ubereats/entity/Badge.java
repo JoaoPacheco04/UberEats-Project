@@ -11,6 +11,12 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.*;
 
+/**
+ * JPA entity representing a badge in the EduScrum platform.
+ * Can be awarded to users or teams for achievements.
+ *
+ * @version 0.1.0 (2025-10-15)
+ */
 @Entity
 @Table(name = "badges")
 public class Badge {

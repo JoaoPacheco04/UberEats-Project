@@ -3,6 +3,11 @@ package com.eduscrum.upt.Ubereats;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
+/**
+ * Main Spring Boot application entry point for EduScrum platform.
+ *
+ * @version 0.1.0 (2025-10-15)
+ */
 @SpringBootApplication
 public class UbereatsApplication {
 

@@ -21,8 +21,7 @@ import java.util.Objects;
  * Service class for managing achievements in the EduScrum platform.
  * Handles achievement creation, retrieval, and automatic badge awarding logic.
  *
- * @author
- * @version 1.0 (2025-12-10)
+ * @version 0.2.1 (2025-10-22)
  */
 @Service
 @Transactional

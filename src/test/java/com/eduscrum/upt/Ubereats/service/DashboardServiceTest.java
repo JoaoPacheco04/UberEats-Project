@@ -15,9 +15,19 @@ import java.time.LocalDate;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+/**
+ * Integration tests for DashboardService.
+ *
+ * @version 1.0.3 (2025-12-06)
+ */
 @SpringBootTest
 @ActiveProfiles("test")
 @Transactional
+/**
+ * Integration tests for DashboardService.
+ *
+ * @version 1.0.3 (2025-12-06)
+ */
 class DashboardServiceTest {
 
     @Autowired
