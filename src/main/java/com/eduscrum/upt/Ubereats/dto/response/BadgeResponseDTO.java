@@ -2,6 +2,7 @@
 package com.eduscrum.upt.Ubereats.dto.response;
 
 import com.eduscrum.upt.Ubereats.entity.enums.BadgeType;
+import com.eduscrum.upt.Ubereats.entity.enums.RecipientType;
 import java.time.LocalDateTime;
 
 public class BadgeResponseDTO {
@@ -10,6 +11,7 @@ public class BadgeResponseDTO {
     private String description;
     private Integer points;
     private BadgeType badgeType;
+    private RecipientType recipientType;
     private String triggerCondition;
     private String icon;
     private String color;
@@ -23,13 +25,14 @@ public class BadgeResponseDTO {
     private String createdByName;
 
     // Constructors
-    public BadgeResponseDTO() {}
+    public BadgeResponseDTO() {
+    }
 
     public BadgeResponseDTO(Long id, String name, String description, Integer points,
-                            BadgeType badgeType, String triggerCondition, String icon,
-                            String color, Boolean isActive, LocalDateTime createdAt,
-                            LocalDateTime updatedAt, Integer awardCount, Long createdByUserId,
-                            String createdByName) {
+            BadgeType badgeType, String triggerCondition, String icon,
+            String color, Boolean isActive, LocalDateTime createdAt,
+            LocalDateTime updatedAt, Integer awardCount, Long createdByUserId,
+            String createdByName) {
         this.id = id;
         this.name = name;
         this.description = description;
@@ -47,45 +50,123 @@ public class BadgeResponseDTO {
     }
 
     // Getters and Setters
-    public Long getId() { return id; }
-    public void setId(Long id) { this.id = id; }
+    public Long getId() {
+        return id;
+    }
 
-    public String getName() { return name; }
-    public void setName(String name) { this.name = name; }
+    public void setId(Long id) {
+        this.id = id;
+    }
 
-    public String getDescription() { return description; }
-    public void setDescription(String description) { this.description = description; }
+    public String getName() {
+        return name;
+    }
 
-    public Integer getPoints() { return points; }
-    public void setPoints(Integer points) { this.points = points; }
+    public void setName(String name) {
+        this.name = name;
+    }
 
-    public BadgeType getBadgeType() { return badgeType; }
-    public void setBadgeType(BadgeType badgeType) { this.badgeType = badgeType; }
+    public String getDescription() {
+        return description;
+    }
 
-    public String getTriggerCondition() { return triggerCondition; }
-    public void setTriggerCondition(String triggerCondition) { this.triggerCondition = triggerCondition; }
+    public void setDescription(String description) {
+        this.description = description;
+    }
 
-    public String getIcon() { return icon; }
-    public void setIcon(String icon) { this.icon = icon; }
+    public Integer getPoints() {
+        return points;
+    }
 
-    public String getColor() { return color; }
-    public void setColor(String color) { this.color = color; }
+    public void setPoints(Integer points) {
+        this.points = points;
+    }
 
-    public Boolean getIsActive() { return isActive; }
-    public void setIsActive(Boolean isActive) { this.isActive = isActive; }
+    public BadgeType getBadgeType() {
+        return badgeType;
+    }
 
-    public LocalDateTime getCreatedAt() { return createdAt; }
-    public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }
+    public void setBadgeType(BadgeType badgeType) {
+        this.badgeType = badgeType;
+    }
 
-    public LocalDateTime getUpdatedAt() { return updatedAt; }
-    public void setUpdatedAt(LocalDateTime updatedAt) { this.updatedAt = updatedAt; }
+    public RecipientType getRecipientType() {
+        return recipientType;
+    }
 
-    public Integer getAwardCount() { return awardCount; }
-    public void setAwardCount(Integer awardCount) { this.awardCount = awardCount; }
+    public void setRecipientType(RecipientType recipientType) {
+        this.recipientType = recipientType;
+    }
 
-    public Long getCreatedByUserId() { return createdByUserId; }
-    public void setCreatedByUserId(Long createdByUserId) { this.createdByUserId = createdByUserId; }
+    public String getTriggerCondition() {
+        return triggerCondition;
+    }
 
-    public String getCreatedByName() { return createdByName; }
-    public void setCreatedByName(String createdByName) { this.createdByName = createdByName; }
+    public void setTriggerCondition(String triggerCondition) {
+        this.triggerCondition = triggerCondition;
+    }
+
+    public String getIcon() {
+        return icon;
+    }
+
+    public void setIcon(String icon) {
+        this.icon = icon;
+    }
+
+    public String getColor() {
+        return color;
+    }
+
+    public void setColor(String color) {
+        this.color = color;
+    }
+
+    public Boolean getIsActive() {
+        return isActive;
+    }
+
+    public void setIsActive(Boolean isActive) {
+        this.isActive = isActive;
+    }
+
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public LocalDateTime getUpdatedAt() {
+        return updatedAt;
+    }
+
+    public void setUpdatedAt(LocalDateTime updatedAt) {
+        this.updatedAt = updatedAt;
+    }
+
+    public Integer getAwardCount() {
+        return awardCount;
+    }
+
+    public void setAwardCount(Integer awardCount) {
+        this.awardCount = awardCount;
+    }
+
+    public Long getCreatedByUserId() {
+        return createdByUserId;
+    }
+
+    public void setCreatedByUserId(Long createdByUserId) {
+        this.createdByUserId = createdByUserId;
+    }
+
+    public String getCreatedByName() {
+        return createdByName;
+    }
+
+    public void setCreatedByName(String createdByName) {
+        this.createdByName = createdByName;
+    }
 }

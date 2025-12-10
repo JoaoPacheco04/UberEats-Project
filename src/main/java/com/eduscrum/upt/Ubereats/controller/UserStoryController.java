@@ -35,6 +35,12 @@ public class UserStoryController {
         return ResponseEntity.ok(userStories);
     }
 
+    @GetMapping("/sprint/{sprintId}")
+    public ResponseEntity<List<UserStoryResponseDTO>> getUserStoriesBySprint(@PathVariable Long sprintId) {
+        List<UserStoryResponseDTO> userStories = userStoryService.getUserStoriesBySprint(sprintId);
+        return ResponseEntity.ok(userStories);
+    }
+
     @GetMapping("/{id}")
     public ResponseEntity<UserStoryResponseDTO> getUserStoryById(@PathVariable Long id) {
         UserStoryResponseDTO userStory = userStoryService.getUserStoryById(id)
@@ -43,13 +49,15 @@ public class UserStoryController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<UserStoryResponseDTO> updateUserStory(@PathVariable Long id, @Valid @RequestBody UserStoryRequestDTO requestDTO) {
+    public ResponseEntity<UserStoryResponseDTO> updateUserStory(@PathVariable Long id,
+            @Valid @RequestBody UserStoryRequestDTO requestDTO) {
         UserStoryResponseDTO updatedUserStory = userStoryService.updateUserStory(id, requestDTO);
         return ResponseEntity.ok(updatedUserStory);
     }
 
     @PutMapping("/{id}/assign/{assignedToId}")
-    public ResponseEntity<UserStoryResponseDTO> assignUserStory(@PathVariable Long id, @PathVariable Long assignedToId) {
+    public ResponseEntity<UserStoryResponseDTO> assignUserStory(@PathVariable Long id,
+            @PathVariable Long assignedToId) {
         UserStoryResponseDTO response = userStoryService.assignUserStory(id, assignedToId);
         return ResponseEntity.ok(response);
     }
@@ -88,7 +96,8 @@ public class UserStoryController {
         stats.put("totalStoryPoints", totalPoints != null ? totalPoints : 0);
         stats.put("completedStoryPoints", completedPoints != null ? completedPoints : 0);
         stats.put("completionPercentage", completionPercentage != null ? completionPercentage : 0.0);
-        stats.put("remainingStoryPoints", (totalPoints != null ? totalPoints : 0) - (completedPoints != null ? completedPoints : 0));
+        stats.put("remainingStoryPoints",
+                (totalPoints != null ? totalPoints : 0) - (completedPoints != null ? completedPoints : 0));
 
         return ResponseEntity.ok(stats);
     }

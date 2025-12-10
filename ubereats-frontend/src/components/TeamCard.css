@@ -1,0 +1,167 @@
+/* TeamCard.css */
+.team-card {
+    background: white;
+    border-radius: 16px;
+    padding: 1.75rem;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+    border: 1px solid #f1f5f9;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    color-scheme: light;
+    color: #1e293b;
+    min-height: 240px;
+}
+
+.team-card:hover {
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+}
+
+/* Header */
+.team-header {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.team-icon {
+    width: 48px;
+    height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+    color: white;
+    border-radius: 12px;
+    box-shadow: 0 4px 8px rgba(99, 102, 241, 0.3);
+}
+
+.team-info {
+    flex: 1;
+}
+
+.team-arrow {
+    color: #94a3b8;
+    transition: transform 0.2s;
+}
+
+.team-card:hover .team-arrow {
+    transform: translateX(4px);
+    color: #6366f1;
+}
+
+.team-name {
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: #1e293b;
+    margin: 0;
+}
+
+.member-count {
+    font-size: 0.8rem;
+    color: #64748b;
+}
+
+/* Roles */
+.team-roles {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    padding: 1rem;
+    background: #f8fafc;
+    border-radius: 10px;
+}
+
+.role {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.role-icon {
+    flex-shrink: 0;
+}
+
+.role-icon.scrum-master {
+    color: #f59e0b;
+}
+
+.role-icon.product-owner {
+    color: #6366f1;
+}
+
+.role-info {
+    display: flex;
+    flex-direction: column;
+}
+
+.role-label {
+    font-size: 0.7rem;
+    color: #94a3b8;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.role-name {
+    font-size: 0.875rem;
+    color: #475569;
+    font-weight: 500;
+}
+
+/* Stats */
+.team-stats {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.75rem;
+}
+
+.stat {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem;
+    background: #f1f5f9;
+    border-radius: 8px;
+    color: #64748b;
+}
+
+.stat svg {
+    color: #6366f1;
+}
+
+.stat-value {
+    font-weight: 600;
+    color: #1e293b;
+}
+
+.stat-label {
+    font-size: 0.75rem;
+    color: #94a3b8;
+}
+
+/* Projects */
+.team-projects {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    padding-top: 0.75rem;
+    border-top: 1px solid #f1f5f9;
+}
+
+.project-tag {
+    padding: 0.25rem 0.75rem;
+    background: #ede9fe;
+    color: #7c3aed;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 500;
+}
+
+.more-projects {
+    padding: 0.25rem 0.5rem;
+    color: #94a3b8;
+    font-size: 0.75rem;
+    font-weight: 500;
+}

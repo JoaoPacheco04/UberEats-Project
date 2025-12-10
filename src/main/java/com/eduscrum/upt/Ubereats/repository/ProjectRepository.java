@@ -10,4 +10,6 @@ import java.util.List;
 @Repository
 public interface ProjectRepository extends JpaRepository<Project, Long> {
     List<Project> findByStatusNot(ProjectStatus status);
+
+    List<Project> findByCourseIdAndStatusNot(Long courseId, ProjectStatus status);
 }

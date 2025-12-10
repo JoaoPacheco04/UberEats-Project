@@ -37,14 +37,19 @@ public class SecurityConfig {
                         DaoAuthenticationProvider authenticationProvider) throws Exception {
 
                 http
+                                // Enable CORS with defaults (uses CorsConfigurationSource bean)
+                                .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                                 .csrf(csrf -> csrf.disable())
                                 .sessionManagement(session -> session
                                                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                                 .authorizeHttpRequests(authz -> authz
-                                                // 1. Public access for authentication
+                                                // 1. Allow preflight requests
+                                                .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
+
+                                                // 2. Public access for authentication
                                                 .requestMatchers("/api/auth/**", "/error").permitAll()
 
-                                                // 2. Teacher-only access for management tasks
+                                                // 3. Teacher-only access for management tasks
                                                 .requestMatchers(HttpMethod.POST, "/api/courses/**", "/api/projects/**",
                                                                 "/api/sprints/**",
                                                                 "/api/teams/**", "/api/enrollments")
@@ -62,15 +67,15 @@ public class SecurityConfig {
                                                 .requestMatchers(HttpMethod.POST, "/api/achievements")
                                                 .hasAuthority("ROLE_TEACHER")
 
-                                                // 3. Student-only access
+                                                // 4. Student-only access
                                                 .requestMatchers(HttpMethod.POST, "/api/progress-metrics")
                                                 .hasAuthority("ROLE_STUDENT")
 
-                                                // 4. Authenticated users (Students and Teachers) can manage their work
+                                                // 5. Authenticated users (Students and Teachers) can manage their work
                                                 .requestMatchers(HttpMethod.POST, "/api/user-stories").authenticated()
                                                 .requestMatchers(HttpMethod.PUT, "/api/user-stories/**").authenticated()
 
-                                                // 5. General authenticated access for all other API requests
+                                                // 6. General authenticated access for all other API requests
                                                 .requestMatchers("/api/**").authenticated()
 
                                                 // Fallback for any other request
@@ -79,6 +84,24 @@ public class SecurityConfig {
                                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 
                 return http.build();
+        }
+
+        @Bean
+        public org.springframework.web.cors.CorsConfigurationSource corsConfigurationSource() {
+                org.springframework.web.cors.CorsConfiguration configuration = new org.springframework.web.cors.CorsConfiguration();
+                configuration.setAllowedOrigins(java.util.Arrays.asList("http://localhost:5173",
+                                "http://localhost:5174", "http://localhost:3000"));
+                configuration.setAllowedMethods(
+                                java.util.Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"));
+                configuration.setAllowedHeaders(java.util.Arrays.asList("Authorization", "Content-Type",
+                                "X-Requested-With", "Accept", "Origin"));
+                configuration.setExposedHeaders(java.util.Arrays.asList("Authorization"));
+                configuration.setAllowCredentials(true);
+                configuration.setMaxAge(3600L);
+
+                org.springframework.web.cors.UrlBasedCorsConfigurationSource source = new org.springframework.web.cors.UrlBasedCorsConfigurationSource();
+                source.registerCorsConfiguration("/**", configuration);
+                return source;
         }
 
         @Bean

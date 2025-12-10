@@ -3,6 +3,7 @@ package com.eduscrum.upt.Ubereats.entity;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.eduscrum.upt.Ubereats.entity.enums.BadgeType;
+import com.eduscrum.upt.Ubereats.entity.enums.RecipientType;
 import jakarta.persistence.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
@@ -31,6 +32,10 @@ public class Badge {
     @Enumerated(EnumType.STRING)
     @Column(name = "badge_type", nullable = false, length = 10)
     private BadgeType badgeType;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "recipient_type", nullable = false, length = 15)
+    private RecipientType recipientType = RecipientType.BOTH;
 
     @Column(name = "trigger_condition", columnDefinition = "JSON")
     private String triggerCondition;
@@ -118,6 +123,14 @@ public class Badge {
 
     public void setBadgeType(BadgeType badgeType) {
         this.badgeType = badgeType;
+    }
+
+    public RecipientType getRecipientType() {
+        return recipientType;
+    }
+
+    public void setRecipientType(RecipientType recipientType) {
+        this.recipientType = recipientType;
     }
 
     public String getTriggerCondition() {

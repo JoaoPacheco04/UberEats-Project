@@ -34,6 +34,12 @@ public class ProjectController {
         return ResponseEntity.ok(projects);
     }
 
+    @GetMapping("/course/{courseId}")
+    public ResponseEntity<List<ProjectResponse>> getByCourse(@PathVariable Long courseId) {
+        List<ProjectResponse> projects = projectService.getProjectsByCourse(courseId);
+        return ResponseEntity.ok(projects);
+    }
+
     @GetMapping("/{id}")
     public ResponseEntity<ProjectResponse> getById(@PathVariable Long id) {
         ProjectResponse project = projectService.getProjectById(id);

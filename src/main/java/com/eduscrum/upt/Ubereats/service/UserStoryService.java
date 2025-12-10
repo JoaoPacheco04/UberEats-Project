@@ -440,6 +440,22 @@ public class UserStoryService {
         return userStoryRepository.sumHighPriorityCompletedStoryPointsByProject(userId, projectId);
     }
 
+    /**
+     * Gets total story points for a specific team in a sprint
+     */
+    @Transactional(readOnly = true)
+    public Integer getTotalStoryPointsBySprintAndTeam(Long sprintId, Long teamId) {
+        return userStoryRepository.sumStoryPointsBySprintIdAndTeamId(sprintId, teamId);
+    }
+
+    /**
+     * Gets completed story points for a specific team in a sprint
+     */
+    @Transactional(readOnly = true)
+    public Integer getCompletedStoryPointsBySprintAndTeam(Long sprintId, Long teamId) {
+        return userStoryRepository.sumCompletedStoryPointsBySprintIdAndTeamId(sprintId, teamId);
+    }
+
     // === UTILITY METHODS ===
 
     private void updateProjectProgress(Long projectId) {

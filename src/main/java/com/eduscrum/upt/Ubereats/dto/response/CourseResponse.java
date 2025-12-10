@@ -2,6 +2,7 @@ package com.eduscrum.upt.Ubereats.dto.response;
 
 import com.eduscrum.upt.Ubereats.entity.enums.Semester;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.time.LocalDateTime;
 
@@ -14,6 +15,8 @@ public class CourseResponse {
     private String description;
     private Semester semester;
     private String academicYear;
+
+    @JsonProperty("isActive")
     private Boolean isActive;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
@@ -28,11 +31,12 @@ public class CourseResponse {
     private Double averageTeamScore;
 
     // Constructors
-    public CourseResponse() {}
+    public CourseResponse() {
+    }
 
     public CourseResponse(Long id, String name, String code, String description,
-                          Semester semester, String academicYear, Boolean isActive,
-                          LocalDateTime createdAt, LocalDateTime updatedAt) {
+            Semester semester, String academicYear, Boolean isActive,
+            LocalDateTime createdAt, LocalDateTime updatedAt) {
         this.id = id;
         this.name = name;
         this.code = code;

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { login } from '../services/api';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import loginBg from '../assets/login-bg.jpg';
 import applogo from '../assets/logo.png';
 
@@ -119,6 +119,14 @@ const Login = () => {
                             Login
                         </button>
                     </form>
+
+                    {/* Register Link */}
+                    <p className="mt-6 text-center text-gray-500">
+                        Don't have an account?{' '}
+                        <Link to="/register" className="text-teal-500 font-semibold hover:text-teal-600 transition-colors">
+                            Create Account
+                        </Link>
+                    </p>
                 </div>
             </div>
         </div>

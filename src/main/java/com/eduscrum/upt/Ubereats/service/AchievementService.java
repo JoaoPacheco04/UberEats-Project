@@ -286,6 +286,8 @@ public class AchievementService {
     /**
      * Check for and awards automatic team badges when a sprint is completed.
      * (Sprint Master)
+     * FIXED: Now checks per-team completion, not sprint-level completion.
+     * A team only gets the badge if THEY completed 100% of THEIR story points.
      */
     public void checkAutomaticTeamBadgesOnSprintCompletion(Long sprintId) {
         Sprint sprint = sprintService.getSprintEntity(sprintId);
@@ -302,9 +304,11 @@ public class AchievementService {
 
         for (Team team : teams) {
             Long teamId = team.getId();
-            Integer totalPoints = userStoryService.getTotalStoryPointsBySprint(sprintId);
-            Integer completedPoints = userStoryService.getCompletedStoryPointsBySprint(sprintId);
+            // FIXED: Use per-team methods instead of sprint-level methods
+            Integer totalPoints = userStoryService.getTotalStoryPointsBySprintAndTeam(sprintId, teamId);
+            Integer completedPoints = userStoryService.getCompletedStoryPointsBySprintAndTeam(sprintId, teamId);
 
+            // Award badge only if team has story points AND completed 100% of them
             if (totalPoints > 0 && completedPoints.equals(totalPoints)) {
                 AchievementRequestDTO request = new AchievementRequestDTO(
                         "Concluded 100% of planned Story Points for Sprint " + sprint.getSprintNumber(),

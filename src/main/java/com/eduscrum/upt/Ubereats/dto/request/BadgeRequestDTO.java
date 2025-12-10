@@ -2,6 +2,7 @@
 package com.eduscrum.upt.Ubereats.dto.request;
 
 import com.eduscrum.upt.Ubereats.entity.enums.BadgeType;
+import com.eduscrum.upt.Ubereats.entity.enums.RecipientType;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.PositiveOrZero;
@@ -20,6 +21,8 @@ public class BadgeRequestDTO {
     @NotNull(message = "Badge type is required")
     private BadgeType badgeType;
 
+    private RecipientType recipientType = RecipientType.BOTH;
+
     private String triggerCondition;
     private String icon = "🏆";
     private String color = "#FF5733";
@@ -28,10 +31,11 @@ public class BadgeRequestDTO {
     private Long createdByUserId;
 
     // Constructors
-    public BadgeRequestDTO() {}
+    public BadgeRequestDTO() {
+    }
 
     public BadgeRequestDTO(String name, String description, Integer points, BadgeType badgeType,
-                           String triggerCondition, String icon, String color, Long createdByUserId) {
+            String triggerCondition, String icon, String color, Long createdByUserId) {
         this.name = name;
         this.description = description;
         this.points = points;
@@ -43,27 +47,75 @@ public class BadgeRequestDTO {
     }
 
     // Getters and Setters
-    public String getName() { return name; }
-    public void setName(String name) { this.name = name; }
+    public String getName() {
+        return name;
+    }
 
-    public String getDescription() { return description; }
-    public void setDescription(String description) { this.description = description; }
+    public void setName(String name) {
+        this.name = name;
+    }
 
-    public Integer getPoints() { return points; }
-    public void setPoints(Integer points) { this.points = points; }
+    public String getDescription() {
+        return description;
+    }
 
-    public BadgeType getBadgeType() { return badgeType; }
-    public void setBadgeType(BadgeType badgeType) { this.badgeType = badgeType; }
+    public void setDescription(String description) {
+        this.description = description;
+    }
 
-    public String getTriggerCondition() { return triggerCondition; }
-    public void setTriggerCondition(String triggerCondition) { this.triggerCondition = triggerCondition; }
+    public Integer getPoints() {
+        return points;
+    }
 
-    public String getIcon() { return icon; }
-    public void setIcon(String icon) { this.icon = icon; }
+    public void setPoints(Integer points) {
+        this.points = points;
+    }
 
-    public String getColor() { return color; }
-    public void setColor(String color) { this.color = color; }
+    public BadgeType getBadgeType() {
+        return badgeType;
+    }
 
-    public Long getCreatedByUserId() { return createdByUserId; }
-    public void setCreatedByUserId(Long createdByUserId) { this.createdByUserId = createdByUserId; }
+    public void setBadgeType(BadgeType badgeType) {
+        this.badgeType = badgeType;
+    }
+
+    public RecipientType getRecipientType() {
+        return recipientType;
+    }
+
+    public void setRecipientType(RecipientType recipientType) {
+        this.recipientType = recipientType;
+    }
+
+    public String getTriggerCondition() {
+        return triggerCondition;
+    }
+
+    public void setTriggerCondition(String triggerCondition) {
+        this.triggerCondition = triggerCondition;
+    }
+
+    public String getIcon() {
+        return icon;
+    }
+
+    public void setIcon(String icon) {
+        this.icon = icon;
+    }
+
+    public String getColor() {
+        return color;
+    }
+
+    public void setColor(String color) {
+        this.color = color;
+    }
+
+    public Long getCreatedByUserId() {
+        return createdByUserId;
+    }
+
+    public void setCreatedByUserId(Long createdByUserId) {
+        this.createdByUserId = createdByUserId;
+    }
 }

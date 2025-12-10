@@ -57,6 +57,13 @@ public class ProjectService {
                 .collect(Collectors.toList());
     }
 
+    public List<ProjectResponse> getProjectsByCourse(Long courseId) {
+        // Return only non-archived projects for the given course
+        return projectRepository.findByCourseIdAndStatusNot(courseId, ProjectStatus.ARCHIVED).stream()
+                .map(this::mapToResponse)
+                .collect(Collectors.toList());
+    }
+
     public ProjectResponse getProjectById(Long id) {
         Project project = projectRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Project not found: " + id));

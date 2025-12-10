@@ -13,6 +13,9 @@ public interface CourseEnrollmentRepository extends JpaRepository<CourseEnrollme
     // Find all enrollments for a specific student
     List<CourseEnrollment> findByStudentId(Long studentId);
 
+    // Find all enrollments for a specific course
+    List<CourseEnrollment> findByCourseId(Long courseId);
+
     // Find enrollment by course and student
     Optional<CourseEnrollment> findByCourseIdAndStudentId(Long courseId, Long studentId);
 

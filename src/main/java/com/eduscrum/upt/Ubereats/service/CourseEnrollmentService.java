@@ -22,8 +22,8 @@ public class CourseEnrollmentService {
     private final UserRepository userRepository;
 
     public CourseEnrollmentService(CourseEnrollmentRepository enrollmentRepository,
-                                   CourseRepository courseRepository,
-                                   UserRepository userRepository) {
+            CourseRepository courseRepository,
+            UserRepository userRepository) {
         this.enrollmentRepository = enrollmentRepository;
         this.courseRepository = courseRepository;
         this.userRepository = userRepository;
@@ -75,6 +75,16 @@ public class CourseEnrollmentService {
                 .collect(Collectors.toList());
     }
 
+    /**
+     * Gets all students enrolled in a course as DTOs.
+     */
+    @Transactional(readOnly = true)
+    public List<CourseEnrollmentResponseDTO> getCourseEnrollments(Long courseId) {
+        return enrollmentRepository.findByCourseId(courseId).stream()
+                .map(this::convertToDTO)
+                .collect(Collectors.toList());
+    }
+
     private CourseEnrollmentResponseDTO convertToDTO(CourseEnrollment enrollment) {
         return new CourseEnrollmentResponseDTO(
                 enrollment.getId(),
@@ -82,7 +92,6 @@ public class CourseEnrollmentService {
                 enrollment.getCourse().getId(),
                 enrollment.getCourse().getName(),
                 enrollment.getStudent().getId(),
-                enrollment.getStudent().getFullName()
-        );
+                enrollment.getStudent().getFullName());
     }
 }
