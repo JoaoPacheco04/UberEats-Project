@@ -30,7 +30,7 @@ public class CreateCourseRequest {
     @Size(max = 20, message = "Academic year must not exceed 20 characters")
     private String academicYear;
 
-    // Constructors
+    /** Default constructor. */
     public CreateCourseRequest() {
     }
 
@@ -43,43 +43,52 @@ public class CreateCourseRequest {
         this.academicYear = academicYear;
     }
 
-    // Getters and Setters
+    /** @return The course name */
     public String getName() {
         return name;
     }
 
+    /** @param name The course name */
     public void setName(String name) {
         this.name = name;
     }
 
+    /** @return The course code */
     public String getCode() {
         return code;
     }
 
+    /** @param code The course code */
     public void setCode(String code) {
         this.code = code;
     }
 
+    /** @return The course description */
     public String getDescription() {
         return description;
     }
 
+    /** @param description The course description */
     public void setDescription(String description) {
         this.description = description;
     }
 
+    /** @return The semester */
     public Semester getSemester() {
         return semester;
     }
 
+    /** @param semester The semester */
     public void setSemester(Semester semester) {
         this.semester = semester;
     }
 
+    /** @return The academic year */
     public String getAcademicYear() {
         return academicYear;
     }
 
+    /** @param academicYear The academic year */
     public void setAcademicYear(String academicYear) {
         this.academicYear = academicYear;
     }

@@ -220,7 +220,9 @@ public class SprintService {
     }
 
     /**
-     * Finds overdue sprints
+     * Finds all sprints that are past their end date but not yet completed.
+     *
+     * @return List of overdue sprints as response DTOs
      */
     @Transactional(readOnly = true)
     public List<SprintResponseDTO> getOverdueSprints() {
@@ -230,7 +232,11 @@ public class SprintService {
     }
 
     /**
-     * Finds latest sprint for project
+     * Retrieves the most recent sprint for a specific project.
+     *
+     * @param projectId The ID of the project
+     * @return The latest sprint as a response DTO
+     * @throws ResourceNotFoundException if no sprints found for the project
      */
     @Transactional(readOnly = true)
     public SprintResponseDTO getLatestSprintByProject(Long projectId) {
@@ -239,10 +245,13 @@ public class SprintService {
                 .orElseThrow(() -> new ResourceNotFoundException("No sprints found for project id: " + projectId));
     }
 
-    // === SPRINT EXISTENCE CHECKS ===
+    // region SPRINT EXISTENCE CHECKS
 
     /**
-     * Checks if sprint exists by ID
+     * Checks if a sprint exists by its ID.
+     *
+     * @param id The ID of the sprint to check
+     * @return true if sprint exists, false otherwise
      */
     @Transactional(readOnly = true)
     public boolean existsById(Long id) {
@@ -250,17 +259,26 @@ public class SprintService {
     }
 
     /**
-     * Checks if sprint number exists in project
+     * Checks if a sprint number already exists within a project.
+     *
+     * @param projectId    The ID of the project
+     * @param sprintNumber The sprint number to check
+     * @return true if sprint number exists in the project, false otherwise
      */
     @Transactional(readOnly = true)
     public boolean existsByProjectAndSprintNumber(Long projectId, Integer sprintNumber) {
         return sprintRepository.existsByProjectIdAndSprintNumber(projectId, sprintNumber);
     }
 
-    // === SPRINT UPDATE OPERATIONS ===
+    // region SPRINT UPDATE OPERATIONS
 
     /**
-     * Updates an existing sprint
+     * Updates an existing sprint with the provided details.
+     *
+     * @param id         The ID of the sprint to update
+     * @param requestDTO The request containing updated sprint details
+     * @return The updated sprint as a response DTO
+     * @throws BusinessLogicException if validation fails
      */
     public SprintResponseDTO updateSprint(Long id, SprintRequestDTO requestDTO) {
         // Validate input
@@ -291,7 +309,11 @@ public class SprintService {
     }
 
     /**
-     * Starts a sprint (changes status to IN_PROGRESS)
+     * Starts a sprint by changing its status to IN_PROGRESS.
+     *
+     * @param id The ID of the sprint to start
+     * @return The started sprint as a response DTO
+     * @throws BusinessLogicException if sprint cannot be started
      */
     public SprintResponseDTO startSprint(Long id) {
         Sprint sprint = getSprintEntity(id);
@@ -307,7 +329,12 @@ public class SprintService {
     }
 
     /**
-     * Completes a sprint (changes status to COMPLETED)
+     * Completes a sprint by changing its status to COMPLETED.
+     *
+     * @param id             The ID of the sprint to complete
+     * @param completionDate The date of completion (uses current date if null)
+     * @return The completed sprint as a response DTO
+     * @throws BusinessLogicException if sprint cannot be completed
      */
     public SprintResponseDTO completeSprint(Long id, LocalDate completionDate) {
         Sprint sprint = getSprintEntity(id);
@@ -333,7 +360,10 @@ public class SprintService {
     }
 
     /**
-     * Cancels a sprint
+     * Cancels a sprint by changing its status to CANCELLED.
+     *
+     * @param id The ID of the sprint to cancel
+     * @return The cancelled sprint as a response DTO
      */
     public SprintResponseDTO cancelSprint(Long id) {
         Sprint sprint = getSprintEntity(id);
@@ -343,7 +373,10 @@ public class SprintService {
     }
 
     /**
-     * Deletes a sprint
+     * Deletes a sprint from the system.
+     *
+     * @param id The ID of the sprint to delete
+     * @throws BusinessLogicException if sprint has related data
      */
     public void deleteSprint(Long id) {
         Sprint sprint = getSprintEntity(id);
@@ -356,10 +389,13 @@ public class SprintService {
         sprintRepository.delete(sprint);
     }
 
-    // === AUTOMATIC SPRINT MANAGEMENT ===
+    // region AUTOMATIC SPRINT MANAGEMENT
 
     /**
-     * Automatically start sprints that are ready
+     * Automatically starts all sprints that are ready to begin.
+     * A sprint is ready when its start date has been reached and status is PLANNED.
+     *
+     * @return List of sprints that were started
      */
     public List<SprintResponseDTO> startReadySprints() {
         List<Sprint> readySprints = sprintRepository.findSprintsReadyToStart(LocalDate.now());
@@ -371,7 +407,11 @@ public class SprintService {
     }
 
     /**
-     * Automatically complete sprints that are ready
+     * Automatically completes all sprints that are ready to finish.
+     * A sprint is ready when its end date has been reached and status is
+     * IN_PROGRESS.
+     *
+     * @return List of sprints that were completed
      */
     public List<SprintResponseDTO> completeReadySprints() {
         List<Sprint> readySprints = sprintRepository.findSprintsReadyToComplete(LocalDate.now());
@@ -385,7 +425,7 @@ public class SprintService {
                 .collect(Collectors.toList());
     }
 
-    // === BUSINESS LOGIC FOR AWARDS ===
+    // region BUSINESS LOGIC FOR AWARDS
 
     /**
      * Checks if all sprints belonging to a given project were completed on or
@@ -429,7 +469,7 @@ public class SprintService {
         return true; // All sprints were completed and on time.
     }
 
-    // === VELOCITY CALCULATION ===
+    // region VELOCITY CALCULATION
 
     /**
      * Calculates team velocity based on COMPLETED sprints only.
@@ -454,7 +494,7 @@ public class SprintService {
         return totalPoints / sprintPoints.size();
     }
 
-    // === ANALYTICS ===
+    // region ANALYTICS
 
     public java.util.Map<String, Integer> getProjectBurndown(Long projectId) {
         List<Sprint> sprints = sprintRepository.findByProjectId(projectId);
@@ -469,7 +509,7 @@ public class SprintService {
         return burndown;
     }
 
-    // === INTERNAL ENTITY METHODS ===
+    // region INTERNAL ENTITY METHODS
 
     /**
      * Gets sprint entity by ID (for internal use)
@@ -487,7 +527,7 @@ public class SprintService {
                 .orElseThrow(() -> new ResourceNotFoundException("Project not found with id: " + projectId));
     }
 
-    // === CONVERSION METHODS ===
+    // region CONVERSION METHODS
 
     /**
      * Converts Sprint entity to SprintResponseDTO

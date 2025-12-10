@@ -64,7 +64,12 @@ public class TeamController {
         return ResponseEntity.ok(new TeamResponse(team));
     }
 
-    // Get teams for project
+    /**
+     * Retrieves all teams for a specific project.
+     *
+     * @param projectId The ID of the project
+     * @return ResponseEntity containing the list of teams
+     */
     @GetMapping("/project/{projectId}")
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<List<TeamResponse>> getProjectTeams(@PathVariable Long projectId) {
@@ -75,7 +80,12 @@ public class TeamController {
         return ResponseEntity.ok(response);
     }
 
-    // Get user's teams
+    /**
+     * Retrieves all teams for a specific user.
+     *
+     * @param userId The ID of the user
+     * @return ResponseEntity containing the list of teams
+     */
     @GetMapping("/user/{userId}")
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<List<TeamResponse>> getUserTeams(@PathVariable Long userId) {
@@ -86,7 +96,12 @@ public class TeamController {
         return ResponseEntity.ok(response);
     }
 
-    // Get team by ID
+    /**
+     * Retrieves a team by its ID.
+     *
+     * @param teamId The ID of the team
+     * @return ResponseEntity containing the team
+     */
     @GetMapping("/{teamId}")
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<TeamResponse> getTeam(@PathVariable Long teamId) {
@@ -94,7 +109,13 @@ public class TeamController {
         return ResponseEntity.ok(new TeamResponse(team));
     }
 
-    // Add member to team
+    /**
+     * Adds a member to a team.
+     *
+     * @param teamId  The ID of the team
+     * @param request The request containing member details
+     * @return ResponseEntity containing the added team member
+     */
     @PostMapping("/{teamId}/members")
     @PreAuthorize("hasAuthority('ROLE_TEACHER')")
     public ResponseEntity<TeamMemberResponse> addMember(
@@ -104,7 +125,12 @@ public class TeamController {
         return ResponseEntity.ok(new TeamMemberResponse(member));
     }
 
-    // Get team members
+    /**
+     * Retrieves all members of a team.
+     *
+     * @param teamId The ID of the team
+     * @return ResponseEntity containing the list of team members
+     */
     @GetMapping("/{teamId}/members")
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<List<TeamMemberResponse>> getTeamMembers(@PathVariable Long teamId) {
@@ -115,7 +141,14 @@ public class TeamController {
         return ResponseEntity.ok(response);
     }
 
-    // Update member role
+    /**
+     * Updates the role of a team member.
+     *
+     * @param teamId  The ID of the team
+     * @param userId  The ID of the user (member)
+     * @param request The request containing the new role
+     * @return ResponseEntity containing the updated team member
+     */
     @PutMapping("/{teamId}/members/{userId}/role")
     @PreAuthorize("hasAuthority('ROLE_TEACHER')")
     public ResponseEntity<TeamMemberResponse> updateMemberRole(
@@ -126,7 +159,13 @@ public class TeamController {
         return ResponseEntity.ok(new TeamMemberResponse(member));
     }
 
-    // Remove member from team
+    /**
+     * Removes a member from a team.
+     *
+     * @param teamId The ID of the team
+     * @param userId The ID of the user to remove
+     * @return ResponseEntity with no content
+     */
     @DeleteMapping("/{teamId}/members/{userId}")
     @PreAuthorize("hasAuthority('ROLE_TEACHER')")
     public ResponseEntity<Void> removeMember(
@@ -136,7 +175,12 @@ public class TeamController {
         return ResponseEntity.noContent().build();
     }
 
-    // Delete team
+    /**
+     * Deletes a team.
+     *
+     * @param teamId The ID of the team to delete
+     * @return ResponseEntity with no content
+     */
     @DeleteMapping("/{teamId}")
     @PreAuthorize("hasAuthority('ROLE_TEACHER')")
     public ResponseEntity<Void> deleteTeam(@PathVariable Long teamId) {

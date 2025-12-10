@@ -16,12 +16,29 @@ import java.util.Optional;
 @Repository
 public interface CourseEnrollmentRepository extends JpaRepository<CourseEnrollment, Long> {
 
-    // Find all enrollments for a specific student
+    /**
+     * Finds all enrollments for a specific student.
+     *
+     * @param studentId The student ID
+     * @return List of enrollments
+     */
     List<CourseEnrollment> findByStudentId(Long studentId);
 
-    // Find enrollment by course and student
+    /**
+     * Finds enrollment by course and student.
+     *
+     * @param courseId  The course ID
+     * @param studentId The student ID
+     * @return Optional containing the enrollment
+     */
     Optional<CourseEnrollment> findByCourseIdAndStudentId(Long courseId, Long studentId);
 
-    // Check if an enrollment exists (used for checking access/duplication)
+    /**
+     * Checks if enrollment exists.
+     *
+     * @param courseId  The course ID
+     * @param studentId The student ID
+     * @return true if enrollment exists
+     */
     boolean existsByCourseIdAndStudentId(Long courseId, Long studentId);
 }

@@ -193,21 +193,27 @@ public class Badge {
     // === BUSINESS METHODS ===
 
     /**
-     * Check if badge is automatic
+     * Checks if badge is automatic (system-awarded).
+     *
+     * @return true if automatic, false otherwise
      */
     public boolean isAutomatic() {
         return badgeType == BadgeType.AUTOMATIC;
     }
 
     /**
-     * Check if badge is manual
+     * Checks if badge is manual (teacher-awarded).
+     *
+     * @return true if manual, false otherwise
      */
     public boolean isManual() {
         return badgeType == BadgeType.MANUAL;
     }
 
     /**
-     * Parse trigger conditions from JSON
+     * Parses trigger conditions from JSON.
+     *
+     * @return Map of condition key-value pairs, or empty map if none
      */
     public Map<String, Object> getTriggerConditions() {
         if (triggerCondition == null || triggerCondition.trim().isEmpty()) {
@@ -223,7 +229,11 @@ public class Badge {
     }
 
     /**
-     * Check if user meets conditions for automatic award
+     * Checks if user meets conditions for automatic award.
+     *
+     * @param user    The user to check
+     * @param project The project context
+     * @return true if user meets conditions, false otherwise
      */
     public boolean meetsUserConditions(User user, Project project) {
         if (!isAutomatic())
@@ -233,7 +243,10 @@ public class Badge {
     }
 
     /**
-     * Check if team meets conditions for automatic award
+     * Checks if team meets conditions for automatic award.
+     *
+     * @param team The team to check
+     * @return true if team meets conditions, false otherwise
      */
     public boolean meetsTeamConditions(Team team) {
         if (!isAutomatic())
@@ -243,14 +256,18 @@ public class Badge {
     }
 
     /**
-     * Get number of times this badge has been awarded
+     * Gets the number of times this badge has been awarded.
+     *
+     * @return The count of achievements with this badge
      */
     public Integer getAwardCount() {
         return achievements.size();
     }
 
     /**
-     * Check if badge can be awarded (active and meets criteria)
+     * Checks if badge can be awarded (is active).
+     *
+     * @return true if badge is active, false otherwise
      */
     public boolean canBeAwarded() {
         return Boolean.TRUE.equals(isActive);

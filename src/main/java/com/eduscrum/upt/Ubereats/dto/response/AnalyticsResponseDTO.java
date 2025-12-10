@@ -44,11 +44,11 @@ public class AnalyticsResponseDTO {
     private Long projectId;
     private String projectName;
 
-    // Constructors
+    /** Default constructor. */
     public AnalyticsResponseDTO() {
     }
 
-    // Getters and Setters
+    /** @return The analytics ID */
     public Long getId() {
         return id;
     }

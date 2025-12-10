@@ -34,8 +34,14 @@ public class AchievementController {
         this.achievementService = achievementService;
     }
 
+    /**
+     * Creates a new achievement (badge award).
+     *
+     * @param requestDTO The request containing achievement details
+     * @return ResponseEntity containing the created achievement or error message
+     */
     @PostMapping
-    @PreAuthorize("hasAuthority('ROLE_TEACHER')") // ⭐️ REGRA DE SEGURANÇA CRÍTICA
+    @PreAuthorize("hasAuthority('ROLE_TEACHER')")
     public ResponseEntity<?> createAchievement(@Valid @RequestBody AchievementRequestDTO requestDTO) {
         try {
             AchievementResponseDTO response = achievementService.createAchievement(requestDTO);
@@ -47,15 +53,26 @@ public class AchievementController {
         }
     }
 
+    /**
+     * Retrieves all achievements in the system.
+     *
+     * @return ResponseEntity containing the list of all achievements
+     */
     @GetMapping
-    @PreAuthorize("hasAuthority('ROLE_TEACHER')") // ⭐️ REGRA DE SEGURANÇA
+    @PreAuthorize("hasAuthority('ROLE_TEACHER')")
     public ResponseEntity<List<AchievementResponseDTO>> getAllAchievements() {
         List<AchievementResponseDTO> achievements = achievementService.getAllAchievements();
         return ResponseEntity.ok(achievements);
     }
 
+    /**
+     * Retrieves an achievement by its ID.
+     *
+     * @param id The ID of the achievement to retrieve
+     * @return ResponseEntity containing the achievement or error message
+     */
     @GetMapping("/{id}")
-    @PreAuthorize("isAuthenticated()") // Basta estar logado
+    @PreAuthorize("isAuthenticated()")
     public ResponseEntity<?> getAchievementById(@PathVariable Long id) {
         try {
             AchievementResponseDTO achievement = achievementService.getAchievementById(id)
@@ -68,19 +85,25 @@ public class AchievementController {
         }
     }
 
+    /**
+     * Retrieves all achievements for a specific user.
+     *
+     * @param userId The ID of the user
+     * @return ResponseEntity containing the list of user achievements
+     */
     @GetMapping("/user/{userId}")
-    @PreAuthorize("hasAuthority('ROLE_TEACHER') or #userId.toString() == authentication.principal.id.toString()") // ⭐️
-                                                                                                                  // REGRA
-                                                                                                                  // DE
-                                                                                                                  // SEGURANÇA:
-                                                                                                                  // TEACHER
-                                                                                                                  // ou
-                                                                                                                  // SELF
+    @PreAuthorize("hasAuthority('ROLE_TEACHER') or #userId.toString() == authentication.principal.id.toString()")
     public ResponseEntity<List<AchievementResponseDTO>> getUserAchievements(@PathVariable Long userId) {
         List<AchievementResponseDTO> achievements = achievementService.getUserAchievements(userId);
         return ResponseEntity.ok(achievements);
     }
 
+    /**
+     * Retrieves all achievements for a specific team.
+     *
+     * @param teamId The ID of the team
+     * @return ResponseEntity containing the list of team achievements
+     */
     @GetMapping("/team/{teamId}")
     @PreAuthorize("hasAuthority('ROLE_TEACHER')")
     public ResponseEntity<List<AchievementResponseDTO>> getTeamAchievements(@PathVariable Long teamId) {
@@ -88,6 +111,12 @@ public class AchievementController {
         return ResponseEntity.ok(achievements);
     }
 
+    /**
+     * Retrieves all achievements for a specific project.
+     *
+     * @param projectId The ID of the project
+     * @return ResponseEntity containing the list of project achievements
+     */
     @GetMapping("/project/{projectId}")
     @PreAuthorize("hasAuthority('ROLE_TEACHER')")
     public ResponseEntity<List<AchievementResponseDTO>> getProjectAchievements(@PathVariable Long projectId) {
@@ -95,11 +124,15 @@ public class AchievementController {
         return ResponseEntity.ok(achievements);
     }
 
+    /**
+     * Gets the total points for a user in a specific project.
+     *
+     * @param userId    The ID of the user
+     * @param projectId The ID of the project
+     * @return ResponseEntity containing the points total
+     */
     @GetMapping("/user/{userId}/project/{projectId}/points")
-    @PreAuthorize("hasAuthority('ROLE_TEACHER') or #userId.toString() == authentication.principal.id.toString()") // ⭐️
-                                                                                                                  // REGRA
-                                                                                                                  // DE
-                                                                                                                  // SEGURANÇA
+    @PreAuthorize("hasAuthority('ROLE_TEACHER') or #userId.toString() == authentication.principal.id.toString()")
     public ResponseEntity<Map<String, Integer>> getUserPointsInProject(
             @PathVariable Long userId, @PathVariable Long projectId) {
         Integer points = achievementService.getUserTotalPoints(userId, projectId);
@@ -108,6 +141,12 @@ public class AchievementController {
         return ResponseEntity.ok(response);
     }
 
+    /**
+     * Gets the total points for a team.
+     *
+     * @param teamId The ID of the team
+     * @return ResponseEntity containing the points total
+     */
     @GetMapping("/team/{teamId}/points")
     @PreAuthorize("hasAuthority('ROLE_TEACHER')")
     public ResponseEntity<Map<String, Integer>> getTeamPoints(@PathVariable Long teamId) {
@@ -117,6 +156,12 @@ public class AchievementController {
         return ResponseEntity.ok(response);
     }
 
+    /**
+     * Deletes an achievement by its ID.
+     *
+     * @param id The ID of the achievement to delete
+     * @return ResponseEntity with success or error message
+     */
     @DeleteMapping("/{id}")
     @PreAuthorize("hasAuthority('ROLE_TEACHER')")
     public ResponseEntity<?> deleteAchievement(@PathVariable Long id) {

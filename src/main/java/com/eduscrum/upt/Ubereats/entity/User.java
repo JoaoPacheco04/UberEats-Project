@@ -217,7 +217,9 @@ public class User {
     // === BUSINESS METHODS ===
 
     /**
-     * Total points from all individual achievements across all courses
+     * Calculates total points from all individual achievements across all courses.
+     *
+     * @return The sum of all individual badge points
      */
     public Integer getTotalPoints() {
         return individualAchievements.stream()
@@ -226,7 +228,9 @@ public class User {
     }
 
     /**
-     * Get all badges earned by this user
+     * Gets all badges earned by this user.
+     *
+     * @return List of distinct Badge objects earned
      */
     public List<Badge> getEarnedBadges() {
         return individualAchievements.stream()
@@ -236,7 +240,9 @@ public class User {
     }
 
     /**
-     * Calculate average score across all achievements
+     * Calculates average score across all achievements.
+     *
+     * @return The average points per achievement, or 0.0 if none
      */
     public Double getAverageScore() {
         if (individualAchievements.isEmpty())
@@ -248,28 +254,37 @@ public class User {
     }
 
     /**
-     * Check if user is a teacher
+     * Checks if user has the TEACHER role.
+     *
+     * @return true if user is a teacher, false otherwise
      */
     public boolean isTeacher() {
         return role == UserRole.TEACHER;
     }
 
     /**
-     * Check if user is a student
+     * Checks if user has the STUDENT role.
+     *
+     * @return true if user is a student, false otherwise
      */
     public boolean isStudent() {
         return role == UserRole.STUDENT;
     }
 
     /**
-     * Get user's full name
+     * Gets the user's full name.
+     *
+     * @return The concatenated first and last name
      */
     public String getFullName() {
         return firstName + " " + lastName;
     }
 
     /**
-     * Get points in a specific course
+     * Gets points earned in a specific course.
+     *
+     * @param course The course to calculate points for
+     * @return The total points from achievements in that course
      */
     public Integer getPointsInCourse(Course course) {
         return individualAchievements.stream()
@@ -280,7 +295,10 @@ public class User {
     }
 
     /**
-     * Get points in a specific project
+     * Gets points earned in a specific project.
+     *
+     * @param project The project to calculate points for
+     * @return The total points from achievements in that project
      */
     public Integer getPointsInProject(Project project) {
         return individualAchievements.stream()
@@ -291,7 +309,10 @@ public class User {
     }
 
     /**
-     * Get team points share from a specific project
+     * Gets the user's share of team points from a specific project.
+     *
+     * @param project The project to calculate team points for
+     * @return The team points divided by team size, or 0 if not in a team
      */
     public Integer getTeamPointsInProject(Project project) {
         Optional<TeamMember> teamMember = teamMemberships.stream()
@@ -313,7 +334,10 @@ public class User {
     }
 
     /**
-     * Get combined points (individual + team share) for a project
+     * Gets combined points (individual + team share) for a project.
+     *
+     * @param project The project to calculate combined points for
+     * @return The sum of individual and team share points
      */
     public Integer getCombinedPointsInProject(Project project) {
         return getPointsInProject(project) + getTeamPointsInProject(project);

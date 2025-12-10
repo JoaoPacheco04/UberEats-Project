@@ -15,8 +15,10 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import java.io.IOException;
 
 /**
- * JWT Authentication Filter that intercepts all HTTP requests
- * Validates JWT tokens and sets up Spring Security context
+ * JWT Authentication Filter that intercepts all HTTP requests.
+ * Validates JWT tokens and sets up Spring Security context.
+ *
+ * @version 0.9.1 (2025-11-28)
  */
 @Component
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
@@ -24,20 +26,31 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private final JwtTokenProvider tokenProvider;
     private final CustomUserDetailsService customUserDetailsService;
 
-
-     //Constructor injection for dependencies
+    /**
+     * Constructs a new JwtAuthenticationFilter with required dependencies.
+     *
+     * @param tokenProvider            Provider for JWT token operations
+     * @param customUserDetailsService Service for loading user details
+     */
     public JwtAuthenticationFilter(JwtTokenProvider tokenProvider,
-                                   CustomUserDetailsService customUserDetailsService) {
+            CustomUserDetailsService customUserDetailsService) {
         this.tokenProvider = tokenProvider;
         this.customUserDetailsService = customUserDetailsService;
     }
 
-
-     //Filters incoming requests to validate JWT tokens
+    /**
+     * Filters incoming requests to validate JWT tokens.
+     *
+     * @param request     The HTTP request
+     * @param response    The HTTP response
+     * @param filterChain The filter chain
+     * @throws ServletException if servlet error occurs
+     * @throws IOException      if I/O error occurs
+     */
     @Override
     protected void doFilterInternal(HttpServletRequest request,
-                                    HttpServletResponse response,
-                                    FilterChain filterChain) throws ServletException, IOException {
+            HttpServletResponse response,
+            FilterChain filterChain) throws ServletException, IOException {
         try {
             String jwt = getJwtFromRequest(request);
 
@@ -47,8 +60,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
                 // Load user details and create authentication token
                 UserDetails userDetails = customUserDetailsService.loadUserByUsername(email);
-                UsernamePasswordAuthenticationToken authentication =
-                        new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+                UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
+                        userDetails, null, userDetails.getAuthorities());
                 authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
 
                 // Set authentication in security context
@@ -62,8 +75,12 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         filterChain.doFilter(request, response);
     }
 
-
-     //Extracts JWT token from Authorization header
+    /**
+     * Extracts JWT token from Authorization header.
+     *
+     * @param request The HTTP request
+     * @return The JWT token or null if not present
+     */
     private String getJwtFromRequest(HttpServletRequest request) {
         String bearerToken = request.getHeader("Authorization");
         if (StringUtils.hasText(bearerToken) && bearerToken.startsWith("Bearer ")) {

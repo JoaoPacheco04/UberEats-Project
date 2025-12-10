@@ -143,6 +143,13 @@ public class AnalyticsService {
         return analyticRepository.save(analytic);
     }
 
+    /**
+     * Retrieves analytics data for a specific sprint and team.
+     *
+     * @param sprintId The ID of the sprint
+     * @param teamId   The ID of the team
+     * @return List of analytics response DTOs
+     */
     @Transactional(readOnly = true)
     public List<AnalyticsResponseDTO> getAnalyticsBySprintAndTeam(Long sprintId, Long teamId) {
         List<Analytic> metrics = analyticRepository.findLatestByTeamAndSprint(teamId, sprintId);

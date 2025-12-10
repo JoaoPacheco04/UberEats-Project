@@ -20,35 +20,86 @@ import java.util.Optional;
 @Repository
 public interface BadgeRepository extends JpaRepository<Badge, Long> {
 
-        // Find by name
+        /**
+         * Finds a badge by its name.
+         *
+         * @param name The badge name
+         * @return Optional containing the badge if found
+         */
         Optional<Badge> findByName(String name);
 
-        // Find by badge type
+        /**
+         * Finds badges by type.
+         *
+         * @param badgeType The badge type
+         * @return List of badges with the given type
+         */
         List<Badge> findByBadgeType(BadgeType badgeType);
 
-        // Find active badges
+        /**
+         * Finds all active badges.
+         *
+         * @return List of active badges
+         */
         List<Badge> findByIsActiveTrue();
 
-        // Find by creator
+        /**
+         * Finds badges by creator ID.
+         *
+         * @param createdById The creator user ID
+         * @return List of badges created by the user
+         */
         List<Badge> findByCreatedById(Long createdById);
 
-        // Find automatic badges
+        /**
+         * Finds active badges of a specific type.
+         *
+         * @param badgeType The badge type
+         * @return List of active badges with the given type
+         */
         List<Badge> findByBadgeTypeAndIsActiveTrue(BadgeType badgeType);
 
-        // Check if name exists (for creation/update validation)
+        /**
+         * Checks if a badge with the given name exists.
+         *
+         * @param name The badge name
+         * @return true if name exists
+         */
         boolean existsByName(String name);
 
-        // Check if name exists excluding current badge (for update validation)
+        /**
+         * Checks if a badge name exists, excluding a specific badge.
+         *
+         * @param name The badge name
+         * @param id   The badge ID to exclude
+         * @return true if name exists in other badges
+         */
         boolean existsByNameAndIdNot(String name, Long id);
 
-        // Find badges with award count
+        /**
+         * Finds a badge by ID with its achievements.
+         *
+         * @param id The badge ID
+         * @return Optional containing the badge with achievements
+         */
         @Query("SELECT b FROM Badge b LEFT JOIN FETCH b.achievements WHERE b.id = :id")
         Optional<Badge> findByIdWithAchievements(@Param("id") Long id);
 
-        // Find most awarded badges
+        /**
+         * Finds most awarded badges.
+         *
+         * @return List of [Badge, awardCount] arrays
+         */
         @Query("SELECT b, COUNT(a) as awardCount FROM Badge b LEFT JOIN b.achievements a GROUP BY b ORDER BY awardCount DESC")
         List<Object[]> findMostAwardedBadges();
 
+        /**
+         * Sums completed story points for a user in a project.
+         *
+         * @param userId    The user ID
+         * @param projectId The project ID
+         * @return Total completed story points
+         */
         @Query("SELECT COALESCE(SUM(us.storyPoints), 0) FROM UserStory us " +
                         "WHERE us.assignedTo.id = :userId " +
                         "AND us.sprint.project.id = :projectId " +

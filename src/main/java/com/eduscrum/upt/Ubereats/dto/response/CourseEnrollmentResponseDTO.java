@@ -17,6 +17,7 @@ public class CourseEnrollmentResponseDTO {
     private Long studentId;
     private String studentName;
 
+    /** Default constructor. */
     public CourseEnrollmentResponseDTO() {
     }
 
@@ -30,8 +31,7 @@ public class CourseEnrollmentResponseDTO {
         this.studentName = studentName;
     }
 
-    // === GETTERS & SETTERS ===
-
+    /** @return The enrollment ID */
     public Long getId() {
         return id;
     }

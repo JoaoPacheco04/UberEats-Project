@@ -32,7 +32,7 @@ public class BadgeRequestDTO {
     @NotNull(message = "Created by user ID is required")
     private Long createdByUserId;
 
-    // Constructors
+    /** Default constructor. */
     public BadgeRequestDTO() {
     }
 
@@ -48,67 +48,82 @@ public class BadgeRequestDTO {
         this.createdByUserId = createdByUserId;
     }
 
-    // Getters and Setters
+    /** @return The badge name */
     public String getName() {
         return name;
     }
 
+    /** @param name The badge name */
     public void setName(String name) {
         this.name = name;
     }
 
+    /** @return The description */
     public String getDescription() {
         return description;
     }
 
+    /** @param description The description */
     public void setDescription(String description) {
         this.description = description;
     }
 
+    /** @return The points */
     public Integer getPoints() {
         return points;
     }
 
+    /** @param points The points */
     public void setPoints(Integer points) {
         this.points = points;
     }
 
+    /** @return The badge type */
     public BadgeType getBadgeType() {
         return badgeType;
     }
 
+    /** @param badgeType The badge type */
     public void setBadgeType(BadgeType badgeType) {
         this.badgeType = badgeType;
     }
 
+    /** @return The trigger condition */
     public String getTriggerCondition() {
         return triggerCondition;
     }
 
+    /** @param triggerCondition The trigger condition */
     public void setTriggerCondition(String triggerCondition) {
         this.triggerCondition = triggerCondition;
     }
 
+    /** @return The icon */
     public String getIcon() {
         return icon;
     }
 
+    /** @param icon The icon */
     public void setIcon(String icon) {
         this.icon = icon;
     }
 
+    /** @return The color */
     public String getColor() {
         return color;
     }
 
+    /** @param color The color */
     public void setColor(String color) {
         this.color = color;
     }
 
+    /** @return The creator user ID */
     public Long getCreatedByUserId() {
         return createdByUserId;
     }
 
+    /** @param createdByUserId The creator user ID */
     public void setCreatedByUserId(Long createdByUserId) {
         this.createdByUserId = createdByUserId;
     }

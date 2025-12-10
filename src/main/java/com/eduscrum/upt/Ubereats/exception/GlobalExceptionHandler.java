@@ -22,7 +22,13 @@ import java.util.Map;
 @ControllerAdvice
 public class GlobalExceptionHandler {
 
-    // Handle ResourceNotFoundException
+    /**
+     * Handles ResourceNotFoundException.
+     *
+     * @param ex      The exception
+     * @param request The web request
+     * @return ResponseEntity with error details
+     */
     @ExceptionHandler(ResourceNotFoundException.class)
     public ResponseEntity<Object> handleResourceNotFoundException(ResourceNotFoundException ex, WebRequest request) {
         Map<String, Object> body = new HashMap<>();
@@ -35,7 +41,13 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(body, HttpStatus.NOT_FOUND);
     }
 
-    // Handle BusinessLogicException
+    /**
+     * Handles BusinessLogicException.
+     *
+     * @param ex      The exception
+     * @param request The web request
+     * @return ResponseEntity with error details
+     */
     @ExceptionHandler(BusinessLogicException.class)
     public ResponseEntity<Object> handleBusinessLogicException(BusinessLogicException ex, WebRequest request) {
         Map<String, Object> body = new HashMap<>();
@@ -48,7 +60,12 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(body, HttpStatus.BAD_REQUEST);
     }
 
-    // Handle Validation Errors
+    /**
+     * Handles validation errors from @Valid annotations.
+     *
+     * @param ex The exception containing validation errors
+     * @return ResponseEntity with field-level error details
+     */
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<Object> handleValidationExceptions(MethodArgumentNotValidException ex) {
         Map<String, Object> body = new HashMap<>();
@@ -67,7 +84,13 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(body, HttpStatus.BAD_REQUEST);
     }
 
-    // Handle Global Exception
+    /**
+     * Handles all unhandled exceptions.
+     *
+     * @param ex      The exception
+     * @param request The web request
+     * @return ResponseEntity with error details
+     */
     @ExceptionHandler(Exception.class)
     public ResponseEntity<Object> handleGlobalException(Exception ex, WebRequest request) {
         Map<String, Object> body = new HashMap<>();
@@ -80,7 +103,12 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(body, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
-    // Handle Missing Request Parameter
+    /**
+     * Handles missing request parameter exceptions.
+     *
+     * @param ex The exception
+     * @return ResponseEntity with error details
+     */
     @ExceptionHandler(MissingServletRequestParameterException.class)
     public ResponseEntity<Object> handleMissingParams(MissingServletRequestParameterException ex) {
         Map<String, Object> body = new HashMap<>();

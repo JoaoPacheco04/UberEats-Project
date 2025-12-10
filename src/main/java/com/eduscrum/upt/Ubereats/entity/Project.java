@@ -222,14 +222,18 @@ public class Project {
     // === BUSINESS METHODS ===
 
     /**
-     * Get number of teams in this project
+     * Gets the number of teams in this project.
+     *
+     * @return The count of teams
      */
     public Integer getTeamCount() {
         return teams.size();
     }
 
     /**
-     * Get number of completed sprints
+     * Gets the number of completed sprints.
+     *
+     * @return The count of completed sprints
      */
     public Integer getCompletedSprints() {
         return (int) sprints.stream()
@@ -238,7 +242,9 @@ public class Project {
     }
 
     /**
-     * Get total number of sprints
+     * Gets the total number of sprints.
+     *
+     * @return The total count of sprints
      */
     public Integer getTotalSprints() {
         return sprints.size();
@@ -255,21 +261,27 @@ public class Project {
     }
 
     /**
-     * Check if project is active
+     * Checks if project has ACTIVE status.
+     *
+     * @return true if project is active, false otherwise
      */
     public boolean isActive() {
         return status == ProjectStatus.ACTIVE;
     }
 
     /**
-     * Check if project is completed
+     * Checks if project has COMPLETED status.
+     *
+     * @return true if project is completed, false otherwise
      */
     public boolean isCompleted() {
         return status == ProjectStatus.COMPLETED;
     }
 
     /**
-     * Check if project is ongoing (between start and end dates)
+     * Checks if project is ongoing (between start and end dates).
+     *
+     * @return true if currently within project dates, false otherwise
      */
     public boolean isOngoing() {
         LocalDate today = LocalDate.now();
@@ -277,7 +289,9 @@ public class Project {
     }
 
     /**
-     * Get active sprints
+     * Gets all active sprints (IN_PROGRESS status).
+     *
+     * @return List of active Sprint objects
      */
     public List<Sprint> getActiveSprints() {
         return sprints.stream()
@@ -286,7 +300,9 @@ public class Project {
     }
 
     /**
-     * Get days remaining until project end
+     * Calculates days remaining until project end.
+     *
+     * @return Number of days remaining (can be negative if past end date)
      */
     public Long getDaysRemaining() {
         LocalDate today = LocalDate.now();
@@ -294,7 +310,9 @@ public class Project {
     }
 
     /**
-     * Get total students participating in this project
+     * Gets total number of students participating in this project.
+     *
+     * @return The total count of active team members across all teams
      */
     public Integer getTotalStudents() {
         return teams.stream()
@@ -303,21 +321,27 @@ public class Project {
     }
 
     /**
-     * Get project duration in days
+     * Calculates project duration in days.
+     *
+     * @return Number of days between start and end dates
      */
     public Long getDurationDays() {
         return ChronoUnit.DAYS.between(startDate, endDate);
     }
 
     /**
-     * Check if project is overdue
+     * Checks if project is overdue (past end date and not completed).
+     *
+     * @return true if overdue, false otherwise
      */
     public boolean isOverdue() {
         return LocalDate.now().isAfter(endDate) && !isCompleted();
     }
 
     /**
-     * Get days since project start
+     * Calculates days since project started.
+     *
+     * @return Number of days since start date
      */
     public Long getDaysSinceStart() {
         LocalDate today = LocalDate.now();
@@ -325,7 +349,9 @@ public class Project {
     }
 
     /**
-     * Calculate average team score across all teams
+     * Calculates average team score across all teams.
+     *
+     * @return The average score as BigDecimal, or ZERO if no teams
      */
     public BigDecimal getAverageTeamScore() {
         if (teams.isEmpty())
@@ -333,7 +359,6 @@ public class Project {
 
         BigDecimal totalScore = teams.stream()
                 .map(team -> {
-                    // Calculate team score based on achievements
                     int teamPoints = team.getTeamAchievements().stream()
                             .mapToInt(achievement -> achievement.getBadge().getPoints())
                             .sum();
@@ -345,7 +370,9 @@ public class Project {
     }
 
     /**
-     * Get project status description
+     * Gets a human-readable description of the project status.
+     *
+     * @return Status description string
      */
     public String getStatusDescription() {
         switch (status) {

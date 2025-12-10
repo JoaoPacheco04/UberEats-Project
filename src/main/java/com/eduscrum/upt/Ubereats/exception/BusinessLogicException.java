@@ -10,10 +10,21 @@ import org.springframework.web.bind.annotation.ResponseStatus;
  */
 @ResponseStatus(HttpStatus.BAD_REQUEST)
 public class BusinessLogicException extends RuntimeException {
+    /**
+     * Constructs a new BusinessLogicException with the specified message.
+     *
+     * @param message The detail message
+     */
     public BusinessLogicException(String message) {
         super(message);
     }
 
+    /**
+     * Constructs a new BusinessLogicException with the specified message and cause.
+     *
+     * @param message The detail message
+     * @param cause   The cause of this exception
+     */
     public BusinessLogicException(String message, Throwable cause) {
         super(message, cause);
     }

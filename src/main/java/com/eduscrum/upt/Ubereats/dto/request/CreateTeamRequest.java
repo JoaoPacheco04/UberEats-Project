@@ -17,7 +17,7 @@ public class CreateTeamRequest {
     @NotNull(message = "Project ID is required")
     private Long projectId;
 
-    // Constructors
+    /** Default constructor. */
     public CreateTeamRequest() {
     }
 
@@ -26,19 +26,22 @@ public class CreateTeamRequest {
         this.projectId = projectId;
     }
 
-    // Getters and Setters
+    /** @return The team name */
     public String getName() {
         return name;
     }
 
+    /** @param name The team name */
     public void setName(String name) {
         this.name = name;
     }
 
+    /** @return The project ID */
     public Long getProjectId() {
         return projectId;
     }
 
+    /** @param projectId The project ID */
     public void setProjectId(Long projectId) {
         this.projectId = projectId;
     }

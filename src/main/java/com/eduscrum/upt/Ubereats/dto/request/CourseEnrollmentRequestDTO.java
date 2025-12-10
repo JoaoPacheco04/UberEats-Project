@@ -16,6 +16,7 @@ public class CourseEnrollmentRequestDTO {
     @NotNull(message = "Student ID is required")
     private Long studentId;
 
+    /** Default constructor. */
     public CourseEnrollmentRequestDTO() {
     }
 
@@ -24,18 +25,22 @@ public class CourseEnrollmentRequestDTO {
         this.studentId = studentId;
     }
 
+    /** @return The course ID */
     public Long getCourseId() {
         return courseId;
     }
 
+    /** @param courseId The course ID */
     public void setCourseId(Long courseId) {
         this.courseId = courseId;
     }
 
+    /** @return The student ID */
     public Long getStudentId() {
         return studentId;
     }
 
+    /** @param studentId The student ID */
     public void setStudentId(Long studentId) {
         this.studentId = studentId;
     }

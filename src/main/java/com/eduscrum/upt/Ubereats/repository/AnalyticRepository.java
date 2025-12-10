@@ -19,11 +19,33 @@ import java.util.Optional;
 @Repository
 public interface AnalyticRepository extends JpaRepository<Analytic, Long> {
 
+    /**
+     * Finds latest analytics by team and sprint.
+     *
+     * @param teamId   The team ID
+     * @param sprintId The sprint ID
+     * @return List of analytics ordered by date
+     */
     @Query("SELECT a FROM Analytic a WHERE a.team.id = :teamId AND a.sprint.id = :sprintId " +
             "ORDER BY a.recordedDate DESC, a.createdAt DESC")
     List<Analytic> findLatestByTeamAndSprint(@Param("teamId") Long teamId, @Param("sprintId") Long sprintId);
 
+    /**
+     * Finds analytic by team, sprint, and date.
+     *
+     * @param teamId       The team ID
+     * @param sprintId     The sprint ID
+     * @param recordedDate The recorded date
+     * @return Optional containing the analytic
+     */
     Optional<Analytic> findByTeamIdAndSprintIdAndRecordedDate(Long teamId, Long sprintId, LocalDate recordedDate);
 
+    /**
+     * Finds analytics by team and project.
+     *
+     * @param teamId    The team ID
+     * @param projectId The project ID
+     * @return List of analytics
+     */
     List<Analytic> findByTeamIdAndSprintProjectId(@Param("teamId") Long teamId, @Param("projectId") Long projectId);
 }

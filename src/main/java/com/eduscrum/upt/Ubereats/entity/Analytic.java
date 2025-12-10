@@ -193,7 +193,9 @@ public class Analytic {
     // === BUSINESS METHODS ===
 
     /**
-     * Calculate task completion percentage
+     * Calculates task completion percentage.
+     *
+     * @return Percentage of tasks completed (0-100)
      */
     public BigDecimal getCompletionPercentage() {
         if (totalTasks == 0)
@@ -205,7 +207,9 @@ public class Analytic {
     }
 
     /**
-     * Calculate story points completion percentage
+     * Calculates story points completion percentage.
+     *
+     * @return Percentage of story points completed (0-100)
      */
     public BigDecimal getStoryPointsCompletion() {
         if (totalStoryPoints.compareTo(BigDecimal.ZERO) == 0) {
@@ -218,20 +222,21 @@ public class Analytic {
     }
 
     /**
-     * Check if team is on track (more than 50% completion when halfway through
-     * sprint)
+     * Checks if team is on track (50%+ completion at sprint midpoint).
+     *
+     * @return true if on track, false otherwise
      */
     public boolean isOnTrack() {
         BigDecimal sprintProgress = sprint.getTimeProgressPercentage();
         BigDecimal teamProgress = getCompletionPercentage();
-
-        // If sprint is halfway done, team should be at least 50% complete
         return sprintProgress.compareTo(new BigDecimal("50.0")) <= 0 ||
                 teamProgress.compareTo(new BigDecimal("50.0")) >= 0;
     }
 
     /**
-     * Parse burn down data from JSON
+     * Parses burn down data from JSON.
+     *
+     * @return Map of date to remaining work, or empty map if none
      */
     public Map<String, Integer> getBurnDownDataMap() {
         if (burnDownData == null || burnDownData.trim().isEmpty()) {
@@ -247,21 +252,27 @@ public class Analytic {
     }
 
     /**
-     * Calculate remaining tasks
+     * Calculates remaining tasks.
+     *
+     * @return Number of incomplete tasks
      */
     public Integer getRemainingTasks() {
         return totalTasks - completedTasks;
     }
 
     /**
-     * Calculate remaining story points
+     * Calculates remaining story points.
+     *
+     * @return Story points not yet completed
      */
     public BigDecimal getRemainingStoryPoints() {
         return totalStoryPoints.subtract(storyPointsCompleted);
     }
 
     /**
-     * Check if all tasks are completed
+     * Checks if all tasks are completed.
+     *
+     * @return true if all tasks done, false otherwise
      */
     public boolean isAllTasksCompleted() {
         return completedTasks >= totalTasks;
@@ -270,14 +281,18 @@ public class Analytic {
     // === BUSINESS METHODS ===
 
     /**
-     * Check if all story points are completed
+     * Checks if all story points are completed.
+     *
+     * @return true if all story points done, false otherwise
      */
     public boolean isAllStoryPointsCompleted() {
         return storyPointsCompleted.compareTo(totalStoryPoints) >= 0;
     }
 
     /**
-     * Update metrics with new task completion
+     * Updates metrics with new task completion count.
+     *
+     * @param newCompletedTasks The new count of completed tasks
      */
     public void updateTaskCompletion(Integer newCompletedTasks) {
         this.completedTasks = newCompletedTasks;
@@ -285,7 +300,9 @@ public class Analytic {
     }
 
     /**
-     * Update story points completion
+     * Updates story points completion.
+     *
+     * @param newStoryPointsCompleted The new completed story points value
      */
     public void updateStoryPointsCompletion(BigDecimal newStoryPointsCompleted) {
         this.storyPointsCompleted = newStoryPointsCompleted != null ? newStoryPointsCompleted : BigDecimal.ZERO;
@@ -306,7 +323,9 @@ public class Analytic {
     }
 
     /**
-     * Add completed story points
+     * Adds completed story points to the total.
+     *
+     * @param points The story points to add
      */
     public void addStoryPoints(BigDecimal points) {
         if (points != null && points.compareTo(BigDecimal.ZERO) > 0) {
@@ -316,7 +335,9 @@ public class Analytic {
     }
 
     /**
-     * Add completed tasks
+     * Adds completed tasks to the total.
+     *
+     * @param tasks The number of tasks to add
      */
     public void addCompletedTasks(Integer tasks) {
         if (tasks != null && tasks > 0) {
@@ -326,7 +347,9 @@ public class Analytic {
     }
 
     /**
-     * Get progress status based on completion percentage
+     * Gets progress status based on completion percentage.
+     *
+     * @return Status description string
      */
     public String getProgressStatus() {
         BigDecimal completion = getCompletionPercentage();

@@ -35,6 +35,12 @@ public class BadgeController {
         this.badgeService = badgeService;
     }
 
+    /**
+     * Creates a new badge.
+     *
+     * @param requestDTO The request containing badge details
+     * @return ResponseEntity containing the created badge or error message
+     */
     @PostMapping
     @PreAuthorize("hasAuthority('ROLE_TEACHER')")
     public ResponseEntity<?> createBadge(@Valid @RequestBody BadgeRequestDTO requestDTO) {
@@ -48,13 +54,23 @@ public class BadgeController {
         }
     }
 
+    /**
+     * Retrieves all badges.
+     *
+     * @return ResponseEntity containing the list of all badges
+     */
     @GetMapping
-    @PreAuthorize("isAuthenticated()") // Apenas logado
+    @PreAuthorize("isAuthenticated()")
     public ResponseEntity<List<BadgeResponseDTO>> getAllBadges() {
         List<BadgeResponseDTO> badges = badgeService.getAllBadges();
         return ResponseEntity.ok(badges);
     }
 
+    /**
+     * Retrieves all active badges.
+     *
+     * @return ResponseEntity containing the list of active badges
+     */
     @GetMapping("/active")
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<List<BadgeResponseDTO>> getActiveBadges() {
@@ -62,6 +78,12 @@ public class BadgeController {
         return ResponseEntity.ok(badges);
     }
 
+    /**
+     * Retrieves all badges of a specific type.
+     *
+     * @param badgeType The type of badges to retrieve
+     * @return ResponseEntity containing the list of badges
+     */
     @GetMapping("/type/{badgeType}")
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<List<BadgeResponseDTO>> getBadgesByType(@PathVariable BadgeType badgeType) {
@@ -69,6 +91,12 @@ public class BadgeController {
         return ResponseEntity.ok(badges);
     }
 
+    /**
+     * Retrieves a badge by its ID.
+     *
+     * @param id The ID of the badge
+     * @return ResponseEntity containing the badge or error message
+     */
     @GetMapping("/{id}")
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<?> getBadgeById(@PathVariable Long id) {
@@ -83,6 +111,12 @@ public class BadgeController {
         }
     }
 
+    /**
+     * Retrieves a badge by its name.
+     *
+     * @param name The name of the badge
+     * @return ResponseEntity containing the badge or error message
+     */
     @GetMapping("/name/{name}")
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<?> getBadgeByName(@PathVariable String name) {
@@ -97,6 +131,13 @@ public class BadgeController {
         }
     }
 
+    /**
+     * Updates an existing badge.
+     *
+     * @param id         The ID of the badge to update
+     * @param requestDTO The request containing updated badge details
+     * @return ResponseEntity containing the updated badge or error message
+     */
     @PutMapping("/{id}")
     @PreAuthorize("hasAuthority('ROLE_TEACHER')")
     public ResponseEntity<?> updateBadge(@PathVariable Long id, @Valid @RequestBody BadgeRequestDTO requestDTO) {
@@ -110,6 +151,12 @@ public class BadgeController {
         }
     }
 
+    /**
+     * Toggles the active status of a badge.
+     *
+     * @param id The ID of the badge
+     * @return ResponseEntity with success or error message
+     */
     @PatchMapping("/{id}/toggle")
     @PreAuthorize("hasAuthority('ROLE_TEACHER')")
     public ResponseEntity<?> toggleBadgeStatus(@PathVariable Long id) {
@@ -125,6 +172,12 @@ public class BadgeController {
         }
     }
 
+    /**
+     * Deletes a badge.
+     *
+     * @param id The ID of the badge to delete
+     * @return ResponseEntity with success or error message
+     */
     @DeleteMapping("/{id}")
     @PreAuthorize("hasAuthority('ROLE_TEACHER')")
     public ResponseEntity<?> deleteBadge(@PathVariable Long id) {

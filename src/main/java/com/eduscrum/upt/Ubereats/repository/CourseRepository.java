@@ -20,28 +20,70 @@ import java.util.Optional;
 @Repository
 public interface CourseRepository extends JpaRepository<Course, Long> {
 
-    // Find courses by teacher
+    /**
+     * Finds active courses by teacher.
+     *
+     * @param teacher The teacher
+     * @return List of active courses for the teacher
+     */
     List<Course> findByTeacherAndIsActiveTrue(User teacher);
 
+    /**
+     * Finds courses by teacher.
+     *
+     * @param teacher The teacher
+     * @return List of courses for the teacher
+     */
     List<Course> findByTeacher(User teacher);
 
-    // Find active courses
+    /**
+     * Finds all active courses.
+     *
+     * @return List of active courses
+     */
     List<Course> findByIsActiveTrue();
 
-    // Find course by code
+    /**
+     * Finds a course by its code.
+     *
+     * @param code The course code
+     * @return Optional containing the course if found
+     */
     Optional<Course> findByCode(String code);
 
-    // Check if code already exists
+    /**
+     * Checks if code already exists.
+     *
+     * @param code The course code
+     * @return true if code exists
+     */
     boolean existsByCode(String code);
 
-    // Find courses by academic year and semester
+    /**
+     * Finds active courses by academic year and semester.
+     *
+     * @param academicYear The academic year
+     * @param semester     The semester
+     * @return List of matching courses
+     */
     List<Course> findByAcademicYearAndSemesterAndIsActiveTrue(String academicYear, Semester semester);
 
-    // Check if teacher owns the course
+    /**
+     * Checks if teacher owns the course.
+     *
+     * @param courseId     The course ID
+     * @param teacherEmail The teacher email
+     * @return true if teacher owns the course
+     */
     @Query("SELECT COUNT(c) > 0 FROM Course c WHERE c.id = :courseId AND c.teacher.email = :teacherEmail")
     boolean isCourseTeacher(@Param("courseId") Long courseId, @Param("teacherEmail") String teacherEmail);
 
-    // Find available courses for students (active and not enrolled)
+    /**
+     * Finds available courses for a student.
+     *
+     * @param studentEmail The student email
+     * @return List of available courses
+     */
     @Query("SELECT c FROM Course c WHERE c.isActive = true AND c NOT IN " +
             "(SELECT ce.course FROM CourseEnrollment ce WHERE ce.student.email = :studentEmail)")
     List<Course> findAvailableCoursesForStudent(@Param("studentEmail") String studentEmail);

@@ -10,8 +10,7 @@ public class LoginRequest {
     private String email;
     private String password;
 
-    // === CONSTRUCTORS ===
-
+    /** Default constructor. */
     public LoginRequest() {
     }
 
@@ -20,20 +19,22 @@ public class LoginRequest {
         this.password = password;
     }
 
-    // === GETTERS & SETTERS ===
-
+    /** @return The email */
     public String getEmail() {
         return email;
     }
 
+    /** @param email The email */
     public void setEmail(String email) {
         this.email = email;
     }
 
+    /** @return The password */
     public String getPassword() {
         return password;
     }
 
+    /** @param password The password */
     public void setPassword(String password) {
         this.password = password;
     }

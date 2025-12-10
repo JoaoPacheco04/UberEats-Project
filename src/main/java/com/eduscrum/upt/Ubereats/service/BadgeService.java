@@ -289,7 +289,10 @@ public class BadgeService {
     }
 
     /**
-     * Deletes a badge (only if it has no achievements)
+     * Deletes a badge (only if it has no achievements).
+     *
+     * @param id The badge ID to delete
+     * @throws IllegalStateException if badge has achievements
      */
     public void deleteBadge(Long id) {
         Badge badge = getBadgeEntity(id);
@@ -302,10 +305,14 @@ public class BadgeService {
         badgeRepository.delete(badge);
     }
 
-    // === INTERNAL ENTITY METHODS ===
+    // region INTERNAL ENTITY METHODS
 
     /**
-     * Gets badge entity by ID (for internal use)
+     * Gets badge entity by ID (for internal use).
+     *
+     * @param id The badge ID
+     * @return The Badge entity
+     * @throws IllegalArgumentException if not found
      */
     public Badge getBadgeEntity(Long id) {
         return badgeRepository.findById(id)
@@ -313,17 +320,23 @@ public class BadgeService {
     }
 
     /**
-     * Gets user entity by ID (for internal use)
+     * Gets user entity by ID (for internal use).
+     *
+     * @param userId The user ID
+     * @return The User entity
+     * @throws IllegalArgumentException if not found
      */
     private User getUserEntity(Long userId) {
         return userService.findById(userId)
                 .orElseThrow(() -> new IllegalArgumentException("User not found with id: " + userId));
     }
 
-    // === AUTOMATIC BADGE METHODS ===
+    // region AUTOMATIC BADGE METHODS
 
     /**
-     * Gets all automatic badges for award checking
+     * Gets all automatic badges for award checking.
+     *
+     * @return List of active automatic badges
      */
     @Transactional(readOnly = true)
     public List<Badge> getAutomaticBadges() {
@@ -331,7 +344,10 @@ public class BadgeService {
     }
 
     /**
-     * Gets badge award count
+     * Gets badge award count.
+     *
+     * @param badgeId The badge ID
+     * @return Number of times the badge has been awarded
      */
     @Transactional(readOnly = true)
     public Integer getBadgeAwardCount(Long badgeId) {
@@ -340,10 +356,13 @@ public class BadgeService {
                 .orElse(0);
     }
 
-    // === CONVERSION METHODS ===
+    // region CONVERSION METHODS
 
     /**
-     * Converts Badge entity to BadgeResponseDTO
+     * Converts Badge entity to BadgeResponseDTO.
+     *
+     * @param badge The Badge entity
+     * @return The response DTO
      */
     private BadgeResponseDTO convertToDTO(Badge badge) {
         BadgeResponseDTO dto = new BadgeResponseDTO();
@@ -369,7 +388,10 @@ public class BadgeService {
     }
 
     /**
-     * Verifies badge can be awarded (active and meets criteria)
+     * Verifies badge can be awarded (active and meets criteria).
+     *
+     * @param badgeId The badge ID
+     * @return true if badge can be awarded
      */
     @Transactional(readOnly = true)
     public boolean canBeAwarded(Long badgeId) {

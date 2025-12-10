@@ -31,7 +31,7 @@ public class AnalyticsRequestDTO {
     private TeamMood teamMood;
     private String notes;
 
-    // Constructors
+    /** Default constructor. */
     public AnalyticsRequestDTO() {
     }
 
@@ -52,91 +52,112 @@ public class AnalyticsRequestDTO {
         this.notes = notes;
     }
 
-    // Getters and Setters
+    /** @return The sprint ID */
     public Long getSprintId() {
         return sprintId;
     }
 
+    /** @param sprintId The sprint ID */
     public void setSprintId(Long sprintId) {
         this.sprintId = sprintId;
     }
 
+    /** @return The team ID */
     public Long getTeamId() {
         return teamId;
     }
 
+    /** @param teamId The team ID */
     public void setTeamId(Long teamId) {
         this.teamId = teamId;
     }
 
+    /** @return The recorded date */
     public LocalDate getRecordedDate() {
         return recordedDate;
     }
 
+    /** @param recordedDate The recorded date */
     public void setRecordedDate(LocalDate recordedDate) {
         this.recordedDate = recordedDate;
     }
 
+    /** @return The completed tasks count */
     public Integer getCompletedTasks() {
         return completedTasks;
     }
 
+    /** @param completedTasks The completed tasks count */
     public void setCompletedTasks(Integer completedTasks) {
         this.completedTasks = completedTasks;
     }
 
+    /** @return The total tasks count */
     public Integer getTotalTasks() {
         return totalTasks;
     }
 
+    /** @param totalTasks The total tasks count */
     public void setTotalTasks(Integer totalTasks) {
         this.totalTasks = totalTasks;
     }
 
+    /** @return The story points completed */
     public BigDecimal getStoryPointsCompleted() {
         return storyPointsCompleted;
     }
 
+    /** @param storyPointsCompleted The story points completed */
     public void setStoryPointsCompleted(BigDecimal storyPointsCompleted) {
         this.storyPointsCompleted = storyPointsCompleted;
     }
 
+    /** @return The total story points */
     public BigDecimal getTotalStoryPoints() {
         return totalStoryPoints;
     }
 
+    /** @param totalStoryPoints The total story points */
     public void setTotalStoryPoints(BigDecimal totalStoryPoints) {
         this.totalStoryPoints = totalStoryPoints;
     }
 
+    /** @return The velocity */
     public BigDecimal getVelocity() {
         return velocity;
     }
 
+    /** @param velocity The velocity */
     public void setVelocity(BigDecimal velocity) {
         this.velocity = velocity;
     }
 
+    /** @return The burn down data */
     public String getBurnDownData() {
         return burnDownData;
     }
 
+    /** @param burnDownData The burn down data */
     public void setBurnDownData(String burnDownData) {
         this.burnDownData = burnDownData;
     }
 
+    /** @return The team mood */
     public TeamMood getTeamMood() {
         return teamMood;
     }
 
+    /** @param teamMood The team mood */
     public void setTeamMood(TeamMood teamMood) {
         this.teamMood = teamMood;
     }
 
+    /** @return The notes */
     public String getNotes() {
         return notes;
     }
 
+    /** @param notes The notes */
     public void setNotes(String notes) {
         this.notes = notes;
     }

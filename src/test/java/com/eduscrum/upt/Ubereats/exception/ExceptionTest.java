@@ -5,17 +5,16 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
 /**
- * Unit tests for custom exceptions.
- */
-/**
- * Tests for custom exception classes.
+ * Unit tests for custom exception classes.
+ * Tests ResourceNotFoundException and BusinessLogicException behavior.
  *
  * @version 0.7.0 (2025-11-15)
  */
 class ExceptionTest {
 
-    // ===================== RESOURCE NOT FOUND EXCEPTION =====================
+    // region RESOURCE NOT FOUND EXCEPTION
 
+    /** Tests that ResourceNotFoundException returns the correct message. */
     @Test
     void resourceNotFoundException_WithMessage_ReturnsMessage() {
         ResourceNotFoundException ex = new ResourceNotFoundException("User not found with id: 1");
@@ -23,6 +22,7 @@ class ExceptionTest {
         assertEquals("User not found with id: 1", ex.getMessage());
     }
 
+    /** Tests that ResourceNotFoundException is a RuntimeException. */
     @Test
     void resourceNotFoundException_IsRuntimeException() {
         ResourceNotFoundException ex = new ResourceNotFoundException("Test");
@@ -30,8 +30,9 @@ class ExceptionTest {
         assertTrue(ex instanceof RuntimeException);
     }
 
-    // ===================== BUSINESS LOGIC EXCEPTION =====================
+    // region BUSINESS LOGIC EXCEPTION
 
+    /** Tests that BusinessLogicException returns the correct message. */
     @Test
     void businessLogicException_WithMessage_ReturnsMessage() {
         BusinessLogicException ex = new BusinessLogicException("Cannot delete active course");
@@ -39,6 +40,7 @@ class ExceptionTest {
         assertEquals("Cannot delete active course", ex.getMessage());
     }
 
+    /** Tests that BusinessLogicException is a RuntimeException. */
     @Test
     void businessLogicException_IsRuntimeException() {
         BusinessLogicException ex = new BusinessLogicException("Test");
@@ -46,8 +48,9 @@ class ExceptionTest {
         assertTrue(ex instanceof RuntimeException);
     }
 
-    // ===================== EXCEPTION THROWING =====================
+    // region EXCEPTION THROWING
 
+    /** Tests that ResourceNotFoundException can be thrown and caught. */
     @Test
     void resourceNotFoundException_CanBeThrown() {
         assertThrows(ResourceNotFoundException.class, () -> {
@@ -55,6 +58,7 @@ class ExceptionTest {
         });
     }
 
+    /** Tests that BusinessLogicException can be thrown and caught. */
     @Test
     void businessLogicException_CanBeThrown() {
         assertThrows(BusinessLogicException.class, () -> {

@@ -129,6 +129,11 @@ public class Team {
 
     // === BUSINESS METHODS ===
 
+    /**
+     * Adds a project to this team's project list.
+     *
+     * @param project The project to add
+     */
     public void addProject(Project project) {
         if (!this.projects.contains(project)) {
             this.projects.add(project);
@@ -137,14 +142,18 @@ public class Team {
     }
 
     /**
-     * Get number of active members
+     * Gets the number of active members in this team.
+     *
+     * @return The count of active team members
      */
     public Integer getMemberCount() {
         return getActiveMembers().size();
     }
 
     /**
-     * Get Scrum Master of the team
+     * Gets the Scrum Master of this team.
+     *
+     * @return The User assigned as Scrum Master, or null if not assigned
      */
     public User getScrumMaster() {
         return members.stream()
@@ -155,7 +164,9 @@ public class Team {
     }
 
     /**
-     * Get Product Owner of the team
+     * Gets the Product Owner of this team.
+     *
+     * @return The User assigned as Product Owner, or null if not assigned
      */
     public User getProductOwner() {
         return members.stream()
@@ -166,7 +177,9 @@ public class Team {
     }
 
     /**
-     * Get all developers in the team
+     * Gets all developers in this team.
+     *
+     * @return List of Users with DEVELOPER role
      */
     public List<User> getDevelopers() {
         return members.stream()
@@ -176,7 +189,9 @@ public class Team {
     }
 
     /**
-     * Get total points from team achievements
+     * Calculates total points from team achievements.
+     *
+     * @return The sum of all badge points earned by the team
      */
     public Integer getTotalPoints() {
         return teamAchievements.stream()
@@ -185,7 +200,9 @@ public class Team {
     }
 
     /**
-     * Calculate average velocity from progress metrics
+     * Calculates average velocity from progress metrics.
+     *
+     * @return The average velocity as BigDecimal
      */
     public BigDecimal getAverageVelocity() {
         if (analytics.isEmpty())
@@ -202,7 +219,9 @@ public class Team {
     }
 
     /**
-     * Calculate current progress percentage
+     * Calculates current progress percentage.
+     *
+     * @return The progress as a percentage (0-100)
      */
     public BigDecimal getCurrentProgress() {
         if (analytics.isEmpty())
@@ -218,7 +237,9 @@ public class Team {
     }
 
     /**
-     * Get active team members
+     * Gets all active team members.
+     *
+     * @return List of active TeamMembers
      */
     public List<TeamMember> getActiveMembers() {
         return members.stream()
@@ -227,7 +248,10 @@ public class Team {
     }
 
     /**
-     * Check if user is a member of this team
+     * Checks if a user is an active member of this team.
+     *
+     * @param user The user to check
+     * @return true if the user is an active member, false otherwise
      */
     public boolean hasMember(User user) {
         return members.stream()
@@ -235,7 +259,9 @@ public class Team {
     }
 
     /**
-     * Get latest analytic
+     * Gets the most recent analytic record for this team.
+     *
+     * @return The latest Analytic, or null if none exist
      */
     public Analytic getLatestAnalytic() {
         return analytics.stream()
@@ -244,7 +270,9 @@ public class Team {
     }
 
     /**
-     * Get team mood from latest analytic
+     * Gets the team mood from the latest analytic.
+     *
+     * @return The current TeamMood, or null if no analytics exist
      */
     public TeamMood getCurrentTeamMood() {
         Analytic latest = getLatestAnalytic();

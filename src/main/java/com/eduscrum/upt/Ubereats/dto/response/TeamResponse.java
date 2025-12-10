@@ -46,47 +46,57 @@ public class TeamResponse {
         this.createdAt = team.getCreatedAt();
     }
 
-    // Getters
+    /** @return The team ID */
     public Long getId() {
         return id;
     }
 
+    /** @return The team name */
     public String getName() {
         return name;
     }
 
+    /** @return The project count */
     public Integer getProjectCount() {
         return projectCount;
     }
 
+    /** @return The project names */
     public List<String> getProjectNames() {
         return projectNames;
     }
 
+    /** @return The member count */
     public Integer getMemberCount() {
         return memberCount;
     }
 
+    /** @return The total points */
     public Integer getTotalPoints() {
         return totalPoints;
     }
 
+    /** @return The Scrum Master name */
     public String getScrumMaster() {
         return scrumMaster;
     }
 
+    /** @return The Product Owner name */
     public String getProductOwner() {
         return productOwner;
     }
 
+    /** @return The current progress */
     public BigDecimal getCurrentProgress() {
         return currentProgress;
     }
 
+    /** @return The performance rating */
     public BigDecimal getPerformanceRating() {
         return performanceRating;
     }
 
+    /** @return The creation timestamp */
     public LocalDateTime getCreatedAt() {
         return createdAt;
     }

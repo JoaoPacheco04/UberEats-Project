@@ -17,7 +17,7 @@ public class AddMemberRequest {
     @NotNull(message = "Role is required")
     private ScrumRole role;
 
-    // Constructors
+    /** Default constructor. */
     public AddMemberRequest() {
     }
 
@@ -26,19 +26,38 @@ public class AddMemberRequest {
         this.role = role;
     }
 
-    // Getters and Setters
+    /**
+     * Gets the user ID.
+     *
+     * @return The user ID
+     */
     public Long getUserId() {
         return userId;
     }
 
+    /**
+     * Sets the user ID.
+     *
+     * @param userId The user ID
+     */
     public void setUserId(Long userId) {
         this.userId = userId;
     }
 
+    /**
+     * Gets the Scrum role.
+     *
+     * @return The Scrum role
+     */
     public ScrumRole getRole() {
         return role;
     }
 
+    /**
+     * Sets the Scrum role.
+     *
+     * @param role The Scrum role
+     */
     public void setRole(ScrumRole role) {
         this.role = role;
     }

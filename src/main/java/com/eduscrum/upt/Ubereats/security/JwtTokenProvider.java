@@ -9,6 +9,12 @@ import org.springframework.stereotype.Component;
 import javax.crypto.SecretKey;
 import java.util.Date;
 
+/**
+ * Provider for JWT token operations.
+ * Handles token generation, validation, and email extraction.
+ *
+ * @version 0.9.1 (2025-11-28)
+ */
 @Component
 public class JwtTokenProvider {
 
@@ -18,10 +24,21 @@ public class JwtTokenProvider {
     @Value("${app.jwt.expiration}")
     private long jwtExpiration;
 
+    /**
+     * Gets the signing key from the secret.
+     *
+     * @return The SecretKey for signing
+     */
     private SecretKey getSigningKey() {
         return Keys.hmacShaKeyFor(jwtSecret.getBytes());
     }
 
+    /**
+     * Generates a JWT token for the authenticated user.
+     *
+     * @param authentication The authentication object
+     * @return The generated JWT token string
+     */
     public String generateToken(Authentication authentication) {
         CustomUserDetails userPrincipal = (CustomUserDetails) authentication.getPrincipal();
 
@@ -36,6 +53,12 @@ public class JwtTokenProvider {
                 .compact();
     }
 
+    /**
+     * Extracts the user email from a JWT token.
+     *
+     * @param token The JWT token
+     * @return The email (subject) from the token
+     */
     public String getEmailFromToken(String token) {
         return Jwts.parserBuilder()
                 .setSigningKey(getSigningKey())
@@ -45,6 +68,12 @@ public class JwtTokenProvider {
                 .getSubject();
     }
 
+    /**
+     * Validates a JWT token.
+     *
+     * @param token The JWT token to validate
+     * @return true if valid, false otherwise
+     */
     public boolean validateToken(String token) {
         try {
             Jwts.parserBuilder()

@@ -91,6 +91,12 @@ public class AuthController {
         }
     }
 
+    /**
+     * Registers a new user in the system.
+     *
+     * @param registerRequest The request containing registration details
+     * @return ResponseEntity with success or error message
+     */
     @PostMapping("/register")
     public ResponseEntity<?> register(@RequestBody RegisterRequest registerRequest) {
         try {
@@ -118,7 +124,7 @@ public class AuthController {
             Map<String, String> response = new HashMap<>();
             response.put("message", "User registered successfully");
             response.put("userId", user.getId().toString());
-            return ResponseEntity.status(HttpStatus.CREATED).body(response); // ⭐️ Usar 201 CREATED
+            return ResponseEntity.status(HttpStatus.CREATED).body(response);
 
         } catch (Exception e) {
             Map<String, String> response = new HashMap<>();
@@ -127,6 +133,11 @@ public class AuthController {
         }
     }
 
+    /**
+     * Retrieves the current authenticated user's information.
+     *
+     * @return ResponseEntity containing current user details
+     */
     @GetMapping("/me")
     public ResponseEntity<?> getCurrentUser() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();

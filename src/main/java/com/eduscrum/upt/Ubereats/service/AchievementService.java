@@ -104,6 +104,11 @@ public class AchievementService {
         return convertToDTO(savedAchievement);
     }
 
+    /**
+     * Retrieves all achievements in the system.
+     *
+     * @return List of all achievements as response DTOs
+     */
     @Transactional(readOnly = true)
     public List<AchievementResponseDTO> getAllAchievements() {
         return achievementRepository.findAll().stream()
@@ -111,12 +116,24 @@ public class AchievementService {
                 .collect(Collectors.toList());
     }
 
+    /**
+     * Retrieves an achievement by its ID.
+     *
+     * @param id The ID of the achievement to retrieve
+     * @return Optional containing the achievement if found
+     */
     @Transactional(readOnly = true)
     public Optional<AchievementResponseDTO> getAchievementById(Long id) {
         return achievementRepository.findById(id)
                 .map(this::convertToDTO);
     }
 
+    /**
+     * Retrieves all achievements for a specific user.
+     *
+     * @param userId The ID of the user
+     * @return List of achievements awarded to the user
+     */
     @Transactional(readOnly = true)
     public List<AchievementResponseDTO> getUserAchievements(Long userId) {
         return achievementRepository.findByAwardedToUserId(userId).stream()
@@ -124,6 +141,12 @@ public class AchievementService {
                 .collect(Collectors.toList());
     }
 
+    /**
+     * Retrieves all achievements for a specific team.
+     *
+     * @param teamId The ID of the team
+     * @return List of achievements awarded to the team
+     */
     @Transactional(readOnly = true)
     public List<AchievementResponseDTO> getTeamAchievements(Long teamId) {
         return achievementRepository.findByAwardedToTeamId(teamId).stream()
@@ -131,6 +154,12 @@ public class AchievementService {
                 .collect(Collectors.toList());
     }
 
+    /**
+     * Retrieves all achievements for a specific project.
+     *
+     * @param projectId The ID of the project
+     * @return List of achievements within the project
+     */
     @Transactional(readOnly = true)
     public List<AchievementResponseDTO> getProjectAchievements(Long projectId) {
         return achievementRepository.findByProjectId(projectId).stream()
@@ -138,6 +167,12 @@ public class AchievementService {
                 .collect(Collectors.toList());
     }
 
+    /**
+     * Retrieves all achievements for a specific sprint.
+     *
+     * @param sprintId The ID of the sprint
+     * @return List of achievements within the sprint
+     */
     @Transactional(readOnly = true)
     public List<AchievementResponseDTO> getSprintAchievements(Long sprintId) {
         return achievementRepository.findBySprintId(sprintId).stream()
@@ -145,18 +180,37 @@ public class AchievementService {
                 .collect(Collectors.toList());
     }
 
+    /**
+     * Calculates the total points earned by a user in a specific project.
+     *
+     * @param userId    The ID of the user
+     * @param projectId The ID of the project
+     * @return Total points earned, defaults to 0 if none
+     */
     @Transactional(readOnly = true)
     public Integer getUserTotalPoints(Long userId, Long projectId) {
         Integer points = achievementRepository.sumUserPointsInProject(userId, projectId);
         return points != null ? points : 0;
     }
 
+    /**
+     * Calculates the total points earned by a team.
+     *
+     * @param teamId The ID of the team
+     * @return Total points earned, defaults to 0 if none
+     */
     @Transactional(readOnly = true)
     public Integer getTeamTotalPoints(Long teamId) {
         Integer points = achievementRepository.sumTeamPoints(teamId);
         return points != null ? points : 0;
     }
 
+    /**
+     * Calculates the total points earned by a user across all projects.
+     *
+     * @param userId The ID of the user
+     * @return Total points earned across all projects
+     */
     @Transactional(readOnly = true)
     public Integer getUserTotalPointsAllProjects(Long userId) {
         List<Achievement> userAchievements = achievementRepository.findByAwardedToUserId(userId);
@@ -165,6 +219,12 @@ public class AchievementService {
                 .sum();
     }
 
+    /**
+     * Calculates the total points earned by a team across all projects.
+     *
+     * @param teamId The ID of the team
+     * @return Total points earned across all projects
+     */
     @Transactional(readOnly = true)
     public Integer getTeamTotalPointsAllProjects(Long teamId) {
         List<Achievement> teamAchievements = achievementRepository.findByAwardedToTeamId(teamId);
@@ -173,6 +233,12 @@ public class AchievementService {
                 .sum();
     }
 
+    /**
+     * Deletes an achievement by its ID.
+     *
+     * @param id The ID of the achievement to delete
+     * @throws IllegalArgumentException if achievement not found
+     */
     public void deleteAchievement(Long id) {
         if (!achievementRepository.existsById(id)) {
             throw new IllegalArgumentException("Achievement not found with id: " + id);
@@ -180,18 +246,39 @@ public class AchievementService {
         achievementRepository.deleteById(id);
     }
 
-    // === ACHIEVEMENT CHECK METHODS ===
+    // region ACHIEVEMENT CHECK METHODS
 
+    /**
+     * Checks if a user already has a specific badge in a project.
+     *
+     * @param userId    The ID of the user
+     * @param badgeId   The ID of the badge
+     * @param projectId The ID of the project
+     * @return true if the user has the badge in the project, false otherwise
+     */
     @Transactional(readOnly = true)
     public boolean userHasBadgeInProject(Long userId, Long badgeId, Long projectId) {
         return achievementRepository.existsByUserIdAndBadgeIdAndProjectId(userId, badgeId, projectId);
     }
 
+    /**
+     * Checks if a team already has a specific badge.
+     *
+     * @param teamId  The ID of the team
+     * @param badgeId The ID of the badge
+     * @return true if the team has the badge, false otherwise
+     */
     @Transactional(readOnly = true)
     public boolean teamHasBadge(Long teamId, Long badgeId) {
         return achievementRepository.existsByTeamIdAndBadgeId(teamId, badgeId);
     }
 
+    /**
+     * Retrieves the most recent achievements up to a specified limit.
+     *
+     * @param limit The maximum number of achievements to return
+     * @return List of recent achievements
+     */
     @Transactional(readOnly = true)
     public List<AchievementResponseDTO> getRecentAchievements(int limit) {
         return achievementRepository.findLatestAchievements().stream()
@@ -200,7 +287,7 @@ public class AchievementService {
                 .collect(Collectors.toList());
     }
 
-    // === VALIDATION ===
+    // region VALIDATION
     private void validateAchievementRequest(AchievementRequestDTO requestDTO) {
         if (requestDTO.getAwardedToUserId() != null && requestDTO.getAwardedToTeamId() != null) {
             throw new IllegalArgumentException("Cannot award to both user and team");
@@ -229,7 +316,7 @@ public class AchievementService {
         }
     }
 
-    // === INTERNAL ENTITY METHODS ===
+    // region INTERNAL ENTITY METHODS
 
     /**
      * Gets user entity by ID (for internal use)
@@ -248,7 +335,7 @@ public class AchievementService {
                 .orElseThrow(() -> new IllegalArgumentException("Project not found with id: " + projectId));
     }
 
-    // === CONVERSION METHODS ===
+    // region CONVERSION METHODS
     private AchievementResponseDTO convertToDTO(Achievement achievement) {
         AchievementResponseDTO dto = new AchievementResponseDTO();
         dto.setId(achievement.getId());
@@ -293,15 +380,15 @@ public class AchievementService {
         return dto;
     }
 
-    // Internal method for entity operations
+    /** Internal method for entity operations. */
     public Achievement getAchievementEntity(Long id) {
         return achievementRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Achievement not found with id: " + id));
     }
 
-    // === AUTOMATIC AWARDS IMPLEMENTATION ===
+    // region AUTOMATIC AWARDS IMPLEMENTATION
 
-    // --- Awards Nível Sprint ---
+    // region Awards Sprint Level
 
     /**
      * Check for and awards automatic team badges when a sprint is completed.
@@ -342,7 +429,7 @@ public class AchievementService {
         }
     }
 
-    // --- Awards Nível Projeto (Entry Point) ---
+    // region Awards Project Level - Entry Point
 
     /**
      * Entry point to check for and award all automatic badges related to project
@@ -360,7 +447,7 @@ public class AchievementService {
         checkProjectMultiplier(projectId);
     }
 
-    // --- Awards Nível Projeto (Lógica Detalhada) ---
+    // region Awards Project Level - Detailed Logic
 
     /**
      * Checks if any student qualifies for the "High-Impact Dev" badge in a project.
@@ -630,7 +717,7 @@ public class AchievementService {
         return new AchievementStatsDTO(totalPoints, individualAchievements, teamAchievements, userAchievements.size());
     }
 
-    // === INNER CLASS FOR STATS DTO ===
+    // region INNER CLASS FOR STATS DTO
     public static class AchievementStatsDTO {
         private final int totalPoints;
         private final long individualAchievements;

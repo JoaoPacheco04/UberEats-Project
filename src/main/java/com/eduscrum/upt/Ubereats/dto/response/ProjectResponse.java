@@ -26,6 +26,7 @@ public class ProjectResponse {
     private Long courseId;
     private String courseName;
 
+    /** Default constructor. */
     public ProjectResponse() {
     }
 
@@ -46,83 +47,102 @@ public class ProjectResponse {
         this.courseName = courseName;
     }
 
-    // === GETTERS & SETTERS ===
+    /** @return The project ID */
     public Long getId() {
         return id;
     }
 
+    /** @return The project name */
     public String getName() {
         return name;
     }
 
+    /** @return The description */
     public String getDescription() {
         return description;
     }
 
+    /** @return The start date */
     public LocalDate getStartDate() {
         return startDate;
     }
 
+    /** @return The end date */
     public LocalDate getEndDate() {
         return endDate;
     }
 
+    /** @return The project status */
     public ProjectStatus getStatus() {
         return status;
     }
 
+    /** @return The creation timestamp */
     public LocalDateTime getCreatedAt() {
         return createdAt;
     }
 
+    /** @return The update timestamp */
     public LocalDateTime getUpdatedAt() {
         return updatedAt;
     }
 
+    /** @return The course ID */
     public Long getCourseId() {
         return courseId;
     }
 
+    /** @return The course name */
     public String getCourseName() {
         return courseName;
     }
 
+    /** @param id The project ID */
     public void setId(Long id) {
         this.id = id;
     }
 
+    /** @param name The project name */
     public void setName(String name) {
         this.name = name;
     }
 
+    /** @param description The description */
     public void setDescription(String description) {
         this.description = description;
     }
 
+    /** @param startDate The start date */
     public void setStartDate(LocalDate startDate) {
         this.startDate = startDate;
     }
 
+    /** @param endDate The end date */
     public void setEndDate(LocalDate endDate) {
         this.endDate = endDate;
     }
 
+    /** @param status The project status */
     public void setStatus(ProjectStatus status) {
         this.status = status;
     }
 
+    /** @param createdAt The creation timestamp */
     public void setCreatedAt(LocalDateTime createdAt) {
         this.createdAt = createdAt;
     }
 
+    /** @param updatedAt The update timestamp */
     public void setUpdatedAt(LocalDateTime updatedAt) {
         this.updatedAt = updatedAt;
     }
 
+    /** @param courseId The course ID */
     public void setCourseId(Long courseId) {
         this.courseId = courseId;
     }
 
+    /** @param courseName The course name */
     public void setCourseName(String courseName) {
         this.courseName = courseName;
     }

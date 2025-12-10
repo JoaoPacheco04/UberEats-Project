@@ -19,26 +19,63 @@ import java.util.Optional;
 @Repository
 public interface TeamMemberRepository extends JpaRepository<TeamMember, Long> {
 
-    // Find active team members by team
+    /**
+     * Finds active team members by team ID.
+     *
+     * @param teamId The team ID
+     * @return List of active team members
+     */
     List<TeamMember> findByTeamIdAndIsActiveTrue(Long teamId);
 
-    // Find team member by user and team
+    /**
+     * Finds a team member by user ID and team ID.
+     *
+     * @param userId The user ID
+     * @param teamId The team ID
+     * @return Optional containing the team member
+     */
     Optional<TeamMember> findByUserIdAndTeamId(Long userId, Long teamId);
 
-    // Find all teams where user is active member
+    /**
+     * Finds all teams where user is an active member.
+     *
+     * @param userId The user ID
+     * @return List of team memberships
+     */
     List<TeamMember> findByUserIdAndIsActiveTrue(Long userId);
 
-    // Count active members in team
+    /**
+     * Counts active members in a team.
+     *
+     * @param teamId The team ID
+     * @return Count of active members
+     */
     Long countByTeamIdAndIsActiveTrue(Long teamId);
 
-    // Find Scrum Master of a team
+    /**
+     * Finds the Scrum Master of a team.
+     *
+     * @param teamId The team ID
+     * @return Optional containing the Scrum Master
+     */
     @Query("SELECT tm FROM TeamMember tm WHERE tm.team.id = :teamId AND tm.role = 'SCRUM_MASTER' AND tm.isActive = true")
     Optional<TeamMember> findScrumMasterByTeamId(@Param("teamId") Long teamId);
 
-    // Find Product Owner of a team
+    /**
+     * Finds the Product Owner of a team.
+     *
+     * @param teamId The team ID
+     * @return Optional containing the Product Owner
+     */
     @Query("SELECT tm FROM TeamMember tm WHERE tm.team.id = :teamId AND tm.role = 'PRODUCT_OWNER' AND tm.isActive = true")
     Optional<TeamMember> findProductOwnerByTeamId(@Param("teamId") Long teamId);
 
-    // Find members by role in team
+    /**
+     * Finds active members by role in a team.
+     *
+     * @param teamId The team ID
+     * @param role   The Scrum role
+     * @return List of team members with the role
+     */
     List<TeamMember> findByTeamIdAndRoleAndIsActiveTrue(Long teamId, ScrumRole role);
 }

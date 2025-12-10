@@ -32,7 +32,7 @@ public class SprintRequestDTO {
     @NotNull(message = "Project ID is required")
     private Long projectId;
 
-    // Constructors
+    /** Default constructor. */
     public SprintRequestDTO() {
     }
 
@@ -47,59 +47,72 @@ public class SprintRequestDTO {
         this.projectId = projectId;
     }
 
-    // Getters and Setters
+    /** @return The sprint number */
     public Integer getSprintNumber() {
         return sprintNumber;
     }
 
+    /** @param sprintNumber The sprint number */
     public void setSprintNumber(Integer sprintNumber) {
         this.sprintNumber = sprintNumber;
     }
 
+    /** @return The sprint name */
     public String getName() {
         return name;
     }
 
+    /** @param name The sprint name */
     public void setName(String name) {
         this.name = name;
     }
 
+    /** @return The sprint goal */
     public String getGoal() {
         return goal;
     }
 
+    /** @param goal The sprint goal */
     public void setGoal(String goal) {
         this.goal = goal;
     }
 
+    /** @return The start date */
     public LocalDate getStartDate() {
         return startDate;
     }
 
+    /** @param startDate The start date */
     public void setStartDate(LocalDate startDate) {
         this.startDate = startDate;
     }
 
+    /** @return The end date */
     public LocalDate getEndDate() {
         return endDate;
     }
 
+    /** @param endDate The end date */
     public void setEndDate(LocalDate endDate) {
         this.endDate = endDate;
     }
 
+    /** @return The sprint status */
     public SprintStatus getStatus() {
         return status;
     }
 
+    /** @param status The sprint status */
     public void setStatus(SprintStatus status) {
         this.status = status;
     }
 
+    /** @return The project ID */
     public Long getProjectId() {
         return projectId;
     }
 
+    /** @param projectId The project ID */
     public void setProjectId(Long projectId) {
         this.projectId = projectId;
     }

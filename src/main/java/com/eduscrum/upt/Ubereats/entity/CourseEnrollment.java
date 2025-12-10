@@ -80,22 +80,27 @@ public class CourseEnrollment {
     // === BUSINESS METHODS ===
 
     /**
-     * Check if enrollment is active
+     * Checks if enrollment is active.
+     *
+     * @return true if course is active, false otherwise
      */
     public boolean isActiveEnrollment() {
-        // Enrollment is active if the course is active
         return course != null && course.isActive();
     }
 
     /**
-     * Get enrollment duration in days
+     * Gets enrollment duration in days.
+     *
+     * @return Number of days since enrollment
      */
     public Long getEnrollmentDuration() {
         return Duration.between(enrolledAt, LocalDateTime.now()).toDays();
     }
 
     /**
-     * Check if student can be enrolled (not already enrolled)
+     * Checks if student can be enrolled (not already enrolled).
+     *
+     * @return true if can enroll, false otherwise
      */
     public boolean canEnroll() {
         return course != null && student != null &&

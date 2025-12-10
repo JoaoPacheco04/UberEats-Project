@@ -34,18 +34,36 @@ public class UserStoryController {
         this.userStoryService = userStoryService;
     }
 
+    /**
+     * Creates a new user story.
+     *
+     * @param requestDTO The request containing user story details
+     * @return ResponseEntity containing the created user story
+     */
     @PostMapping
     public ResponseEntity<UserStoryResponseDTO> createUserStory(@Valid @RequestBody UserStoryRequestDTO requestDTO) {
         UserStoryResponseDTO createdUserStory = userStoryService.createUserStory(requestDTO);
         return new ResponseEntity<>(createdUserStory, HttpStatus.CREATED);
     }
 
+    /**
+     * Retrieves all user stories.
+     *
+     * @return ResponseEntity containing the list of all user stories
+     */
     @GetMapping
     public ResponseEntity<List<UserStoryResponseDTO>> getAllUserStories() {
         List<UserStoryResponseDTO> userStories = userStoryService.getAllUserStories();
         return ResponseEntity.ok(userStories);
     }
 
+    /**
+     * Retrieves a user story by its ID.
+     *
+     * @param id The ID of the user story
+     * @return ResponseEntity containing the user story
+     * @throws IllegalArgumentException if user story not found
+     */
     @GetMapping("/{id}")
     public ResponseEntity<UserStoryResponseDTO> getUserStoryById(@PathVariable Long id) {
         UserStoryResponseDTO userStory = userStoryService.getUserStoryById(id)
@@ -53,6 +71,13 @@ public class UserStoryController {
         return ResponseEntity.ok(userStory);
     }
 
+    /**
+     * Updates an existing user story.
+     *
+     * @param id         The ID of the user story to update
+     * @param requestDTO The request containing updated user story details
+     * @return ResponseEntity containing the updated user story
+     */
     @PutMapping("/{id}")
     public ResponseEntity<UserStoryResponseDTO> updateUserStory(@PathVariable Long id,
             @Valid @RequestBody UserStoryRequestDTO requestDTO) {
@@ -60,6 +85,13 @@ public class UserStoryController {
         return ResponseEntity.ok(updatedUserStory);
     }
 
+    /**
+     * Assigns a user story to a team member.
+     *
+     * @param id           The ID of the user story
+     * @param assignedToId The ID of the user to assign to
+     * @return ResponseEntity containing the updated user story
+     */
     @PutMapping("/{id}/assign/{assignedToId}")
     public ResponseEntity<UserStoryResponseDTO> assignUserStory(@PathVariable Long id,
             @PathVariable Long assignedToId) {
@@ -67,30 +99,60 @@ public class UserStoryController {
         return ResponseEntity.ok(response);
     }
 
+    /**
+     * Unassigns a user story from its current assignee.
+     *
+     * @param id The ID of the user story
+     * @return ResponseEntity containing the updated user story
+     */
     @PutMapping("/{id}/unassign")
     public ResponseEntity<UserStoryResponseDTO> unassignUserStory(@PathVariable Long id) {
         UserStoryResponseDTO response = userStoryService.unassignUserStory(id);
         return ResponseEntity.ok(response);
     }
 
+    /**
+     * Moves a user story to the next workflow status.
+     *
+     * @param id The ID of the user story
+     * @return ResponseEntity containing the updated user story
+     */
     @PutMapping("/{id}/next-status")
     public ResponseEntity<UserStoryResponseDTO> moveToNextStatus(@PathVariable Long id) {
         UserStoryResponseDTO response = userStoryService.moveToNextStatus(id);
         return ResponseEntity.ok(response);
     }
 
+    /**
+     * Moves a user story to the previous workflow status.
+     *
+     * @param id The ID of the user story
+     * @return ResponseEntity containing the updated user story
+     */
     @PutMapping("/{id}/previous-status")
     public ResponseEntity<UserStoryResponseDTO> moveToPreviousStatus(@PathVariable Long id) {
         UserStoryResponseDTO response = userStoryService.moveToPreviousStatus(id);
         return ResponseEntity.ok(response);
     }
 
+    /**
+     * Deletes a user story.
+     *
+     * @param id The ID of the user story to delete
+     * @return ResponseEntity with no content
+     */
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteUserStory(@PathVariable Long id) {
         userStoryService.deleteUserStory(id);
         return ResponseEntity.noContent().build();
     }
 
+    /**
+     * Gets statistics for a specific sprint.
+     *
+     * @param sprintId The ID of the sprint
+     * @return ResponseEntity containing sprint statistics
+     */
     @GetMapping("/sprint/{sprintId}/stats")
     public ResponseEntity<Map<String, Object>> getSprintStats(@PathVariable Long sprintId) {
         Integer totalPoints = userStoryService.getTotalStoryPointsBySprint(sprintId);

@@ -42,7 +42,7 @@ public class UserStoryResponseDTO {
     private Long createdByUserId;
     private String createdByName;
 
-    // Constructors
+    /** Default constructor. */
     public UserStoryResponseDTO() {
     }
 
@@ -85,7 +85,7 @@ public class UserStoryResponseDTO {
         this.createdByName = createdByName;
     }
 
-    // Getters and Setters
+    /** @return The user story ID */
     public Long getId() {
         return id;
     }

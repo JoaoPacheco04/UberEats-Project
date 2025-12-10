@@ -27,7 +27,7 @@ public class DashboardStatsDTO {
     // Badges".
     // Let's check if BadgeResponseDTO exists in the list_dir output.
 
-    // Default constructor
+    /** Default constructor. */
     public DashboardStatsDTO() {
     }
 
@@ -39,7 +39,7 @@ public class DashboardStatsDTO {
         this.recentBadges = recentBadges;
     }
 
-    // Getters and Setters
+    /** @return The global score */
     public Integer getGlobalScore() {
         return globalScore;
     }

@@ -31,7 +31,7 @@ public class AchievementResponseDTO {
     private String sprintName;
     private Long awardedById;
 
-    // Constructors
+    /** Default constructor. */
     public AchievementResponseDTO() {
     }
 
@@ -62,7 +62,7 @@ public class AchievementResponseDTO {
         this.awardedById = awardedById;
     }
 
-    // Getters and Setters
+    /** @return The achievement ID */
     public Long getId() {
         return id;
     }

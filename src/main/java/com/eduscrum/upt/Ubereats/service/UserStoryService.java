@@ -96,7 +96,10 @@ public class UserStoryService {
     }
 
     /**
-     * Validates all user story input parameters
+     * Validates all user story input parameters.
+     *
+     * @param requestDTO The request to validate
+     * @throws BusinessLogicException if any validation fails
      */
     private void validateUserStoryInput(UserStoryRequestDTO requestDTO) {
         if (requestDTO.getTitle() == null || requestDTO.getTitle().trim().isEmpty()) {
@@ -126,7 +129,12 @@ public class UserStoryService {
     }
 
     /**
-     * Checks if user story title already exists in sprint
+     * Checks if user story title already exists in sprint.
+     *
+     * @param sprintId  The sprint ID to check in
+     * @param title     The title to check
+     * @param excludeId The story ID to exclude (null for new stories)
+     * @throws BusinessLogicException if title already exists
      */
     private void validateUserStoryUniqueness(Long sprintId, String title, Long excludeId) {
         boolean titleExists;
@@ -142,7 +150,10 @@ public class UserStoryService {
     }
 
     /**
-     * Creates a new UserStory entity with the provided data
+     * Creates a new UserStory entity with the provided data.
+     *
+     * @param requestDTO The request containing user story details
+     * @return The new UserStory entity (not yet persisted)
      */
     private UserStory createUserStoryEntity(UserStoryRequestDTO requestDTO) {
         Sprint sprint = getSprintEntity(requestDTO.getSprintId());
@@ -179,10 +190,12 @@ public class UserStoryService {
         return userStory;
     }
 
-    // === USER STORY RETRIEVAL METHODS ===
+    // region USER STORY RETRIEVAL METHODS
 
     /**
-     * Finds all user stories
+     * Finds all user stories.
+     *
+     * @return List of all user stories as DTOs
      */
     @Transactional(readOnly = true)
     public List<UserStoryResponseDTO> getAllUserStories() {
@@ -192,7 +205,10 @@ public class UserStoryService {
     }
 
     /**
-     * Finds user story by ID
+     * Finds user story by ID.
+     *
+     * @param id The user story ID
+     * @return Optional containing the user story if found
      */
     @Transactional(readOnly = true)
     public Optional<UserStoryResponseDTO> getUserStoryById(Long id) {
@@ -201,7 +217,10 @@ public class UserStoryService {
     }
 
     /**
-     * Finds user stories by sprint
+     * Finds user stories by sprint.
+     *
+     * @param sprintId The sprint ID to filter by
+     * @return List of user stories in the sprint
      */
     @Transactional(readOnly = true)
     public List<UserStoryResponseDTO> getUserStoriesBySprint(Long sprintId) {
@@ -211,7 +230,10 @@ public class UserStoryService {
     }
 
     /**
-     * Finds user stories by team
+     * Finds user stories by team.
+     *
+     * @param teamId The team ID to filter by
+     * @return List of user stories for the team
      */
     @Transactional(readOnly = true)
     public List<UserStoryResponseDTO> getUserStoriesByTeam(Long teamId) {
@@ -221,7 +243,10 @@ public class UserStoryService {
     }
 
     /**
-     * Finds user stories by assigned user
+     * Finds user stories by assigned user.
+     *
+     * @param assignedToId The user ID to filter by
+     * @return List of user stories assigned to the user
      */
     @Transactional(readOnly = true)
     public List<UserStoryResponseDTO> getUserStoriesByAssignedUser(Long assignedToId) {
@@ -231,7 +256,10 @@ public class UserStoryService {
     }
 
     /**
-     * Finds user stories by status
+     * Finds user stories by status.
+     *
+     * @param status The status to filter by
+     * @return List of user stories with the given status
      */
     @Transactional(readOnly = true)
     public List<UserStoryResponseDTO> getUserStoriesByStatus(StoryStatus status) {
@@ -241,7 +269,13 @@ public class UserStoryService {
     }
 
     /**
-     * Finds user stories by multiple criteria
+     * Finds user stories by multiple criteria.
+     *
+     * @param sprintId     The sprint ID filter (optional)
+     * @param teamId       The team ID filter (optional)
+     * @param status       The status filter (optional)
+     * @param assignedToId The assigned user ID filter (optional)
+     * @return List of user stories matching the criteria
      */
     @Transactional(readOnly = true)
     public List<UserStoryResponseDTO> getUserStoriesByCriteria(Long sprintId, Long teamId, StoryStatus status,
@@ -251,20 +285,28 @@ public class UserStoryService {
                 .collect(Collectors.toList());
     }
 
-    // === USER STORY EXISTENCE CHECKS ===
+    // region USER STORY EXISTENCE CHECKS
 
     /**
-     * Checks if user story exists by ID
+     * Checks if user story exists by ID.
+     *
+     * @param id The user story ID
+     * @return true if the user story exists
      */
     @Transactional(readOnly = true)
     public boolean existsById(Long id) {
         return userStoryRepository.existsById(id);
     }
 
-    // === USER STORY UPDATE OPERATIONS ===
+    // region USER STORY UPDATE OPERATIONS
 
     /**
-     * Updates an existing user story
+     * Updates an existing user story.
+     *
+     * @param id         The user story ID to update
+     * @param requestDTO The request containing updated details
+     * @return The updated user story as a DTO
+     * @throws BusinessLogicException if validation fails
      */
     public UserStoryResponseDTO updateUserStory(Long id, UserStoryRequestDTO requestDTO) {
         // Validate input
@@ -324,7 +366,12 @@ public class UserStoryService {
     }
 
     /**
-     * Assigns user story to a team member
+     * Assigns user story to a team member.
+     *
+     * @param id               The user story ID
+     * @param assignedToUserId The user ID to assign to
+     * @return The updated user story as a DTO
+     * @throws BusinessLogicException if user is not a team member
      */
     public UserStoryResponseDTO assignUserStory(Long id, Long assignedToUserId) {
         UserStory userStory = getUserStoryEntity(id);
@@ -341,7 +388,10 @@ public class UserStoryService {
     }
 
     /**
-     * Unassigns user story
+     * Unassigns user story.
+     *
+     * @param id The user story ID
+     * @return The updated user story as a DTO
      */
     public UserStoryResponseDTO unassignUserStory(Long id) {
         UserStory userStory = getUserStoryEntity(id);
@@ -351,7 +401,11 @@ public class UserStoryService {
     }
 
     /**
-     * Moves user story to next status
+     * Moves user story to next status.
+     *
+     * @param id The user story ID
+     * @return The updated user story as a DTO
+     * @throws BusinessLogicException if story cannot be moved
      */
     public UserStoryResponseDTO moveToNextStatus(Long id) {
         UserStory userStory = getUserStoryEntity(id);
@@ -377,7 +431,11 @@ public class UserStoryService {
     }
 
     /**
-     * Moves user story to previous status
+     * Moves user story to previous status.
+     *
+     * @param id The user story ID
+     * @return The updated user story as a DTO
+     * @throws BusinessLogicException if story cannot be moved
      */
     public UserStoryResponseDTO moveToPreviousStatus(Long id) {
         UserStory userStory = getUserStoryEntity(id);
@@ -397,7 +455,10 @@ public class UserStoryService {
     }
 
     /**
-     * Deletes a user story
+     * Deletes a user story.
+     *
+     * @param id The user story ID to delete
+     * @throws ResourceNotFoundException if story not found
      */
     public void deleteUserStory(Long id) {
         UserStory userStory = getUserStoryEntity(id);
@@ -411,10 +472,13 @@ public class UserStoryService {
         analyticsService.updateDailyAnalytic(sprintId, teamId);
     }
 
-    // === STATISTICS AND ANALYTICS ===
+    // region STATISTICS AND ANALYTICS
 
     /**
-     * Gets total story points in sprint
+     * Gets total story points in sprint.
+     *
+     * @param sprintId The sprint ID
+     * @return Total story points in the sprint
      */
     @Transactional(readOnly = true)
     public Integer getTotalStoryPointsBySprint(Long sprintId) {
@@ -422,7 +486,10 @@ public class UserStoryService {
     }
 
     /**
-     * Gets completed story points in sprint
+     * Gets completed story points in sprint.
+     *
+     * @param sprintId The sprint ID
+     * @return Completed story points in the sprint
      */
     @Transactional(readOnly = true)
     public Integer getCompletedStoryPointsBySprint(Long sprintId) {
@@ -430,7 +497,10 @@ public class UserStoryService {
     }
 
     /**
-     * Gets sprint completion percentage
+     * Gets sprint completion percentage.
+     *
+     * @param sprintId The sprint ID
+     * @return Completion percentage (0-100)
      */
     @Transactional(readOnly = true)
     public Double getSprintCompletionPercentage(Long sprintId) {
@@ -445,9 +515,11 @@ public class UserStoryService {
     /**
      * Retrieves completed Story Points per sprint for a specific user within a
      * project.
-     * This method is used by AchievementService to calculate consistency
-     * (Consistent Contributor badge).
-     * Returns a list of arrays: [Sprint ID (Long), Total SPs Completed (Long)]
+     * Used by AchievementService for consistency badge calculation.
+     *
+     * @param userId    The user ID
+     * @param projectId The project ID
+     * @return List of [Sprint ID, Total SPs Completed] arrays
      */
     @Transactional(readOnly = true)
     public List<Object[]> getCompletedStoryPointsPerSprintInProject(Long userId, Long projectId) {
@@ -459,13 +531,17 @@ public class UserStoryService {
     /**
      * Retrieves the sum of HIGH/CRITICAL Story Points completed by a user in a
      * project.
+     *
+     * @param userId    The user ID
+     * @param projectId The project ID
+     * @return Total high-priority story points completed
      */
     @Transactional(readOnly = true)
     public Integer sumHighPriorityCompletedStoryPointsByProject(Long userId, Long projectId) {
         return userStoryRepository.sumHighPriorityCompletedStoryPointsByProject(userId, projectId);
     }
 
-    // === UTILITY METHODS ===
+    // region UTILITY METHODS
 
     private void updateProjectProgress(Long projectId) {
         com.eduscrum.upt.Ubereats.entity.Project project = projectRepository.findById(projectId)
@@ -493,7 +569,11 @@ public class UserStoryService {
     }
 
     /**
-     * Checks if user is a member of the team
+     * Checks if user is a member of the team.
+     *
+     * @param userId The user ID
+     * @param teamId The team ID
+     * @return true if user is an active team member
      */
     private boolean isUserMemberOfTeam(Long userId, Long teamId) {
         return teamMemberRepository.findByUserIdAndTeamId(userId, teamId)
@@ -501,10 +581,14 @@ public class UserStoryService {
                 .orElse(false);
     }
 
-    // === INTERNAL ENTITY METHODS ===
+    // region INTERNAL ENTITY METHODS
 
     /**
-     * Gets user story entity by ID (for internal use)
+     * Gets user story entity by ID (for internal use).
+     *
+     * @param id The user story ID
+     * @return The UserStory entity
+     * @throws ResourceNotFoundException if not found
      */
     public UserStory getUserStoryEntity(Long id) {
         return userStoryRepository.findById(id)
@@ -512,31 +596,44 @@ public class UserStoryService {
     }
 
     /**
-     * Gets sprint entity by ID (for internal use)
+     * Gets sprint entity by ID (for internal use).
+     *
+     * @param sprintId The sprint ID
+     * @return The Sprint entity
      */
     public Sprint getSprintEntity(Long sprintId) {
         return sprintService.getSprintEntity(sprintId);
     }
 
     /**
-     * Gets team entity by ID (for internal use)
+     * Gets team entity by ID (for internal use).
+     *
+     * @param teamId The team ID
+     * @return The Team entity
      */
     public Team getTeamEntity(Long teamId) {
         return teamService.getTeamById(teamId);
     }
 
     /**
-     * Gets user entity by ID (for internal use)
+     * Gets user entity by ID (for internal use).
+     *
+     * @param userId The user ID
+     * @return The User entity
+     * @throws ResourceNotFoundException if not found
      */
     public User getUserEntity(Long userId) {
         return userService.findById(userId)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found with id: " + userId));
     }
 
-    // === CONVERSION METHODS ===
+    // region CONVERSION METHODS
 
     /**
-     * Converts UserStory entity to UserStoryResponseDTO
+     * Converts UserStory entity to UserStoryResponseDTO.
+     *
+     * @param userStory The UserStory entity
+     * @return The response DTO
      */
     private UserStoryResponseDTO convertToDTO(UserStory userStory) {
         UserStoryResponseDTO dto = new UserStoryResponseDTO();

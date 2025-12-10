@@ -21,42 +21,103 @@ import java.util.Optional;
 @Repository
 public interface SprintRepository extends JpaRepository<Sprint, Long> {
 
-    // Find sprints by project
+    /**
+     * Finds sprints by project ID.
+     *
+     * @param projectId The project ID
+     * @return List of sprints in the project
+     */
     List<Sprint> findByProjectId(Long projectId);
 
-    // Find sprints by status
+    /**
+     * Finds sprints by status.
+     *
+     * @param status The sprint status
+     * @return List of sprints with the given status
+     */
     List<Sprint> findByStatus(SprintStatus status);
 
-    // Find sprints by project and status
+    /**
+     * Finds sprints by project ID and status.
+     *
+     * @param projectId The project ID
+     * @param status    The sprint status
+     * @return List of matching sprints
+     */
     List<Sprint> findByProjectIdAndStatus(Long projectId, SprintStatus status);
 
-    // Find active sprints (in progress)
+    /**
+     * Finds active sprints (in progress).
+     *
+     * @return List of active sprints
+     */
     @Query("SELECT s FROM Sprint s WHERE s.status = 'IN_PROGRESS'")
     List<Sprint> findActiveSprints();
 
-    // Find sprints by date range
+    /**
+     * Finds sprints by date range.
+     *
+     * @param start1 Start date range start
+     * @param end1   Start date range end
+     * @param start2 End date range start
+     * @param end2   End date range end
+     * @return List of sprints in the date ranges
+     */
     List<Sprint> findByStartDateBetweenOrEndDateBetween(LocalDate start1, LocalDate end1, LocalDate start2,
             LocalDate end2);
 
-    // Find overdue sprints
+    /**
+     * Finds overdue sprints.
+     *
+     * @param today Current date
+     * @return List of overdue sprints
+     */
     @Query("SELECT s FROM Sprint s WHERE s.endDate < :today AND s.status != 'COMPLETED'")
     List<Sprint> findOverdueSprints(@Param("today") LocalDate today);
 
-    // Find latest sprint for a project
+    /**
+     * Finds latest sprint for a project.
+     *
+     * @param projectId The project ID
+     * @return Optional containing the latest sprint
+     */
     @Query("SELECT s FROM Sprint s WHERE s.project.id = :projectId ORDER BY s.sprintNumber DESC LIMIT 1")
     Optional<Sprint> findLatestSprintByProject(@Param("projectId") Long projectId);
 
-    // Check if sprint number exists in project
+    /**
+     * Checks if sprint number exists in project.
+     *
+     * @param projectId    The project ID
+     * @param sprintNumber The sprint number
+     * @return true if sprint number exists
+     */
     boolean existsByProjectIdAndSprintNumber(Long projectId, Integer sprintNumber);
 
-    // Check if sprint number exists in project excluding current sprint
+    /**
+     * Checks if sprint number exists in project, excluding a specific sprint.
+     *
+     * @param projectId    The project ID
+     * @param sprintNumber The sprint number
+     * @param id           The sprint ID to exclude
+     * @return true if sprint number exists in other sprints
+     */
     boolean existsByProjectIdAndSprintNumberAndIdNot(Long projectId, Integer sprintNumber, Long id);
 
-    // Find sprints that can be started (planned and start date reached)
+    /**
+     * Finds sprints ready to start.
+     *
+     * @param today Current date
+     * @return List of sprints ready to start
+     */
     @Query("SELECT s FROM Sprint s WHERE s.status = 'PLANNED' AND s.startDate <= :today")
     List<Sprint> findSprintsReadyToStart(@Param("today") LocalDate today);
 
-    // Find sprints that can be completed (in progress and end date reached)
+    /**
+     * Finds sprints ready to complete.
+     *
+     * @param today Current date
+     * @return List of sprints ready to complete
+     */
     @Query("SELECT s FROM Sprint s WHERE s.status = 'IN_PROGRESS' AND s.endDate <= :today")
     List<Sprint> findSprintsReadyToComplete(@Param("today") LocalDate today);
 }

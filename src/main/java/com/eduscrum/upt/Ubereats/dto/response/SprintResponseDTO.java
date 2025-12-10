@@ -34,7 +34,7 @@ public class SprintResponseDTO {
     private Long projectId;
     private String projectName;
 
-    // Constructors
+    /** Default constructor. */
     public SprintResponseDTO() {
     }
 
@@ -65,7 +65,7 @@ public class SprintResponseDTO {
         this.projectName = projectName;
     }
 
-    // Getters and Setters
+    /** @return The sprint ID */
     public Long getId() {
         return id;
     }

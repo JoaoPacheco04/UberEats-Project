@@ -67,6 +67,11 @@ public class CourseController {
         return ResponseEntity.ok(courses);
     }
 
+    /**
+     * Gets all available (active) courses.
+     *
+     * @return ResponseEntity containing the list of active courses
+     */
     @GetMapping("/available")
     @PreAuthorize("hasAnyRole('TEACHER', 'STUDENT')")
     public ResponseEntity<List<CourseResponse>> getAvailableCourses() {
@@ -74,6 +79,12 @@ public class CourseController {
         return ResponseEntity.ok(courses);
     }
 
+    /**
+     * Gets a course by its ID.
+     *
+     * @param courseId The ID of the course
+     * @return ResponseEntity containing the course
+     */
     @GetMapping("/{courseId}")
     @PreAuthorize("hasRole('TEACHER') or @courseService.isStudentEnrolled(#courseId, authentication.name)")
     public ResponseEntity<CourseResponse> getCourse(@PathVariable Long courseId) {
@@ -81,6 +92,13 @@ public class CourseController {
         return ResponseEntity.ok(course);
     }
 
+    /**
+     * Updates an existing course.
+     *
+     * @param courseId The ID of the course to update
+     * @param request  The request containing updated course details
+     * @return ResponseEntity containing the updated course
+     */
     @PutMapping("/{courseId}")
     @PreAuthorize("hasRole('TEACHER') and @courseService.isCourseTeacher(#courseId, authentication.name)")
     public ResponseEntity<CourseResponse> updateCourse(
@@ -91,6 +109,12 @@ public class CourseController {
         return ResponseEntity.ok(course);
     }
 
+    /**
+     * Deletes (deactivates) a course.
+     *
+     * @param courseId The ID of the course to delete
+     * @return ResponseEntity with no content
+     */
     @DeleteMapping("/{courseId}")
     @PreAuthorize("hasRole('TEACHER') and @courseService.isCourseTeacher(#courseId, authentication.name)")
     public ResponseEntity<Void> deleteCourse(@PathVariable Long courseId) {
@@ -98,7 +122,12 @@ public class CourseController {
         return ResponseEntity.noContent().build();
     }
 
-    // Additional endpoints
+    /**
+     * Searches for courses by name or code.
+     *
+     * @param q The search query string
+     * @return ResponseEntity containing the list of matching courses
+     */
     @GetMapping("/search")
     @PreAuthorize("hasAnyRole('TEACHER', 'STUDENT')")
     public ResponseEntity<List<CourseResponse>> searchCourses(@RequestParam String q) {

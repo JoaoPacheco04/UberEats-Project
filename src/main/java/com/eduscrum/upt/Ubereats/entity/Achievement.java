@@ -152,28 +152,36 @@ public class Achievement {
     // === BUSINESS METHODS ===
 
     /**
-     * Check if this is a team achievement
+     * Checks if this is a team achievement.
+     *
+     * @return true if awarded to a team, false otherwise
      */
     public boolean isTeamAchievement() {
         return awardedToTeam != null;
     }
 
     /**
-     * Check if this is an individual achievement
+     * Checks if this is an individual achievement.
+     *
+     * @return true if awarded to a user, false otherwise
      */
     public boolean isIndividualAchievement() {
         return awardedToUser != null;
     }
 
     /**
-     * Get points value from the badge
+     * Gets points value from the associated badge.
+     *
+     * @return The badge points, or 0 if no badge
      */
     public Integer getPoints() {
         return badge != null ? badge.getPoints() : 0;
     }
 
     /**
-     * Get recipient name (user or team)
+     * Gets the recipient name (user or team).
+     *
+     * @return The name of the user or team, or "Unknown"
      */
     public String getRecipientName() {
         if (isTeamAchievement()) {
@@ -185,14 +193,18 @@ public class Achievement {
     }
 
     /**
-     * Check if this was an automatic award (no awardedBy user)
+     * Checks if this was an automatic award (no awardedBy user).
+     *
+     * @return true if automatic, false if manual
      */
     public boolean isAutomaticAward() {
         return awardedBy == null;
     }
 
     /**
-     * Get awarded by name or "System" for automatic awards
+     * Gets the awarder's name or "System" for automatic awards.
+     *
+     * @return The awarder name or "System"
      */
     public String getAwardedByName() {
         return isAutomaticAward() ? "System" : awardedBy.getFullName();

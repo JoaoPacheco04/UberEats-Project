@@ -47,6 +47,10 @@ public class DashboardService {
     /**
      * Retrieves dashboard statistics for a student including global score,
      * course average, team velocity history, and recent badges.
+     *
+     * @param studentId The ID of the student
+     * @return Dashboard statistics DTO containing aggregated data
+     * @throws IllegalArgumentException if the student is not found
      */
     @Transactional(readOnly = true)
     public DashboardStatsDTO getStudentDashboardStats(Long studentId) {

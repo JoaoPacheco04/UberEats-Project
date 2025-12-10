@@ -76,6 +76,10 @@ public class CourseEnrollmentService {
 
     /**
      * Checks if a student is actively enrolled in a course.
+     *
+     * @param courseId  The ID of the course
+     * @param studentId The ID of the student
+     * @return true if student is actively enrolled, false otherwise
      */
     @Transactional(readOnly = true)
     public boolean isStudentEnrolled(Long courseId, Long studentId) {
@@ -85,7 +89,10 @@ public class CourseEnrollmentService {
     }
 
     /**
-     * Gets all courses a student is enrolled in as DTOs.
+     * Retrieves all course enrollments for a specific student.
+     *
+     * @param studentId The ID of the student
+     * @return List of enrollment response DTOs
      */
     @Transactional(readOnly = true)
     public List<CourseEnrollmentResponseDTO> getStudentEnrollments(Long studentId) {

@@ -187,35 +187,45 @@ public class UserStory {
     // === BUSINESS METHODS ===
 
     /**
-     * Check if user story is completed
+     * Checks if user story is completed.
+     *
+     * @return true if status is DONE, false otherwise
      */
     public boolean isCompleted() {
         return status == StoryStatus.DONE;
     }
 
     /**
-     * Check if user story is in progress
+     * Checks if user story is in progress.
+     *
+     * @return true if status is IN_PROGRESS, false otherwise
      */
     public boolean isInProgress() {
         return status == StoryStatus.IN_PROGRESS;
     }
 
     /**
-     * Check if user story is in review
+     * Checks if user story is in review.
+     *
+     * @return true if status is IN_REVIEW, false otherwise
      */
     public boolean isInReview() {
         return status == StoryStatus.IN_REVIEW;
     }
 
     /**
-     * Check if user story is pending (to do)
+     * Checks if user story is pending (to do).
+     *
+     * @return true if status is TODO, false otherwise
      */
     public boolean isPending() {
         return status == StoryStatus.TODO;
     }
 
     /**
-     * Get status color for UI display
+     * Gets status color for UI display.
+     *
+     * @return The CSS color name for the status
      */
     public String getStatusColor() {
         switch (status) {
@@ -233,7 +243,9 @@ public class UserStory {
     }
 
     /**
-     * Get priority color for UI display
+     * Gets priority color for UI display.
+     *
+     * @return The CSS color name for the priority
      */
     public String getPriorityColor() {
         switch (priority) {
@@ -251,7 +263,9 @@ public class UserStory {
     }
 
     /**
-     * Get priority icon for UI display
+     * Gets priority icon for UI display.
+     *
+     * @return The emoji icon for the priority
      */
     public String getPriorityIcon() {
         switch (priority) {
@@ -269,15 +283,19 @@ public class UserStory {
     }
 
     /**
-     * Check if user story can be assigned to a user
+     * Checks if user story can be assigned to a user.
+     *
+     * @param user The user to check
+     * @return true if user is a team member, false otherwise
      */
     public boolean canAssignTo(User user) {
-        // User must be a member of the team
         return team.hasMember(user);
     }
 
     /**
-     * Assign user story to a team member
+     * Assigns user story to a team member.
+     *
+     * @param user The user to assign to
      */
     public void assignTo(User user) {
         if (canAssignTo(user)) {
@@ -287,7 +305,7 @@ public class UserStory {
     }
 
     /**
-     * Unassign user story
+     * Unassigns user story from current assignee.
      */
     public void unassign() {
         this.assignedTo = null;
@@ -295,7 +313,7 @@ public class UserStory {
     }
 
     /**
-     * Move to next status
+     * Moves user story to next workflow status.
      */
     public void moveToNextStatus() {
         switch (status) {
@@ -309,14 +327,13 @@ public class UserStory {
                 this.status = StoryStatus.DONE;
                 break;
             case DONE:
-                // Already done, no change
                 break;
         }
         this.updatedAt = LocalDateTime.now();
     }
 
     /**
-     * Move to previous status
+     * Moves user story to previous workflow status.
      */
     public void moveToPreviousStatus() {
         switch (status) {
@@ -330,42 +347,51 @@ public class UserStory {
                 this.status = StoryStatus.TODO;
                 break;
             case TODO:
-                // Already at first status, no change
                 break;
         }
         this.updatedAt = LocalDateTime.now();
     }
 
     /**
-     * Check if user story is assigned
+     * Checks if user story is assigned to someone.
+     *
+     * @return true if assigned, false otherwise
      */
     public boolean isAssigned() {
         return assignedTo != null;
     }
 
     /**
-     * Get assigned user's name or "Unassigned"
+     * Gets assigned user's name or "Unassigned".
+     *
+     * @return The assignee name or "Unassigned"
      */
     public String getAssignedUserName() {
         return isAssigned() ? assignedTo.getFullName() : "Unassigned";
     }
 
     /**
-     * Check if user story can be moved to next status
+     * Checks if user story can be moved to next status.
+     *
+     * @return true if not DONE, false otherwise
      */
     public boolean canMoveToNextStatus() {
         return status != StoryStatus.DONE;
     }
 
     /**
-     * Check if user story can be moved to previous status
+     * Checks if user story can be moved to previous status.
+     *
+     * @return true if not TODO, false otherwise
      */
     public boolean canMoveToPreviousStatus() {
         return status != StoryStatus.TODO;
     }
 
     /**
-     * Get estimated effort level based on story points
+     * Gets estimated effort level based on story points.
+     *
+     * @return The effort level description
      */
     public String getEffortLevel() {
         if (storyPoints == null || storyPoints == 0)
@@ -380,10 +406,11 @@ public class UserStory {
     }
 
     /**
-     * Check if user story is blocked (can be extended for blocking logic)
+     * Checks if user story is blocked.
+     *
+     * @return true if blocked, false otherwise
      */
     public boolean isBlocked() {
-        // Additional logic can be added here for blocking conditions
         return false;
     }
 

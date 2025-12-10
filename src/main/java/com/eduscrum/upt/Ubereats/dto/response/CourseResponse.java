@@ -33,7 +33,7 @@ public class CourseResponse {
     private Integer projectCount;
     private Double averageTeamScore;
 
-    // Constructors
+    /** Default constructor. */
     public CourseResponse() {
     }
 
@@ -51,26 +51,32 @@ public class CourseResponse {
         this.updatedAt = updatedAt;
     }
 
+    /** @return The course ID */
     public Long getId() {
         return id;
     }
 
+    /** @param id The course ID */
     public void setId(Long id) {
         this.id = id;
     }
 
+    /** @return The course name */
     public String getName() {
         return name;
     }
 
+    /** @param name The course name */
     public void setName(String name) {
         this.name = name;
     }
 
+    /** @return The course code */
     public String getCode() {
         return code;
     }
 
+    /** @param code The course code */
     public void setCode(String code) {
         this.code = code;
     }

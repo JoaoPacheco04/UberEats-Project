@@ -117,14 +117,18 @@ public class TeamMember {
     // === BUSINESS METHODS ===
 
     /**
-     * Check if member is currently active
+     * Checks if member is currently active.
+     *
+     * @return true if active and hasn't left, false otherwise
      */
     public boolean isActiveMember() {
         return Boolean.TRUE.equals(isActive) && leftAt == null;
     }
 
     /**
-     * Calculate membership duration in days
+     * Calculates membership duration in days.
+     *
+     * @return Number of days since joining (or until leaving)
      */
     public Long getDuration() {
         LocalDateTime endDate = leftAt != null ? leftAt : LocalDateTime.now();
@@ -132,7 +136,7 @@ public class TeamMember {
     }
 
     /**
-     * Leave the team (set as inactive)
+     * Leaves the team (sets as inactive).
      */
     public void leaveTeam() {
         this.isActive = false;
@@ -140,21 +144,27 @@ public class TeamMember {
     }
 
     /**
-     * Check if member has Scrum Master role
+     * Checks if member has Scrum Master role.
+     *
+     * @return true if SCRUM_MASTER, false otherwise
      */
     public boolean isScrumMaster() {
         return role == ScrumRole.SCRUM_MASTER;
     }
 
     /**
-     * Check if member has Product Owner role
+     * Checks if member has Product Owner role.
+     *
+     * @return true if PRODUCT_OWNER, false otherwise
      */
     public boolean isProductOwner() {
         return role == ScrumRole.PRODUCT_OWNER;
     }
 
     /**
-     * Check if member has Developer role
+     * Checks if member has Developer role.
+     *
+     * @return true if DEVELOPER, false otherwise
      */
     public boolean isDeveloper() {
         return role == ScrumRole.DEVELOPER;

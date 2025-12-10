@@ -17,17 +17,38 @@ import java.util.List;
 @Repository
 public interface TeamRepository extends JpaRepository<Team, Long> {
 
-    // Find teams by project ID
+    /**
+     * Finds teams by project ID.
+     *
+     * @param projectId The project ID
+     * @return List of teams in the project
+     */
     List<Team> findByProjects_Id(Long projectId);
 
-    // Check if a team with a given name exists
+    /**
+     * Checks if a team with the given name exists.
+     *
+     * @param name The team name
+     * @return true if name exists
+     */
     boolean existsByName(String name);
 
-    // Find teams where a user is an active member
+    /**
+     * Finds teams where a user is an active member.
+     *
+     * @param userId The user ID
+     * @return List of teams the user belongs to
+     */
     @Query("SELECT t FROM Team t JOIN t.members m WHERE m.user.id = :userId AND m.isActive = true")
     List<Team> findTeamsByUserId(@Param("userId") Long userId);
 
-    // Count the number of completed projects for a team within a specific course
+    /**
+     * Counts completed projects for a team in a course.
+     *
+     * @param teamId   The team ID
+     * @param courseId The course ID
+     * @return Count of completed projects
+     */
     @Query("SELECT COUNT(p) FROM Team t JOIN t.projects p " +
             "WHERE t.id = :teamId " +
             "AND p.course.id = :courseId " +

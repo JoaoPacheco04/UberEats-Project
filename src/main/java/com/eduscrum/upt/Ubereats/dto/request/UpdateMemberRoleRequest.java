@@ -14,7 +14,7 @@ public class UpdateMemberRoleRequest {
     @NotNull(message = "Role is required")
     private ScrumRole role;
 
-    // Constructors
+    /** Default constructor. */
     public UpdateMemberRoleRequest() {
     }
 
@@ -22,11 +22,12 @@ public class UpdateMemberRoleRequest {
         this.role = role;
     }
 
-    // Getters and Setters
+    /** @return The Scrum role */
     public ScrumRole getRole() {
         return role;
     }
 
+    /** @param role The Scrum role */
     public void setRole(ScrumRole role) {
         this.role = role;
     }

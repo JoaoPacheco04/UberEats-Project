@@ -27,7 +27,7 @@ public class BadgeResponseDTO {
     private Long createdByUserId;
     private String createdByName;
 
-    // Constructors
+    /** Default constructor. */
     public BadgeResponseDTO() {
     }
 
@@ -52,7 +52,7 @@ public class BadgeResponseDTO {
         this.createdByName = createdByName;
     }
 
-    // Getters and Setters
+    /** @return The badge ID */
     public Long getId() {
         return id;
     }

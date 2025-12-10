@@ -179,7 +179,9 @@ public class Course {
     // === BUSINESS METHODS ===
 
     /**
-     * Get number of enrolled students
+     * Gets the number of enrolled students.
+     *
+     * @return The count of active enrollments
      */
     public Integer getStudentCount() {
         return (int) enrollments.stream()
@@ -188,14 +190,18 @@ public class Course {
     }
 
     /**
-     * Get number of projects in this course
+     * Gets the number of projects in this course.
+     *
+     * @return The project count
      */
     public Integer getProjectCount() {
         return projects.size();
     }
 
     /**
-     * Get list of enrolled students
+     * Gets list of enrolled students.
+     *
+     * @return List of User objects for active enrollments
      */
     public List<User> getEnrolledStudents() {
         return enrollments.stream()
@@ -231,14 +237,18 @@ public class Course {
     }
 
     /**
-     * Check if course is active
+     * Checks if course is active.
+     *
+     * @return true if active, false otherwise
      */
     public boolean isActive() {
         return Boolean.TRUE.equals(isActive);
     }
 
     /**
-     * Get active projects only
+     * Gets active projects only.
+     *
+     * @return List of projects with ACTIVE status
      */
     public List<Project> getActiveProjects() {
         return projects.stream()
@@ -247,7 +257,9 @@ public class Course {
     }
 
     /**
-     * Get completed projects
+     * Gets completed projects.
+     *
+     * @return List of projects with COMPLETED status
      */
     public List<Project> getCompletedProjects() {
         return projects.stream()
@@ -256,7 +268,10 @@ public class Course {
     }
 
     /**
-     * Check if student is enrolled in this course
+     * Checks if student is enrolled in this course.
+     *
+     * @param student The student to check
+     * @return true if student has active enrollment, false otherwise
      */
     public boolean isStudentEnrolled(User student) {
         return enrollments.stream()
@@ -265,7 +280,9 @@ public class Course {
     }
 
     /**
-     * Get course display name with code
+     * Gets course display name with code.
+     *
+     * @return Formatted display name (e.g., "CS101 - Computer Science")
      */
     public String getDisplayName() {
         return code + " - " + name;

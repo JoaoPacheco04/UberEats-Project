@@ -192,35 +192,45 @@ public class Sprint {
     // === BUSINESS METHODS ===
 
     /**
-     * Check if sprint is active
+     * Checks if sprint has IN_PROGRESS status.
+     *
+     * @return true if sprint is active, false otherwise
      */
     public boolean isActive() {
         return status == SprintStatus.IN_PROGRESS;
     }
 
     /**
-     * Check if sprint is completed
+     * Checks if sprint has COMPLETED status.
+     *
+     * @return true if sprint is completed, false otherwise
      */
     public boolean isCompleted() {
         return status == SprintStatus.COMPLETED;
     }
 
     /**
-     * Calculate sprint duration in days
+     * Calculates sprint duration in days.
+     *
+     * @return Number of days between start and end dates
      */
     public Long getDurationDays() {
         return ChronoUnit.DAYS.between(startDate, endDate);
     }
 
     /**
-     * Check if sprint is overdue
+     * Checks if sprint is overdue (past end date and not completed).
+     *
+     * @return true if overdue, false otherwise
      */
     public boolean isOverdue() {
         return LocalDate.now().isAfter(endDate) && !isCompleted();
     }
 
     /**
-     * Calculate days remaining in sprint
+     * Calculates days remaining in sprint.
+     *
+     * @return Number of days remaining, or 0 if past end date
      */
     public Long getDaysRemaining() {
         LocalDate today = LocalDate.now();
@@ -230,7 +240,10 @@ public class Sprint {
     }
 
     /**
-     * Calculate team velocity for this sprint
+     * Calculates team velocity for this sprint.
+     *
+     * @param team The team to calculate velocity for
+     * @return The average velocity as BigDecimal, or ZERO if no analytics
      */
     public BigDecimal getTeamVelocity(Team team) {
         if (analytics.isEmpty())
@@ -272,7 +285,9 @@ public class Sprint {
     }
 
     /**
-     * Check if sprint can be started
+     * Checks if sprint can be started (PLANNED status and not before start date).
+     *
+     * @return true if sprint can be started, false otherwise
      */
     public boolean canBeStarted() {
         return status == SprintStatus.PLANNED &&
@@ -280,7 +295,9 @@ public class Sprint {
     }
 
     /**
-     * Check if sprint can be completed
+     * Checks if sprint can be completed (IN_PROGRESS and not before end date).
+     *
+     * @return true if sprint can be completed, false otherwise
      */
     public boolean canBeCompleted() {
         return status == SprintStatus.IN_PROGRESS &&
@@ -288,14 +305,18 @@ public class Sprint {
     }
 
     /**
-     * Get display name with sprint number
+     * Gets display name with sprint number.
+     *
+     * @return Formatted display name (e.g., "Sprint 1: Name")
      */
     public String getDisplayName() {
         return "Sprint " + sprintNumber + ": " + name;
     }
 
     /**
-     * Get days since sprint start
+     * Calculates days since sprint started.
+     *
+     * @return Number of days since start date
      */
     public Long getDaysSinceStart() {
         LocalDate today = LocalDate.now();
@@ -303,14 +324,18 @@ public class Sprint {
     }
 
     /**
-     * Check if sprint is in planning phase
+     * Checks if sprint is in planning phase (PLANNED status).
+     *
+     * @return true if in planning, false otherwise
      */
     public boolean isInPlanning() {
         return status == SprintStatus.PLANNED;
     }
 
     /**
-     * Get sprint status description
+     * Gets a human-readable description of the sprint status.
+     *
+     * @return Status description string
      */
     public String getStatusDescription() {
         switch (status) {

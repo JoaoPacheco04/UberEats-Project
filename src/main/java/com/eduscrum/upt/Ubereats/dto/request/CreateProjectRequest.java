@@ -26,46 +26,56 @@ public class CreateProjectRequest {
     @NotNull(message = "Course id is required")
     private Long courseId;
 
+    /** Default constructor. */
     public CreateProjectRequest() {
     }
 
-    // getters/setters
+    /** @return The project name */
     public String getName() {
         return name;
     }
 
+    /** @param name The project name */
     public void setName(String name) {
         this.name = name;
     }
 
+    /** @return The project description */
     public String getDescription() {
         return description;
     }
 
+    /** @param description The project description */
     public void setDescription(String description) {
         this.description = description;
     }
 
+    /** @return The start date */
     public LocalDate getStartDate() {
         return startDate;
     }
 
+    /** @param startDate The start date */
     public void setStartDate(LocalDate startDate) {
         this.startDate = startDate;
     }
 
+    /** @return The end date */
     public LocalDate getEndDate() {
         return endDate;
     }
 
+    /** @param endDate The end date */
     public void setEndDate(LocalDate endDate) {
         this.endDate = endDate;
     }
 
+    /** @return The course ID */
     public Long getCourseId() {
         return courseId;
     }
 
+    /** @param courseId The course ID */
     public void setCourseId(Long courseId) {
         this.courseId = courseId;
     }

@@ -23,7 +23,7 @@ public class UpdateCourseRequest {
 
     private Boolean isActive;
 
-    // Constructors, Getters and Setters
+    /** Default constructor. */
     public UpdateCourseRequest() {
     }
 
@@ -36,42 +36,52 @@ public class UpdateCourseRequest {
         this.isActive = isActive;
     }
 
+    /** @return The course name */
     public String getName() {
         return name;
     }
 
+    /** @param name The course name */
     public void setName(String name) {
         this.name = name;
     }
 
+    /** @return The description */
     public String getDescription() {
         return description;
     }
 
+    /** @param description The description */
     public void setDescription(String description) {
         this.description = description;
     }
 
+    /** @return The semester */
     public Semester getSemester() {
         return semester;
     }
 
+    /** @param semester The semester */
     public void setSemester(Semester semester) {
         this.semester = semester;
     }
 
+    /** @return The academic year */
     public String getAcademicYear() {
         return academicYear;
     }
 
+    /** @param academicYear The academic year */
     public void setAcademicYear(String academicYear) {
         this.academicYear = academicYear;
     }
 
+    /** @return Whether active */
     public Boolean getActive() {
         return isActive;
     }
 
+    /** @param active Whether active */
     public void setActive(Boolean active) {
         isActive = active;
     }

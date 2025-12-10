@@ -22,7 +22,11 @@ public class TeamMemberResponse {
     private LocalDateTime leftAt;
     private Long duration;
 
-    // Constructor from TeamMember entity
+    /**
+     * Constructs a TeamMemberResponse from a TeamMember entity.
+     *
+     * @param teamMember The team member entity
+     */
     public TeamMemberResponse(TeamMember teamMember) {
         this.id = teamMember.getId();
         this.userId = teamMember.getUser().getId();
@@ -35,39 +39,47 @@ public class TeamMemberResponse {
         this.duration = teamMember.getDuration();
     }
 
-    // Getters and Setters
+    /** @return The team member ID */
     public Long getId() {
         return id;
     }
 
+    /** @return The user ID */
     public Long getUserId() {
         return userId;
     }
 
+    /** @return The user name */
     public String getUserName() {
         return userName;
     }
 
+    /** @return The user email */
     public String getUserEmail() {
         return userEmail;
     }
 
+    /** @return The Scrum role */
     public ScrumRole getRole() {
         return role;
     }
 
+    /** @return Whether active */
     public Boolean getActive() {
         return active;
     }
 
+    /** @return The join timestamp */
     public LocalDateTime getJoinedAt() {
         return joinedAt;
     }
 
+    /** @return The leave timestamp */
     public LocalDateTime getLeftAt() {
         return leftAt;
     }
 
+    /** @return The membership duration */
     public Long getDuration() {
         return duration;
     }
