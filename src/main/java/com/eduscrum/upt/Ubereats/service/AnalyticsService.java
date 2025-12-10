@@ -17,6 +17,13 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+/**
+ * Service class for managing analytics data in the EduScrum platform.
+ * Handles creation and retrieval of sprint/team progress metrics.
+ *
+ * @author
+ * @version 1.0 (2025-12-10)
+ */
 @Service
 @Transactional
 public class AnalyticsService {
@@ -26,6 +33,14 @@ public class AnalyticsService {
     private final TeamService teamService;
     private final UserStoryRepository userStoryRepository;
 
+    /**
+     * Constructs a new AnalyticsService with required dependencies.
+     *
+     * @param analyticRepository  Repository for analytic data access
+     * @param sprintService       Service for sprint operations
+     * @param teamService         Service for team operations
+     * @param userStoryRepository Repository for user story data access
+     */
     public AnalyticsService(AnalyticRepository analyticRepository,
             SprintService sprintService,
             TeamService teamService,
@@ -37,8 +52,11 @@ public class AnalyticsService {
     }
 
     /**
-     * Automatic Trigger: Called by UserStoryService when a story changes.
-     * Recalculates stats from DB and upserts the daily analytic record.
+     * Automatically updates daily analytics when a user story changes.
+     * Recalculates stats from database and upserts the daily record.
+     *
+     * @param sprintId The ID of the sprint
+     * @param teamId   The ID of the team
      */
     public void updateDailyAnalytic(Long sprintId, Long teamId) {
         // Fetch fresh counts from DB

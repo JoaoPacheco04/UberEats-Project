@@ -16,17 +16,34 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * REST controller for managing teams and team memberships.
+ * Provides endpoints for team CRUD operations and member management.
+ *
+ * @author
+ * @version 1.0 (2025-12-10)
+ */
 @RestController
 @RequestMapping("/api/teams")
 public class TeamController {
 
     private final TeamService teamService;
 
+    /**
+     * Constructs a new TeamController with required dependencies.
+     *
+     * @param teamService Service for team operations
+     */
     public TeamController(TeamService teamService) {
         this.teamService = teamService;
     }
 
-    // Create new team (now independent of a project)
+    /**
+     * Creates a new team.
+     *
+     * @param request The request containing team details
+     * @return ResponseEntity containing the created team
+     */
     @PostMapping
     @PreAuthorize("hasAuthority('ROLE_TEACHER')")
     public ResponseEntity<TeamResponse> createTeam(@Valid @RequestBody CreateTeamRequest request) {
@@ -34,7 +51,13 @@ public class TeamController {
         return ResponseEntity.ok(new TeamResponse(team));
     }
 
-    // Associate a team with a project
+    /**
+     * Associates a team with a project.
+     *
+     * @param teamId    The ID of the team
+     * @param projectId The ID of the project
+     * @return ResponseEntity containing the updated team
+     */
     @PostMapping("/{teamId}/projects/{projectId}")
     @PreAuthorize("hasAuthority('ROLE_TEACHER')")
     public ResponseEntity<TeamResponse> addTeamToProject(@PathVariable Long teamId, @PathVariable Long projectId) {

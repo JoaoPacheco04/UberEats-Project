@@ -11,6 +11,13 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+/**
+ * REST controller for managing analytics in the EduScrum platform.
+ * Provides endpoints for analytics creation and retrieval.
+ *
+ * @author
+ * @version 1.0 (2025-12-10)
+ */
 @RestController
 @RequestMapping("/api/analytics")
 @CrossOrigin(origins = "*")
@@ -19,11 +26,23 @@ public class AnalyticsController {
     private final AnalyticsService analyticsService;
     private final SprintService sprintService;
 
+    /**
+     * Constructs a new AnalyticsController with required dependencies.
+     *
+     * @param analyticsService Service for analytics operations
+     * @param sprintService    Service for sprint operations
+     */
     public AnalyticsController(AnalyticsService analyticsService, SprintService sprintService) {
         this.analyticsService = analyticsService;
         this.sprintService = sprintService;
     }
 
+    /**
+     * Creates a new analytics record.
+     *
+     * @param requestDTO The request containing analytics details
+     * @return ResponseEntity containing the created analytics
+     */
     @PostMapping
     public ResponseEntity<AnalyticsResponseDTO> createAnalytic(
             @Valid @RequestBody AnalyticsRequestDTO requestDTO) {
@@ -31,6 +50,13 @@ public class AnalyticsController {
         return new ResponseEntity<>(createdAnalytic, HttpStatus.CREATED);
     }
 
+    /**
+     * Gets analytics by sprint and team.
+     *
+     * @param sprintId The ID of the sprint
+     * @param teamId   The ID of the team
+     * @return ResponseEntity containing the list of analytics
+     */
     @GetMapping
     public ResponseEntity<List<AnalyticsResponseDTO>> getAnalytics(
             @RequestParam Long sprintId,
@@ -39,12 +65,14 @@ public class AnalyticsController {
         return ResponseEntity.ok(analytics);
     }
 
+    /**
+     * Gets project burndown data.
+     *
+     * @param projectId The ID of the project
+     * @return ResponseEntity containing burndown data
+     */
     @GetMapping("/project/{projectId}/burndown")
     public ResponseEntity<Object> getProjectBurndown(@PathVariable Long projectId) {
-        // Simple implementation: Map of Sprint Name -> Remaining Points
-        // Note: For a real daily burndown, we would need a history table or calculate
-        // from history
-        // Here we just return the current state of each sprint in the project
         return ResponseEntity.ok(sprintService.getProjectBurndown(projectId));
     }
 }

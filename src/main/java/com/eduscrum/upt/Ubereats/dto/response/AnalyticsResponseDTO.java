@@ -1,4 +1,3 @@
-// ProgressMetricResponseDTO.java
 package com.eduscrum.upt.Ubereats.dto.response;
 
 import com.eduscrum.upt.Ubereats.entity.enums.TeamMood;
@@ -7,6 +6,12 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Map;
 
+/**
+ * Data Transfer Object for analytics/progress metrics response.
+ * Contains task progress, story points, velocity, and team data.
+ *
+ * @version 1.0 (2025-12-10)
+ */
 public class AnalyticsResponseDTO {
     private Long id;
     private Integer completedTasks;

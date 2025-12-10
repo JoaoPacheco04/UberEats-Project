@@ -2,9 +2,12 @@ package com.eduscrum.upt.Ubereats.dto.request;
 
 import com.eduscrum.upt.Ubereats.entity.enums.Semester;
 import jakarta.validation.constraints.Size;
-/*
-    * DTO for updating an existing Course.
-    * Contains fields that can be updated with validation annotations.
+
+/**
+ * Data Transfer Object for updating an existing Course.
+ * Contains optional fields that can be updated with validation.
+ *
+ * @version 1.0 (2025-12-10)
  */
 public class UpdateCourseRequest {
 
@@ -21,9 +24,11 @@ public class UpdateCourseRequest {
     private Boolean isActive;
 
     // Constructors, Getters and Setters
-    public UpdateCourseRequest() {}
+    public UpdateCourseRequest() {
+    }
 
-    public UpdateCourseRequest(String name, String description, Semester semester, String academicYear, Boolean isActive) {
+    public UpdateCourseRequest(String name, String description, Semester semester, String academicYear,
+            Boolean isActive) {
         this.name = name;
         this.description = description;
         this.semester = semester;

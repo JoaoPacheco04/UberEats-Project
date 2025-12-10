@@ -1,4 +1,3 @@
-// SprintRequestDTO.java
 package com.eduscrum.upt.Ubereats.dto.request;
 
 import com.eduscrum.upt.Ubereats.entity.enums.SprintStatus;
@@ -6,6 +5,12 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import java.time.LocalDate;
 
+/**
+ * Data Transfer Object for creating or updating a Sprint.
+ * Contains sprint details and validation annotations.
+ *
+ * @version 1.0 (2025-12-10)
+ */
 public class SprintRequestDTO {
 
     @NotNull(message = "Sprint number is required")
@@ -28,10 +33,11 @@ public class SprintRequestDTO {
     private Long projectId;
 
     // Constructors
-    public SprintRequestDTO() {}
+    public SprintRequestDTO() {
+    }
 
     public SprintRequestDTO(Integer sprintNumber, String name, String goal,
-                            LocalDate startDate, LocalDate endDate, SprintStatus status, Long projectId) {
+            LocalDate startDate, LocalDate endDate, SprintStatus status, Long projectId) {
         this.sprintNumber = sprintNumber;
         this.name = name;
         this.goal = goal;
@@ -42,24 +48,59 @@ public class SprintRequestDTO {
     }
 
     // Getters and Setters
-    public Integer getSprintNumber() { return sprintNumber; }
-    public void setSprintNumber(Integer sprintNumber) { this.sprintNumber = sprintNumber; }
+    public Integer getSprintNumber() {
+        return sprintNumber;
+    }
 
-    public String getName() { return name; }
-    public void setName(String name) { this.name = name; }
+    public void setSprintNumber(Integer sprintNumber) {
+        this.sprintNumber = sprintNumber;
+    }
 
-    public String getGoal() { return goal; }
-    public void setGoal(String goal) { this.goal = goal; }
+    public String getName() {
+        return name;
+    }
 
-    public LocalDate getStartDate() { return startDate; }
-    public void setStartDate(LocalDate startDate) { this.startDate = startDate; }
+    public void setName(String name) {
+        this.name = name;
+    }
 
-    public LocalDate getEndDate() { return endDate; }
-    public void setEndDate(LocalDate endDate) { this.endDate = endDate; }
+    public String getGoal() {
+        return goal;
+    }
 
-    public SprintStatus getStatus() { return status; }
-    public void setStatus(SprintStatus status) { this.status = status; }
+    public void setGoal(String goal) {
+        this.goal = goal;
+    }
 
-    public Long getProjectId() { return projectId; }
-    public void setProjectId(Long projectId) { this.projectId = projectId; }
+    public LocalDate getStartDate() {
+        return startDate;
+    }
+
+    public void setStartDate(LocalDate startDate) {
+        this.startDate = startDate;
+    }
+
+    public LocalDate getEndDate() {
+        return endDate;
+    }
+
+    public void setEndDate(LocalDate endDate) {
+        this.endDate = endDate;
+    }
+
+    public SprintStatus getStatus() {
+        return status;
+    }
+
+    public void setStatus(SprintStatus status) {
+        this.status = status;
+    }
+
+    public Long getProjectId() {
+        return projectId;
+    }
+
+    public void setProjectId(Long projectId) {
+        this.projectId = projectId;
+    }
 }

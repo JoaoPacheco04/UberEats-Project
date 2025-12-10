@@ -12,6 +12,13 @@ import org.springframework.web.bind.annotation.*;
 import java.time.LocalDate;
 import java.util.List;
 
+/**
+ * REST controller for managing sprints in the EduScrum platform.
+ * Provides endpoints for sprint CRUD operations and status transitions.
+ *
+ * @author
+ * @version 1.0 (2025-12-10)
+ */
 @RestController
 @RequestMapping("/api/sprints")
 @CrossOrigin(origins = "*")
@@ -19,6 +26,11 @@ public class SprintController {
 
     private final SprintService sprintService;
 
+    /**
+     * Constructs a new SprintController with required dependencies.
+     *
+     * @param sprintService Service for sprint operations
+     */
     public SprintController(SprintService sprintService) {
         this.sprintService = sprintService;
     }

@@ -12,6 +12,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * REST controller for managing achievements in the EduScrum platform.
+ * Provides endpoints for achievement CRUD operations and point calculations.
+ *
+ * @author
+ * @version 1.0 (2025-12-10)
+ */
 @RestController
 @RequestMapping("/api/achievements")
 @CrossOrigin(origins = "*")
@@ -19,6 +26,11 @@ public class AchievementController {
 
     private final AchievementService achievementService;
 
+    /**
+     * Constructs a new AchievementController with required dependencies.
+     *
+     * @param achievementService Service for achievement operations
+     */
     public AchievementController(AchievementService achievementService) {
         this.achievementService = achievementService;
     }

@@ -13,6 +13,13 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * Service class for managing course enrollments in the EduScrum platform.
+ * Handles student enrollment, verification, and enrollment retrieval.
+ *
+ * @author
+ * @version 1.0 (2025-12-10)
+ */
 @Service
 @Transactional
 public class CourseEnrollmentService {
@@ -21,16 +28,29 @@ public class CourseEnrollmentService {
     private final CourseRepository courseRepository;
     private final UserRepository userRepository;
 
+    /**
+     * Constructs a new CourseEnrollmentService with required dependencies.
+     *
+     * @param enrollmentRepository Repository for enrollment data access
+     * @param courseRepository     Repository for course data access
+     * @param userRepository       Repository for user data access
+     */
     public CourseEnrollmentService(CourseEnrollmentRepository enrollmentRepository,
-                                   CourseRepository courseRepository,
-                                   UserRepository userRepository) {
+            CourseRepository courseRepository,
+            UserRepository userRepository) {
         this.enrollmentRepository = enrollmentRepository;
         this.courseRepository = courseRepository;
         this.userRepository = userRepository;
     }
 
     /**
-     * Enrolls a student into a course.
+     * Enrolls a student into a course with validation.
+     *
+     * @param courseId  The ID of the course
+     * @param studentId The ID of the student to enroll
+     * @return The enrollment as a response DTO
+     * @throws IllegalArgumentException if course or student not found
+     * @throws IllegalStateException    if student is already enrolled
      */
     public CourseEnrollmentResponseDTO enrollStudent(Long courseId, Long studentId) {
         // 1. Fetch entities
@@ -82,7 +102,6 @@ public class CourseEnrollmentService {
                 enrollment.getCourse().getId(),
                 enrollment.getCourse().getName(),
                 enrollment.getStudent().getId(),
-                enrollment.getStudent().getFullName()
-        );
+                enrollment.getStudent().getFullName());
     }
 }

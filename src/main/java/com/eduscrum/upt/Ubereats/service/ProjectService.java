@@ -17,6 +17,13 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * Service class for managing projects in the EduScrum platform.
+ * Handles project creation, updates, completion, and archival.
+ *
+ * @author
+ * @version 1.0 (2025-12-10)
+ */
 @Service
 @Transactional
 public class ProjectService {
@@ -26,6 +33,14 @@ public class ProjectService {
     private final AchievementService achievementService;
     private final TeamService teamService;
 
+    /**
+     * Constructs a new ProjectService with required dependencies.
+     *
+     * @param projectRepository  Repository for project data access
+     * @param courseRepository   Repository for course data access
+     * @param achievementService Service for achievement operations
+     * @param teamService        Service for team operations
+     */
     public ProjectService(ProjectRepository projectRepository, CourseRepository courseRepository,
             @Lazy AchievementService achievementService, @Lazy TeamService teamService) {
         this.projectRepository = projectRepository;
@@ -34,6 +49,13 @@ public class ProjectService {
         this.teamService = teamService;
     }
 
+    /**
+     * Creates a new project associated with a course.
+     *
+     * @param req The request containing project details
+     * @return The created project as a response DTO
+     * @throws ResourceNotFoundException if the course is not found
+     */
     public ProjectResponse createProject(CreateProjectRequest req) {
 
         Course course = courseRepository.findById(req.getCourseId())
@@ -50,18 +72,28 @@ public class ProjectService {
         return mapToResponse(saved);
     }
 
+    /**
+     * Retrieves all non-archived projects.
+     *
+     * @return List of project response DTOs
+     */
     public List<ProjectResponse> getAllProjects() {
-        // Return only non-archived projects
         return projectRepository.findByStatusNot(ProjectStatus.ARCHIVED).stream()
                 .map(this::mapToResponse)
                 .collect(Collectors.toList());
     }
 
+    /**
+     * Retrieves a project by its ID.
+     *
+     * @param id The ID of the project to retrieve
+     * @return The project as a response DTO
+     * @throws ResourceNotFoundException if the project is not found or is archived
+     */
     public ProjectResponse getProjectById(Long id) {
         Project project = projectRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Project not found: " + id));
 
-        // Do not return archived projects through this standard getter
         if (project.getStatus() == ProjectStatus.ARCHIVED) {
             throw new ResourceNotFoundException("Project not found: " + id);
         }
@@ -69,6 +101,14 @@ public class ProjectService {
         return mapToResponse(project);
     }
 
+    /**
+     * Updates an existing project with the provided details.
+     *
+     * @param id  The ID of the project to update
+     * @param req The request containing updated project details
+     * @return The updated project as a response DTO
+     * @throws ResourceNotFoundException if the project is not found
+     */
     public ProjectResponse updateProject(Long id, UpdateProjectRequest req) {
         Project project = projectRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Project not found: " + id));
@@ -87,6 +127,9 @@ public class ProjectService {
 
     /**
      * Archives a project instead of deleting it permanently.
+     *
+     * @param id The ID of the project to archive
+     * @throws ResourceNotFoundException if the project is not found
      */
     public void deleteProject(Long id) {
         Project project = projectRepository.findById(id)
@@ -97,7 +140,13 @@ public class ProjectService {
     }
 
     /**
-     * Marks the project status as COMPLETED.
+     * Marks a project as completed, closes team memberships, and triggers badge
+     * checks.
+     *
+     * @param id The ID of the project to complete
+     * @return The completed project as a response DTO
+     * @throws ResourceNotFoundException if the project is not found
+     * @throws BusinessLogicException    if the project is already completed
      */
     public ProjectResponse completeProject(Long id) {
         Project project = projectRepository.findById(id)
@@ -119,6 +168,12 @@ public class ProjectService {
         return mapToResponse(updatedProject);
     }
 
+    /**
+     * Maps a Project entity to a ProjectResponse DTO.
+     *
+     * @param p The project entity to map
+     * @return The project response DTO
+     */
     private ProjectResponse mapToResponse(Project p) {
         return new ProjectResponse(
                 p.getId(),

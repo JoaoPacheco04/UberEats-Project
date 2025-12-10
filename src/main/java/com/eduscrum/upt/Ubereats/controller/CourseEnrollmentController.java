@@ -10,6 +10,13 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+/**
+ * REST controller for managing course enrollments in the EduScrum platform.
+ * Provides endpoints for student enrollment operations.
+ *
+ * @author
+ * @version 1.0 (2025-12-10)
+ */
 @RestController
 @RequestMapping("/api/enrollments")
 @CrossOrigin(origins = "*")
@@ -17,16 +24,35 @@ public class CourseEnrollmentController {
 
     private final CourseEnrollmentService enrollmentService;
 
+    /**
+     * Constructs a new CourseEnrollmentController with required dependencies.
+     *
+     * @param enrollmentService Service for enrollment operations
+     */
     public CourseEnrollmentController(CourseEnrollmentService enrollmentService) {
         this.enrollmentService = enrollmentService;
     }
 
+    /**
+     * Enrolls a student in a course.
+     *
+     * @param request The request containing enrollment details
+     * @return ResponseEntity containing the created enrollment
+     */
     @PostMapping
-    public ResponseEntity<CourseEnrollmentResponseDTO> enrollStudent(@Valid @RequestBody CourseEnrollmentRequestDTO request) {
-        CourseEnrollmentResponseDTO enrollment = enrollmentService.enrollStudent(request.getCourseId(), request.getStudentId());
+    public ResponseEntity<CourseEnrollmentResponseDTO> enrollStudent(
+            @Valid @RequestBody CourseEnrollmentRequestDTO request) {
+        CourseEnrollmentResponseDTO enrollment = enrollmentService.enrollStudent(request.getCourseId(),
+                request.getStudentId());
         return new ResponseEntity<>(enrollment, HttpStatus.CREATED);
     }
 
+    /**
+     * Gets all enrollments for a student.
+     *
+     * @param studentId The ID of the student
+     * @return ResponseEntity containing the list of enrollments
+     */
     @GetMapping("/student/{studentId}")
     public ResponseEntity<List<CourseEnrollmentResponseDTO>> getStudentEnrollments(@PathVariable Long studentId) {
         List<CourseEnrollmentResponseDTO> enrollments = enrollmentService.getStudentEnrollments(studentId);

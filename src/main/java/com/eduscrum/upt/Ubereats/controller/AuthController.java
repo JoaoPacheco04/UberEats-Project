@@ -7,10 +7,10 @@ import com.eduscrum.upt.Ubereats.entity.User;
 import com.eduscrum.upt.Ubereats.security.CustomUserDetails;
 import com.eduscrum.upt.Ubereats.security.JwtTokenProvider;
 import com.eduscrum.upt.Ubereats.service.UserService;
-import org.springframework.http.HttpStatus; // Import adicionado
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.BadCredentialsException; // Import adicionado
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -19,6 +19,13 @@ import org.springframework.web.bind.annotation.*;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * REST controller for authentication operations.
+ * Provides endpoints for login, registration, and current user retrieval.
+ *
+ * @author
+ * @version 1.0 (2025-12-10)
+ */
 @RestController
 @RequestMapping("/api/auth")
 @CrossOrigin(origins = "*")
@@ -28,6 +35,13 @@ public class AuthController {
     private final JwtTokenProvider tokenProvider;
     private final UserService userService;
 
+    /**
+     * Constructs a new AuthController with required dependencies.
+     *
+     * @param authenticationManager Manager for authentication operations
+     * @param tokenProvider         Provider for JWT token generation
+     * @param userService           Service for user operations
+     */
     public AuthController(AuthenticationManager authenticationManager,
             JwtTokenProvider tokenProvider,
             UserService userService) {
@@ -36,6 +50,12 @@ public class AuthController {
         this.userService = userService;
     }
 
+    /**
+     * Authenticates a user and returns a JWT token.
+     *
+     * @param loginRequest The request containing login credentials
+     * @return ResponseEntity containing the login response with JWT token
+     */
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest) {
         try {

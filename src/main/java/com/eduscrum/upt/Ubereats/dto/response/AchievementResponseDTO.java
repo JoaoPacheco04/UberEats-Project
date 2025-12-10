@@ -1,8 +1,13 @@
-// AchievementResponseDTO.java
 package com.eduscrum.upt.Ubereats.dto.response;
 
 import java.time.LocalDateTime;
 
+/**
+ * Data Transfer Object for achievement response data.
+ * Contains award details, badge info, and related entities.
+ *
+ * @version 1.0 (2025-12-10)
+ */
 public class AchievementResponseDTO {
     private Long id;
     private String reason;
@@ -27,14 +32,15 @@ public class AchievementResponseDTO {
     private Long awardedById;
 
     // Constructors
-    public AchievementResponseDTO() {}
+    public AchievementResponseDTO() {
+    }
 
     public AchievementResponseDTO(Long id, String reason, LocalDateTime awardedAt, Integer points,
-                                  String recipientName, String awardedByName, boolean teamAchievement,
-                                  boolean individualAchievement, boolean automaticAward, Long badgeId,
-                                  String badgeName, String badgeIcon, Long awardedToUserId,
-                                  Long awardedToTeamId, Long projectId, String projectName,
-                                  Long sprintId, String sprintName, Long awardedById) {
+            String recipientName, String awardedByName, boolean teamAchievement,
+            boolean individualAchievement, boolean automaticAward, Long badgeId,
+            String badgeName, String badgeIcon, Long awardedToUserId,
+            Long awardedToTeamId, Long projectId, String projectName,
+            Long sprintId, String sprintName, Long awardedById) {
         this.id = id;
         this.reason = reason;
         this.awardedAt = awardedAt;
@@ -57,60 +63,155 @@ public class AchievementResponseDTO {
     }
 
     // Getters and Setters
-    public Long getId() { return id; }
-    public void setId(Long id) { this.id = id; }
+    public Long getId() {
+        return id;
+    }
 
-    public String getReason() { return reason; }
-    public void setReason(String reason) { this.reason = reason; }
+    public void setId(Long id) {
+        this.id = id;
+    }
 
-    public LocalDateTime getAwardedAt() { return awardedAt; }
-    public void setAwardedAt(LocalDateTime awardedAt) { this.awardedAt = awardedAt; }
+    public String getReason() {
+        return reason;
+    }
 
-    public Integer getPoints() { return points; }
-    public void setPoints(Integer points) { this.points = points; }
+    public void setReason(String reason) {
+        this.reason = reason;
+    }
 
-    public String getRecipientName() { return recipientName; }
-    public void setRecipientName(String recipientName) { this.recipientName = recipientName; }
+    public LocalDateTime getAwardedAt() {
+        return awardedAt;
+    }
 
-    public String getAwardedByName() { return awardedByName; }
-    public void setAwardedByName(String awardedByName) { this.awardedByName = awardedByName; }
+    public void setAwardedAt(LocalDateTime awardedAt) {
+        this.awardedAt = awardedAt;
+    }
 
-    public boolean isTeamAchievement() { return teamAchievement; }
-    public void setTeamAchievement(boolean teamAchievement) { this.teamAchievement = teamAchievement; }
+    public Integer getPoints() {
+        return points;
+    }
 
-    public boolean isIndividualAchievement() { return individualAchievement; }
-    public void setIndividualAchievement(boolean individualAchievement) { this.individualAchievement = individualAchievement; }
+    public void setPoints(Integer points) {
+        this.points = points;
+    }
 
-    public boolean isAutomaticAward() { return automaticAward; }
-    public void setAutomaticAward(boolean automaticAward) { this.automaticAward = automaticAward; }
+    public String getRecipientName() {
+        return recipientName;
+    }
 
-    public Long getBadgeId() { return badgeId; }
-    public void setBadgeId(Long badgeId) { this.badgeId = badgeId; }
+    public void setRecipientName(String recipientName) {
+        this.recipientName = recipientName;
+    }
 
-    public String getBadgeName() { return badgeName; }
-    public void setBadgeName(String badgeName) { this.badgeName = badgeName; }
+    public String getAwardedByName() {
+        return awardedByName;
+    }
 
-    public String getBadgeIcon() { return badgeIcon; }
-    public void setBadgeIcon(String badgeIcon) { this.badgeIcon = badgeIcon; }
+    public void setAwardedByName(String awardedByName) {
+        this.awardedByName = awardedByName;
+    }
 
-    public Long getAwardedToUserId() { return awardedToUserId; }
-    public void setAwardedToUserId(Long awardedToUserId) { this.awardedToUserId = awardedToUserId; }
+    public boolean isTeamAchievement() {
+        return teamAchievement;
+    }
 
-    public Long getAwardedToTeamId() { return awardedToTeamId; }
-    public void setAwardedToTeamId(Long awardedToTeamId) { this.awardedToTeamId = awardedToTeamId; }
+    public void setTeamAchievement(boolean teamAchievement) {
+        this.teamAchievement = teamAchievement;
+    }
 
-    public Long getProjectId() { return projectId; }
-    public void setProjectId(Long projectId) { this.projectId = projectId; }
+    public boolean isIndividualAchievement() {
+        return individualAchievement;
+    }
 
-    public String getProjectName() { return projectName; }
-    public void setProjectName(String projectName) { this.projectName = projectName; }
+    public void setIndividualAchievement(boolean individualAchievement) {
+        this.individualAchievement = individualAchievement;
+    }
 
-    public Long getSprintId() { return sprintId; }
-    public void setSprintId(Long sprintId) { this.sprintId = sprintId; }
+    public boolean isAutomaticAward() {
+        return automaticAward;
+    }
 
-    public String getSprintName() { return sprintName; }
-    public void setSprintName(String sprintName) { this.sprintName = sprintName; }
+    public void setAutomaticAward(boolean automaticAward) {
+        this.automaticAward = automaticAward;
+    }
 
-    public Long getAwardedById() { return awardedById; }
-    public void setAwardedById(Long awardedById) { this.awardedById = awardedById; }
+    public Long getBadgeId() {
+        return badgeId;
+    }
+
+    public void setBadgeId(Long badgeId) {
+        this.badgeId = badgeId;
+    }
+
+    public String getBadgeName() {
+        return badgeName;
+    }
+
+    public void setBadgeName(String badgeName) {
+        this.badgeName = badgeName;
+    }
+
+    public String getBadgeIcon() {
+        return badgeIcon;
+    }
+
+    public void setBadgeIcon(String badgeIcon) {
+        this.badgeIcon = badgeIcon;
+    }
+
+    public Long getAwardedToUserId() {
+        return awardedToUserId;
+    }
+
+    public void setAwardedToUserId(Long awardedToUserId) {
+        this.awardedToUserId = awardedToUserId;
+    }
+
+    public Long getAwardedToTeamId() {
+        return awardedToTeamId;
+    }
+
+    public void setAwardedToTeamId(Long awardedToTeamId) {
+        this.awardedToTeamId = awardedToTeamId;
+    }
+
+    public Long getProjectId() {
+        return projectId;
+    }
+
+    public void setProjectId(Long projectId) {
+        this.projectId = projectId;
+    }
+
+    public String getProjectName() {
+        return projectName;
+    }
+
+    public void setProjectName(String projectName) {
+        this.projectName = projectName;
+    }
+
+    public Long getSprintId() {
+        return sprintId;
+    }
+
+    public void setSprintId(Long sprintId) {
+        this.sprintId = sprintId;
+    }
+
+    public String getSprintName() {
+        return sprintName;
+    }
+
+    public void setSprintName(String sprintName) {
+        this.sprintName = sprintName;
+    }
+
+    public Long getAwardedById() {
+        return awardedById;
+    }
+
+    public void setAwardedById(Long awardedById) {
+        this.awardedById = awardedById;
+    }
 }

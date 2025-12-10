@@ -17,6 +17,14 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * Service class for managing sprints in the EduScrum platform.
+ * Handles sprint creation, updates, status transitions, and velocity
+ * calculations.
+ *
+ * @author
+ * @version 1.0 (2025-12-10)
+ */
 @Service
 @Transactional
 public class SprintService {
@@ -24,9 +32,16 @@ public class SprintService {
     private final SprintRepository sprintRepository;
     private final ProjectRepository projectRepository;
     private final AchievementService achievementService;
-    private final com.eduscrum.upt.Ubereats.repository.UserStoryRepository userStoryRepository; // Need this for
-                                                                                                // velocity
+    private final com.eduscrum.upt.Ubereats.repository.UserStoryRepository userStoryRepository;
 
+    /**
+     * Constructs a new SprintService with required dependencies.
+     *
+     * @param sprintRepository    Repository for sprint data access
+     * @param projectRepository   Repository for project data access
+     * @param achievementService  Service for achievement operations
+     * @param userStoryRepository Repository for user story data access
+     */
     public SprintService(SprintRepository sprintRepository, ProjectRepository projectRepository,
             @Lazy AchievementService achievementService,
             com.eduscrum.upt.Ubereats.repository.UserStoryRepository userStoryRepository) {
@@ -36,7 +51,13 @@ public class SprintService {
         this.userStoryRepository = userStoryRepository;
     }
 
-    // === SPRINT CREATION ===
+    /**
+     * Creates a new sprint with validation and uniqueness checks.
+     *
+     * @param requestDTO The sprint request containing sprint details
+     * @return The created sprint as a response DTO
+     * @throws BusinessLogicException if validation fails or sprint number exists
+     */
     public SprintResponseDTO createSprint(SprintRequestDTO requestDTO) {
         // Validate input parameters
         validateSprintInput(requestDTO);
@@ -51,7 +72,10 @@ public class SprintService {
     }
 
     /**
-     * Validates all sprint input parameters
+     * Validates all sprint input parameters.
+     *
+     * @param requestDTO The sprint request to validate
+     * @throws BusinessLogicException if any validation fails
      */
     private void validateSprintInput(SprintRequestDTO requestDTO) {
         if (requestDTO.getSprintNumber() == null || requestDTO.getSprintNumber() <= 0) {
@@ -86,7 +110,12 @@ public class SprintService {
     }
 
     /**
-     * Checks if sprint number already exists in project
+     * Checks if sprint number already exists in project.
+     *
+     * @param projectId    The ID of the project
+     * @param sprintNumber The sprint number to check
+     * @param excludeId    The ID to exclude from the check (for updates)
+     * @throws BusinessLogicException if sprint number already exists
      */
     private void validateSprintUniqueness(Long projectId, Integer sprintNumber, Long excludeId) {
         boolean sprintNumberExists;
@@ -103,7 +132,10 @@ public class SprintService {
     }
 
     /**
-     * Creates a new Sprint entity with the provided data
+     * Creates a new Sprint entity with the provided data.
+     *
+     * @param requestDTO The sprint request containing sprint details
+     * @return The new Sprint entity (not yet persisted)
      */
     private Sprint createSprintEntity(SprintRequestDTO requestDTO) {
         Project project = getProjectEntity(requestDTO.getProjectId());
@@ -124,10 +156,10 @@ public class SprintService {
         return sprint;
     }
 
-    // === SPRINT RETRIEVAL METHODS ===
-
     /**
-     * Finds all sprints
+     * Finds all sprints in the system.
+     *
+     * @return List of all sprints as response DTOs
      */
     @Transactional(readOnly = true)
     public List<SprintResponseDTO> getAllSprints() {
@@ -137,7 +169,11 @@ public class SprintService {
     }
 
     /**
-     * Finds sprint by ID
+     * Finds a sprint by its ID.
+     *
+     * @param id The ID of the sprint to find
+     * @return The sprint as a response DTO
+     * @throws ResourceNotFoundException if sprint not found
      */
     @Transactional(readOnly = true)
     public SprintResponseDTO getSprintById(Long id) {
@@ -147,7 +183,10 @@ public class SprintService {
     }
 
     /**
-     * Finds sprints by project
+     * Finds all sprints for a specific project.
+     *
+     * @param projectId The ID of the project
+     * @return List of sprints in the project
      */
     @Transactional(readOnly = true)
     public List<SprintResponseDTO> getSprintsByProject(Long projectId) {
@@ -157,7 +196,10 @@ public class SprintService {
     }
 
     /**
-     * Finds sprints by status
+     * Finds all sprints with a specific status.
+     *
+     * @param status The status to filter by
+     * @return List of sprints with the specified status
      */
     @Transactional(readOnly = true)
     public List<SprintResponseDTO> getSprintsByStatus(SprintStatus status) {
@@ -167,7 +209,9 @@ public class SprintService {
     }
 
     /**
-     * Finds active sprints
+     * Finds all active sprints in the system.
+     *
+     * @return List of active sprints
      */
     @Transactional(readOnly = true)
     public List<SprintResponseDTO> getActiveSprints() {

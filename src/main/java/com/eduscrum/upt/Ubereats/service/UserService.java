@@ -14,9 +14,12 @@ import com.eduscrum.upt.Ubereats.entity.TeamMember;
 import java.util.Optional;
 
 /**
- * Service class for user management operations
- * Handles business logic for user registration, retrieval, and management
- * Uses constructor injection for better testability and safety
+ * Service class for user management operations in the EduScrum platform.
+ * Handles user registration, authentication, retrieval, and global score
+ * calculation.
+ *
+ * @author
+ * @version 1.0 (2025-12-10)
  */
 @Service
 @Transactional
@@ -25,12 +28,30 @@ public class UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
 
+    /**
+     * Constructs a new UserService with required dependencies.
+     *
+     * @param userRepository  Repository for user data access
+     * @param passwordEncoder Encoder for password hashing
+     */
     public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
     }
 
-    // === USER REGISTRATION ===
+    /**
+     * Registers a new user in the system.
+     *
+     * @param username      The username for the new user
+     * @param email         The email address for the new user
+     * @param password      The password for the new user
+     * @param firstName     The first name of the user
+     * @param lastName      The last name of the user
+     * @param role          The role of the user (STUDENT or TEACHER)
+     * @param studentNumber The student number (required for students)
+     * @return The created User entity
+     * @throws IllegalArgumentException if validation fails
+     */
     public User registerUser(String username, String email, String password, String firstName,
             String lastName, UserRole role, String studentNumber) {
 
@@ -45,7 +66,18 @@ public class UserService {
         return userRepository.save(user);
     }
 
-    // Validates all registration input parameter
+    /**
+     * Validates all registration input parameters.
+     *
+     * @param username      The username to validate
+     * @param email         The email to validate
+     * @param password      The password to validate
+     * @param firstName     The first name to validate
+     * @param lastName      The last name to validate
+     * @param role          The role to validate
+     * @param studentNumber The student number to validate
+     * @throws IllegalArgumentException if any validation fails
+     */
     private void validateRegistrationInput(String username, String email, String password,
             String firstName, String lastName, UserRole role,
             String studentNumber) {
@@ -89,7 +121,15 @@ public class UserService {
         }
     }
 
-    // Checks if username, email, or student number already exist
+    /**
+     * Checks if username, email, or student number already exist.
+     *
+     * @param username      The username to check
+     * @param email         The email to check
+     * @param studentNumber The student number to check
+     * @param role          The role of the user
+     * @throws IllegalArgumentException if any value already exists
+     */
     private void validateUserUniqueness(String username, String email, String studentNumber, UserRole role) {
         if (userRepository.existsByUsername(username)) {
             throw new IllegalArgumentException("Username '" + username + "' is already taken");
@@ -105,7 +145,18 @@ public class UserService {
         }
     }
 
-    // Creates a new User entity with the provided data
+    /**
+     * Creates a new User entity with the provided data.
+     *
+     * @param username      The username for the user
+     * @param email         The email for the user
+     * @param password      The raw password (will be encoded)
+     * @param firstName     The first name of the user
+     * @param lastName      The last name of the user
+     * @param role          The role of the user
+     * @param studentNumber The student number (if applicable)
+     * @return The new User entity (not yet persisted)
+     */
     private User createUserEntity(String username, String email, String password,
             String firstName, String lastName, UserRole role,
             String studentNumber) {
@@ -122,48 +173,79 @@ public class UserService {
         return user;
     }
 
-    // === USER RETRIEVAL METHODS ===
-
-    // Finds user by email address
+    /**
+     * Finds a user by their email address.
+     *
+     * @param email The email address to search for
+     * @return Optional containing the user if found
+     */
     @Transactional(readOnly = true)
     public Optional<User> findByEmail(String email) {
         return userRepository.findByEmail(email);
     }
 
-    // Finds user by username
+    /**
+     * Finds a user by their username.
+     *
+     * @param username The username to search for
+     * @return Optional containing the user if found
+     */
     @Transactional(readOnly = true)
     public Optional<User> findByUsername(String username) {
         return userRepository.findByUsername(username);
     }
 
-    // Finds user by database ID
+    /**
+     * Finds a user by their database ID.
+     *
+     * @param id The ID of the user to find
+     * @return Optional containing the user if found
+     */
     @Transactional(readOnly = true)
     public Optional<User> findById(Long id) {
         return userRepository.findById(id);
     }
 
-    // Finds all users by specific role
+    /**
+     * Finds all users with a specific role.
+     *
+     * @param role The role to filter by
+     * @return List of users with the specified role
+     */
     @Transactional(readOnly = true)
     public List<User> findAllByRole(UserRole role) {
         return userRepository.findByRole(role);
     }
 
-    // === USER EXISTENCE CHECKS ===
-
-    // Checks if email already exists in database
+    /**
+     * Checks if an email already exists in the database.
+     *
+     * @param email The email to check
+     * @return true if email exists, false otherwise
+     */
     @Transactional(readOnly = true)
     public boolean existsByEmail(String email) {
         return userRepository.existsByEmail(email);
     }
 
-    // Checks if username already exists in database
+    /**
+     * Checks if a username already exists in the database.
+     *
+     * @param username The username to check
+     * @return true if username exists, false otherwise
+     */
     @Transactional(readOnly = true)
     public boolean existsByUsername(String username) {
         return userRepository.existsByUsername(username);
     }
 
-    // Verifies user credentials (email and password)
-
+    /**
+     * Verifies user credentials (email and password).
+     *
+     * @param email    The email to verify
+     * @param password The raw password to verify
+     * @return true if credentials are valid, false otherwise
+     */
     @Transactional(readOnly = true)
     public boolean verifyCredentials(String email, String password) {
         Optional<User> userOpt = userRepository.findByEmail(email);
@@ -176,11 +258,13 @@ public class UserService {
         return passwordEncoder.matches(password, user.getPassword());
     }
 
-    // === GLOBAL SCORE CALCULATION ===
-
     /**
-     * Calculate global score for a user.
+     * Calculates the global score for a user.
      * Logic: Sum(Individual_Badge_Points) + Sum(Team_Badge_Points / Team_Size)
+     *
+     * @param userId The ID of the user
+     * @return The calculated global score
+     * @throws IllegalArgumentException if user not found
      */
     @Transactional(readOnly = true)
     public Integer calculateGlobalScore(Long userId) {

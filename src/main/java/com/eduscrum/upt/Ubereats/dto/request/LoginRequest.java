@@ -1,8 +1,10 @@
 package com.eduscrum.upt.Ubereats.dto.request;
 
 /**
- * Data Transfer Object for receiving login credentials from frontend
- * Contains only the fields needed for user authentication
+ * Data Transfer Object for receiving login credentials from frontend.
+ * Contains only the fields needed for user authentication.
+ *
+ * @version 1.0 (2025-12-10)
  */
 public class LoginRequest {
     private String email;
@@ -10,7 +12,8 @@ public class LoginRequest {
 
     // === CONSTRUCTORS ===
 
-    public LoginRequest() {}
+    public LoginRequest() {
+    }
 
     public LoginRequest(String email, String password) {
         this.email = email;
@@ -27,11 +30,9 @@ public class LoginRequest {
         this.email = email;
     }
 
-
     public String getPassword() {
         return password;
     }
-
 
     public void setPassword(String password) {
         this.password = password;

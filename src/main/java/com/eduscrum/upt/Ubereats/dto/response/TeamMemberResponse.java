@@ -5,9 +5,11 @@ import com.eduscrum.upt.Ubereats.entity.enums.ScrumRole;
 
 import java.time.LocalDateTime;
 
-/*
-    * DTO for team member response.
-    * Includes member details and status.
+/**
+ * Data Transfer Object for team member response data.
+ * Includes member details, role, and status information.
+ *
+ * @version 1.0 (2025-12-10)
  */
 public class TeamMemberResponse {
     private Long id;

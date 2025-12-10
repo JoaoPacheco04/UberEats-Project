@@ -1,4 +1,3 @@
-// ProgressMetricRequestDTO.java
 package com.eduscrum.upt.Ubereats.dto.request;
 
 import com.eduscrum.upt.Ubereats.entity.enums.TeamMood;
@@ -6,6 +5,12 @@ import jakarta.validation.constraints.NotNull;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
+/**
+ * Data Transfer Object for creating Analytics/Progress metrics.
+ * Contains sprint progress, velocity, and team mood data.
+ *
+ * @version 1.0 (2025-12-10)
+ */
 public class AnalyticsRequestDTO {
 
     @NotNull(message = "Sprint ID is required")

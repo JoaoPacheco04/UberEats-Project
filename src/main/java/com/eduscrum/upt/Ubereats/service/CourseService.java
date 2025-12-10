@@ -14,9 +14,16 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
-import java.util.Optional; // Importado
+import java.util.Optional;
 import java.util.stream.Collectors;
 
+/**
+ * Service class for managing courses in the EduScrum platform.
+ * Handles course creation, updates, retrieval, and enrollment verification.
+ *
+ * @author
+ * @version 1.0 (2025-12-10)
+ */
 @Service
 @Transactional
 public class CourseService {
@@ -25,15 +32,27 @@ public class CourseService {
     private final UserRepository userRepository;
     private final CourseEnrollmentService enrollmentService;
 
+    /**
+     * Constructs a new CourseService with required dependencies.
+     *
+     * @param courseRepository  Repository for course data access
+     * @param userRepository    Repository for user data access
+     * @param enrollmentService Service for enrollment operations
+     */
     public CourseService(CourseRepository courseRepository, UserRepository userRepository,
-                         CourseEnrollmentService enrollmentService) {
+            CourseEnrollmentService enrollmentService) {
         this.courseRepository = courseRepository;
         this.userRepository = userRepository;
         this.enrollmentService = enrollmentService;
     }
 
     /**
-     * Create a new course
+     * Creates a new course with the specified details.
+     *
+     * @param request      The request containing course details
+     * @param teacherEmail The email of the teacher creating the course
+     * @return The created course as a response DTO
+     * @throws ResponseStatusException if course code exists or teacher not found
      */
     public CourseResponse createCourse(CreateCourseRequest request, String teacherEmail) {
         // Validate course code uniqueness
@@ -60,15 +79,18 @@ public class CourseService {
                 request.getDescription(),
                 request.getSemester(),
                 request.getAcademicYear(),
-                teacher
-        );
+                teacher);
 
         Course savedCourse = courseRepository.save(course);
         return convertToResponse(savedCourse);
     }
 
     /**
-     * Get course by ID
+     * Gets a course by its ID.
+     *
+     * @param courseId The ID of the course to retrieve
+     * @return The course as a response DTO
+     * @throws ResponseStatusException if course not found
      */
     @Transactional(readOnly = true)
     public CourseResponse getCourseById(Long courseId) {
@@ -78,9 +100,13 @@ public class CourseService {
         return convertToResponse(course);
     }
 
-
-    //Get all courses for a teacher
-
+    /**
+     * Gets all courses for a specific teacher.
+     *
+     * @param teacherEmail The email of the teacher
+     * @return List of courses taught by the teacher
+     * @throws ResponseStatusException if teacher not found
+     */
     @Transactional(readOnly = true)
     public List<CourseResponse> getCoursesByTeacher(String teacherEmail) {
         User teacher = userRepository.findByEmail(teacherEmail)
@@ -92,7 +118,11 @@ public class CourseService {
                 .collect(Collectors.toList());
     }
 
-    //Get all active courses
+    /**
+     * Gets all active courses in the system.
+     *
+     * @return List of active courses
+     */
     @Transactional(readOnly = true)
     public List<CourseResponse> getActiveCourses() {
         return courseRepository.findByIsActiveTrue().stream()
@@ -100,8 +130,14 @@ public class CourseService {
                 .collect(Collectors.toList());
     }
 
-
-    //Update course
+    /**
+     * Updates an existing course with the provided details.
+     *
+     * @param courseId The ID of the course to update
+     * @param request  The request containing updated course details
+     * @return The updated course as a response DTO
+     * @throws ResponseStatusException if course not found
+     */
     public CourseResponse updateCourse(Long courseId, UpdateCourseRequest request) {
         Course course = courseRepository.findById(courseId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
@@ -129,7 +165,10 @@ public class CourseService {
     }
 
     /**
-     * Delete (deactivate) course
+     * Deletes (deactivates) a course by setting it as inactive.
+     *
+     * @param courseId The ID of the course to delete
+     * @throws ResponseStatusException if course not found
      */
     public void deleteCourse(Long courseId) {
         Course course = courseRepository.findById(courseId)
@@ -142,7 +181,11 @@ public class CourseService {
     }
 
     /**
-     * Check if user is the teacher of the course
+     * Checks if a user is the teacher of a specific course.
+     *
+     * @param courseId     The ID of the course
+     * @param teacherEmail The email of the teacher to check
+     * @return true if the user is the course teacher, false otherwise
      */
     @Transactional(readOnly = true)
     public boolean isCourseTeacher(Long courseId, String teacherEmail) {
@@ -150,8 +193,12 @@ public class CourseService {
     }
 
     /**
-     * Check if student is enrolled in course
+     * Checks if a student is enrolled in a specific course.
      * This is used for @PreAuthorize security checks in the CourseController.
+     *
+     * @param courseId     The ID of the course
+     * @param studentEmail The email of the student to check
+     * @return true if the student is enrolled, false otherwise
      */
     @Transactional(readOnly = true)
     public boolean isStudentEnrolled(Long courseId, String studentEmail) {
@@ -167,7 +214,11 @@ public class CourseService {
     }
 
     /**
-     * Get courses by academic year and semester
+     * Gets courses by academic year and semester.
+     *
+     * @param academicYear The academic year to filter by
+     * @param semester     The semester to filter by
+     * @return List of courses matching the criteria
      */
     @Transactional(readOnly = true)
     public List<CourseResponse> getCoursesByAcademicPeriod(String academicYear, Semester semester) {
@@ -178,7 +229,10 @@ public class CourseService {
     }
 
     /**
-     * Search courses by name or code
+     * Searches for courses by name or code.
+     *
+     * @param searchTerm The search term to match against name or code
+     * @return List of courses matching the search term
      */
     @Transactional(readOnly = true)
     public List<CourseResponse> searchCourses(String searchTerm) {
@@ -192,7 +246,10 @@ public class CourseService {
     }
 
     /**
-     * Convert Course entity to CourseResponse DTO
+     * Converts a Course entity to a CourseResponse DTO.
+     *
+     * @param course The course entity to convert
+     * @return The course as a response DTO
      */
     private CourseResponse convertToResponse(Course course) {
         CourseResponse response = new CourseResponse();

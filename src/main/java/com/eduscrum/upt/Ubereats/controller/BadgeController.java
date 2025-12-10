@@ -6,13 +6,20 @@ import com.eduscrum.upt.Ubereats.entity.enums.BadgeType;
 import com.eduscrum.upt.Ubereats.service.BadgeService;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize; // Import necessário
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * REST controller for managing badges in the EduScrum platform.
+ * Provides endpoints for badge CRUD operations and status management.
+ *
+ * @author
+ * @version 1.0 (2025-12-10)
+ */
 @RestController
 @RequestMapping("/api/badges")
 @CrossOrigin(origins = "*")
@@ -20,10 +27,14 @@ public class BadgeController {
 
     private final BadgeService badgeService;
 
+    /**
+     * Constructs a new BadgeController with required dependencies.
+     *
+     * @param badgeService Service for badge operations
+     */
     public BadgeController(BadgeService badgeService) {
         this.badgeService = badgeService;
     }
-
 
     @PostMapping
     @PreAuthorize("hasAuthority('ROLE_TEACHER')")
@@ -38,14 +49,12 @@ public class BadgeController {
         }
     }
 
-
     @GetMapping
     @PreAuthorize("isAuthenticated()") // Apenas logado
     public ResponseEntity<List<BadgeResponseDTO>> getAllBadges() {
         List<BadgeResponseDTO> badges = badgeService.getAllBadges();
         return ResponseEntity.ok(badges);
     }
-
 
     @GetMapping("/active")
     @PreAuthorize("isAuthenticated()")
@@ -54,14 +63,12 @@ public class BadgeController {
         return ResponseEntity.ok(badges);
     }
 
-
     @GetMapping("/type/{badgeType}")
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<List<BadgeResponseDTO>> getBadgesByType(@PathVariable BadgeType badgeType) {
         List<BadgeResponseDTO> badges = badgeService.getBadgesByType(badgeType);
         return ResponseEntity.ok(badges);
     }
-
 
     @GetMapping("/{id}")
     @PreAuthorize("isAuthenticated()")
@@ -91,7 +98,6 @@ public class BadgeController {
         }
     }
 
-
     @PutMapping("/{id}")
     @PreAuthorize("hasAuthority('ROLE_TEACHER')")
     public ResponseEntity<?> updateBadge(@PathVariable Long id, @Valid @RequestBody BadgeRequestDTO requestDTO) {
@@ -119,7 +125,6 @@ public class BadgeController {
             return ResponseEntity.badRequest().body(response);
         }
     }
-
 
     @DeleteMapping("/{id}")
     @PreAuthorize("hasAuthority('ROLE_TEACHER')")

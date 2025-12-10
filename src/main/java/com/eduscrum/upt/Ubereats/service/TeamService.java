@@ -19,6 +19,15 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
+/**
+ * Service class for managing teams and team memberships in the EduScrum
+ * platform.
+ * Handles team creation, member management, project associations, and role
+ * assignments.
+ *
+ * @author
+ * @version 1.0 (2025-12-10)
+ */
 @Service
 @Transactional
 public class TeamService {
@@ -28,6 +37,14 @@ public class TeamService {
     private final ProjectRepository projectRepository;
     private final UserRepository userRepository;
 
+    /**
+     * Constructs a new TeamService with required dependencies.
+     *
+     * @param teamRepository       Repository for team data access
+     * @param teamMemberRepository Repository for team member data access
+     * @param projectRepository    Repository for project data access
+     * @param userRepository       Repository for user data access
+     */
     public TeamService(TeamRepository teamRepository,
             TeamMemberRepository teamMemberRepository,
             ProjectRepository projectRepository,
@@ -38,7 +55,15 @@ public class TeamService {
         this.userRepository = userRepository;
     }
 
-    // Create new team
+    /**
+     * Creates a new team with the specified name and optionally associates it with
+     * a project.
+     *
+     * @param request The request containing team name and optional project ID
+     * @return The newly created Team entity
+     * @throws BusinessLogicException    if a team with the same name already exists
+     * @throws ResourceNotFoundException if the specified project is not found
+     */
     public Team createTeam(CreateTeamRequest request) {
         if (teamRepository.existsByName(request.getName())) {
             throw new BusinessLogicException("Team name '" + request.getName() + "' already exists");
@@ -55,7 +80,15 @@ public class TeamService {
         return teamRepository.save(team);
     }
 
-    // Associate a team with a project
+    /**
+     * Associates an existing team with a project.
+     *
+     * @param teamId    The ID of the team to associate
+     * @param projectId The ID of the project to associate with
+     * @return The updated Team entity
+     * @throws ResourceNotFoundException if team or project is not found
+     * @throws BusinessLogicException    if team is already in the project
+     */
     public Team addTeamToProject(Long teamId, Long projectId) {
         Team team = getTeamById(teamId);
         Project project = projectRepository.findById(projectId)
@@ -69,15 +102,20 @@ public class TeamService {
         return teamRepository.save(team);
     }
 
-    // Add member to team
+    /**
+     * Adds a user as a member to a team with the specified Scrum role.
+     * Ensures that SCRUM_MASTER and PRODUCT_OWNER roles are unique within a team.
+     *
+     * @param teamId  The ID of the team
+     * @param request The request containing user ID and role
+     * @return The newly created TeamMember entity
+     * @throws ResourceNotFoundException if team or user is not found
+     * @throws BusinessLogicException    if the specified role is already taken
+     */
     public TeamMember addMemberToTeam(Long teamId, AddMemberRequest request) {
         Team team = getTeamById(teamId);
         User user = userRepository.findById(request.getUserId())
                 .orElseThrow(() -> new ResourceNotFoundException("User not found with id: " + request.getUserId()));
-
-        // The validation for a user being in multiple teams per project was removed for
-        // now.
-        // A more complex rule would be needed to check per-project team membership.
 
         if (request.getRole() == ScrumRole.SCRUM_MASTER || request.getRole() == ScrumRole.PRODUCT_OWNER) {
             boolean roleTaken = teamMemberRepository.findByTeamIdAndRoleAndIsActiveTrue(teamId, request.getRole())
@@ -94,17 +132,33 @@ public class TeamService {
         return teamMemberRepository.save(member);
     }
 
-    // Get teams for project
+    /**
+     * Retrieves all teams associated with a specific project.
+     *
+     * @param projectId The ID of the project
+     * @return List of teams in the project
+     */
     public List<Team> getTeamsByProject(Long projectId) {
         return teamRepository.findByProjects_Id(projectId);
     }
 
-    // Get user's teams
+    /**
+     * Retrieves all teams that a user is a member of.
+     *
+     * @param userId The ID of the user
+     * @return List of teams the user belongs to
+     */
     public List<Team> getUserTeams(Long userId) {
         return teamRepository.findTeamsByUserId(userId);
     }
 
-    // Remove member from team
+    /**
+     * Removes a user from a team by deactivating their membership.
+     *
+     * @param teamId The ID of the team
+     * @param userId The ID of the user to remove
+     * @throws ResourceNotFoundException if the team member is not found
+     */
     public void removeMemberFromTeam(Long teamId, Long userId) {
         TeamMember member = teamMemberRepository.findByUserIdAndTeamId(userId, teamId)
                 .orElseThrow(() -> new ResourceNotFoundException("Team member not found"));
@@ -113,7 +167,17 @@ public class TeamService {
         teamMemberRepository.save(member);
     }
 
-    // Update member role
+    /**
+     * Updates the Scrum role of a team member.
+     * Ensures that SCRUM_MASTER and PRODUCT_OWNER roles remain unique.
+     *
+     * @param teamId  The ID of the team
+     * @param userId  The ID of the user whose role is being updated
+     * @param request The request containing the new role
+     * @return The updated TeamMember entity
+     * @throws ResourceNotFoundException if the team member is not found
+     * @throws BusinessLogicException    if the new role is already taken
+     */
     public TeamMember updateMemberRole(Long teamId, Long userId, UpdateMemberRoleRequest request) {
         TeamMember member = teamMemberRepository.findByUserIdAndTeamId(userId, teamId)
                 .orElseThrow(() -> new ResourceNotFoundException("Team member not found"));
@@ -132,18 +196,34 @@ public class TeamService {
         return teamMemberRepository.save(member);
     }
 
-    // Get team members
+    /**
+     * Retrieves all active members of a team.
+     *
+     * @param teamId The ID of the team
+     * @return List of active team members
+     */
     public List<TeamMember> getTeamMembers(Long teamId) {
         return teamMemberRepository.findByTeamIdAndIsActiveTrue(teamId);
     }
 
-    // Get team by ID
+    /**
+     * Retrieves a team by its ID.
+     *
+     * @param teamId The ID of the team to retrieve
+     * @return The Team entity
+     * @throws ResourceNotFoundException if the team is not found
+     */
     public Team getTeamById(Long teamId) {
         return teamRepository.findById(teamId)
                 .orElseThrow(() -> new ResourceNotFoundException("Team not found with id: " + teamId));
     }
 
-    // Delete team (soft delete - deactivate all members)
+    /**
+     * Deletes a team by deactivating all its members (soft delete).
+     *
+     * @param teamId The ID of the team to delete
+     * @throws ResourceNotFoundException if the team is not found
+     */
     public void deleteTeam(Long teamId) {
         Team team = getTeamById(teamId);
         List<TeamMember> members = teamMemberRepository.findByTeamIdAndIsActiveTrue(teamId);
@@ -152,13 +232,24 @@ public class TeamService {
         teamMemberRepository.saveAll(members);
     }
 
-    // Close all team memberships (for project completion)
+    /**
+     * Closes all team memberships, typically used when a project is completed.
+     *
+     * @param teamId The ID of the team
+     */
     public void closeTeamMemberships(Long teamId) {
         List<TeamMember> members = teamMemberRepository.findByTeamIdAndIsActiveTrue(teamId);
         members.forEach(TeamMember::leaveTeam);
         teamMemberRepository.saveAll(members);
     }
 
+    /**
+     * Counts the number of completed projects for a team within a specific course.
+     *
+     * @param teamId   The ID of the team
+     * @param courseId The ID of the course
+     * @return The count of completed projects
+     */
     @Transactional(readOnly = true)
     public Long countCompletedProjectsByTeamInCourse(Long teamId, Long courseId) {
         return teamRepository.countCompletedProjectsByTeamInCourse(teamId, courseId);

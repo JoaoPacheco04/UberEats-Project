@@ -3,9 +3,11 @@ package com.eduscrum.upt.Ubereats.dto.request;
 import com.eduscrum.upt.Ubereats.entity.enums.ScrumRole;
 import jakarta.validation.constraints.NotNull;
 
-/*
-    * DTO for adding a member to a team.
-    * Includes user ID and role.
+/**
+ * Data Transfer Object for adding a member to a team.
+ * Includes user ID and role assignment.
+ *
+ * @version 1.0 (2025-12-10)
  */
 public class AddMemberRequest {
 
@@ -16,7 +18,8 @@ public class AddMemberRequest {
     private ScrumRole role;
 
     // Constructors
-    public AddMemberRequest() {}
+    public AddMemberRequest() {
+    }
 
     public AddMemberRequest(Long userId, ScrumRole role) {
         this.userId = userId;
@@ -24,9 +27,19 @@ public class AddMemberRequest {
     }
 
     // Getters and Setters
-    public Long getUserId() { return userId; }
-    public void setUserId(Long userId) { this.userId = userId; }
+    public Long getUserId() {
+        return userId;
+    }
 
-    public ScrumRole getRole() { return role; }
-    public void setRole(ScrumRole role) { this.role = role; }
+    public void setUserId(Long userId) {
+        this.userId = userId;
+    }
+
+    public ScrumRole getRole() {
+        return role;
+    }
+
+    public void setRole(ScrumRole role) {
+        this.role = role;
+    }
 }

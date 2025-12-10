@@ -1,0 +1,433 @@
+package com.eduscrum.upt.Ubereats.service;
+
+import com.eduscrum.upt.Ubereats.entity.User;
+import com.eduscrum.upt.Ubereats.entity.enums.UserRole;
+import com.eduscrum.upt.Ubereats.repository.UserRepository;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+import java.util.Optional;
+
+import static org.junit.jupiter.api.Assertions.*;
+
+@SpringBootTest
+@ActiveProfiles("test")
+@Transactional
+class UserServiceTest {
+
+    @Autowired
+    private UserService userService;
+
+    @Autowired
+    private UserRepository userRepository;
+
+    @BeforeEach
+    void setUp() {
+        userRepository.deleteAll();
+    }
+
+    // ===================== REGISTRATION TESTS =====================
+
+    @Test
+    void registerUser_Student_Success() {
+        User user = userService.registerUser(
+                "johndoe",
+                "john@test.com",
+                "password123",
+                "John",
+                "Doe",
+                UserRole.STUDENT,
+                "STU001");
+
+        assertNotNull(user.getId());
+        assertEquals("johndoe", user.getUsername());
+        assertEquals("john@test.com", user.getEmail());
+        assertEquals("John", user.getFirstName());
+        assertEquals("Doe", user.getLastName());
+        assertEquals(UserRole.STUDENT, user.getRole());
+        assertEquals("STU001", user.getStudentNumber());
+        assertTrue(user.getIsActive());
+        // Password should be encoded (not plain text)
+        assertNotEquals("password123", user.getPassword());
+    }
+
+    @Test
+    void registerUser_Teacher_Success() {
+        User user = userService.registerUser(
+                "profsmith",
+                "prof@test.com",
+                "password123",
+                "Prof",
+                "Smith",
+                UserRole.TEACHER,
+                null);
+
+        assertNotNull(user.getId());
+        assertEquals("profsmith", user.getUsername());
+        assertEquals(UserRole.TEACHER, user.getRole());
+        assertNull(user.getStudentNumber());
+    }
+
+    @Test
+    void registerUser_DuplicateUsername_ThrowsException() {
+        // Register first user
+        userService.registerUser(
+                "samename",
+                "first@test.com",
+                "password123",
+                "First",
+                "User",
+                UserRole.TEACHER,
+                null);
+
+        // Try to register second user with same username
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
+            userService.registerUser(
+                    "samename",
+                    "second@test.com",
+                    "password123",
+                    "Second",
+                    "User",
+                    UserRole.TEACHER,
+                    null);
+        });
+
+        assertTrue(exception.getMessage().contains("already taken"));
+    }
+
+    @Test
+    void registerUser_DuplicateEmail_ThrowsException() {
+        // Register first user
+        userService.registerUser(
+                "user1",
+                "same@test.com",
+                "password123",
+                "First",
+                "User",
+                UserRole.TEACHER,
+                null);
+
+        // Try to register second user with same email
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
+            userService.registerUser(
+                    "user2",
+                    "same@test.com",
+                    "password123",
+                    "Second",
+                    "User",
+                    UserRole.TEACHER,
+                    null);
+        });
+
+        assertTrue(exception.getMessage().contains("already registered"));
+    }
+
+    @Test
+    void registerUser_DuplicateStudentNumber_ThrowsException() {
+        // Register first student
+        userService.registerUser(
+                "student1",
+                "s1@test.com",
+                "password123",
+                "First",
+                "Student",
+                UserRole.STUDENT,
+                "STU999");
+
+        // Try to register second student with same student number
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
+            userService.registerUser(
+                    "student2",
+                    "s2@test.com",
+                    "password123",
+                    "Second",
+                    "Student",
+                    UserRole.STUDENT,
+                    "STU999");
+        });
+
+        assertTrue(exception.getMessage().contains("already registered"));
+    }
+
+    @Test
+    void registerUser_StudentWithoutStudentNumber_ThrowsException() {
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
+            userService.registerUser(
+                    "student",
+                    "student@test.com",
+                    "password123",
+                    "Test",
+                    "Student",
+                    UserRole.STUDENT,
+                    null);
+        });
+
+        assertTrue(exception.getMessage().contains("Student number is required"));
+    }
+
+    @Test
+    void registerUser_EmptyUsername_ThrowsException() {
+        assertThrows(IllegalArgumentException.class, () -> {
+            userService.registerUser(
+                    "",
+                    "test@test.com",
+                    "password123",
+                    "Test",
+                    "User",
+                    UserRole.TEACHER,
+                    null);
+        });
+    }
+
+    @Test
+    void registerUser_EmptyEmail_ThrowsException() {
+        assertThrows(IllegalArgumentException.class, () -> {
+            userService.registerUser(
+                    "testuser",
+                    "",
+                    "password123",
+                    "Test",
+                    "User",
+                    UserRole.TEACHER,
+                    null);
+        });
+    }
+
+    @Test
+    void registerUser_InvalidEmailFormat_ThrowsException() {
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
+            userService.registerUser(
+                    "testuser",
+                    "invalidemail",
+                    "password123",
+                    "Test",
+                    "User",
+                    UserRole.TEACHER,
+                    null);
+        });
+
+        assertTrue(exception.getMessage().contains("Invalid email format"));
+    }
+
+    @Test
+    void registerUser_PasswordTooShort_ThrowsException() {
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
+            userService.registerUser(
+                    "testuser",
+                    "test@test.com",
+                    "12345",
+                    "Test",
+                    "User",
+                    UserRole.TEACHER,
+                    null);
+        });
+
+        assertTrue(exception.getMessage().contains("at least 6 characters"));
+    }
+
+    @Test
+    void registerUser_NullRole_ThrowsException() {
+        assertThrows(IllegalArgumentException.class, () -> {
+            userService.registerUser(
+                    "testuser",
+                    "test@test.com",
+                    "password123",
+                    "Test",
+                    "User",
+                    null,
+                    null);
+        });
+    }
+
+    // ===================== FIND BY EMAIL TESTS =====================
+
+    @Test
+    void findByEmail_Success() {
+        userService.registerUser(
+                "findme",
+                "findme@test.com",
+                "password123",
+                "Find",
+                "Me",
+                UserRole.TEACHER,
+                null);
+
+        Optional<User> found = userService.findByEmail("findme@test.com");
+
+        assertTrue(found.isPresent());
+        assertEquals("findme", found.get().getUsername());
+    }
+
+    @Test
+    void findByEmail_NotFound() {
+        Optional<User> found = userService.findByEmail("nonexistent@test.com");
+
+        assertTrue(found.isEmpty());
+    }
+
+    // ===================== FIND BY USERNAME TESTS =====================
+
+    @Test
+    void findByUsername_Success() {
+        userService.registerUser(
+                "lookupuser",
+                "lookup@test.com",
+                "password123",
+                "Lookup",
+                "User",
+                UserRole.TEACHER,
+                null);
+
+        Optional<User> found = userService.findByUsername("lookupuser");
+
+        assertTrue(found.isPresent());
+        assertEquals("lookup@test.com", found.get().getEmail());
+    }
+
+    @Test
+    void findByUsername_NotFound() {
+        Optional<User> found = userService.findByUsername("nonexistent");
+
+        assertTrue(found.isEmpty());
+    }
+
+    // ===================== FIND BY ID TESTS =====================
+
+    @Test
+    void findById_Success() {
+        User registered = userService.registerUser(
+                "byiduser",
+                "byid@test.com",
+                "password123",
+                "ById",
+                "User",
+                UserRole.TEACHER,
+                null);
+
+        Optional<User> found = userService.findById(registered.getId());
+
+        assertTrue(found.isPresent());
+        assertEquals("byiduser", found.get().getUsername());
+    }
+
+    @Test
+    void findById_NotFound() {
+        Optional<User> found = userService.findById(999L);
+
+        assertTrue(found.isEmpty());
+    }
+
+    // ===================== FIND ALL BY ROLE TESTS =====================
+
+    @Test
+    void findAllByRole_ReturnsCorrectUsers() {
+        // Create multiple users with different roles
+        userService.registerUser("teacher1", "t1@test.com", "password123", "T1", "L1", UserRole.TEACHER, null);
+        userService.registerUser("teacher2", "t2@test.com", "password123", "T2", "L2", UserRole.TEACHER, null);
+        userService.registerUser("student1", "s1@test.com", "password123", "S1", "L1", UserRole.STUDENT, "STU001");
+
+        List<User> teachers = userService.findAllByRole(UserRole.TEACHER);
+        List<User> students = userService.findAllByRole(UserRole.STUDENT);
+
+        assertEquals(2, teachers.size());
+        assertEquals(1, students.size());
+    }
+
+    @Test
+    void findAllByRole_EmptyList() {
+        List<User> admins = userService.findAllByRole(UserRole.TEACHER);
+
+        assertTrue(admins.isEmpty());
+    }
+
+    // ===================== EXISTS BY EMAIL/USERNAME TESTS =====================
+
+    @Test
+    void existsByEmail_ReturnsTrue() {
+        userService.registerUser("exists", "exists@test.com", "password123", "Ex", "Ist", UserRole.TEACHER, null);
+
+        assertTrue(userService.existsByEmail("exists@test.com"));
+    }
+
+    @Test
+    void existsByEmail_ReturnsFalse() {
+        assertFalse(userService.existsByEmail("notexists@test.com"));
+    }
+
+    @Test
+    void existsByUsername_ReturnsTrue() {
+        userService.registerUser("existsuser", "eu@test.com", "password123", "Ex", "User", UserRole.TEACHER, null);
+
+        assertTrue(userService.existsByUsername("existsuser"));
+    }
+
+    @Test
+    void existsByUsername_ReturnsFalse() {
+        assertFalse(userService.existsByUsername("notexistsuser"));
+    }
+
+    // ===================== VERIFY CREDENTIALS TESTS =====================
+
+    @Test
+    void verifyCredentials_ValidCredentials_ReturnsTrue() {
+        userService.registerUser(
+                "credentials",
+                "creds@test.com",
+                "secretpass",
+                "Cred",
+                "User",
+                UserRole.TEACHER,
+                null);
+
+        assertTrue(userService.verifyCredentials("creds@test.com", "secretpass"));
+    }
+
+    @Test
+    void verifyCredentials_WrongPassword_ReturnsFalse() {
+        userService.registerUser(
+                "credentials2",
+                "creds2@test.com",
+                "secretpass",
+                "Cred",
+                "User",
+                UserRole.TEACHER,
+                null);
+
+        assertFalse(userService.verifyCredentials("creds2@test.com", "wrongpassword"));
+    }
+
+    @Test
+    void verifyCredentials_UserNotFound_ReturnsFalse() {
+        assertFalse(userService.verifyCredentials("nonexistent@test.com", "anypassword"));
+    }
+
+    // ===================== CALCULATE GLOBAL SCORE TESTS =====================
+
+    @Test
+    void calculateGlobalScore_UserNotFound_ThrowsException() {
+        assertThrows(IllegalArgumentException.class, () -> {
+            userService.calculateGlobalScore(999L);
+        });
+    }
+
+    @Test
+    void calculateGlobalScore_NoAchievements_ReturnsZero() {
+        User user = userService.registerUser(
+                "scoreuser",
+                "score@test.com",
+                "password123",
+                "Score",
+                "User",
+                UserRole.STUDENT,
+                "STU100");
+
+        Integer score = userService.calculateGlobalScore(user.getId());
+
+        assertEquals(0, score);
+    }
+}

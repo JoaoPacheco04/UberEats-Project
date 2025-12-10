@@ -2,6 +2,12 @@ package com.eduscrum.upt.Ubereats.dto.response;
 
 import java.time.LocalDateTime;
 
+/**
+ * Data Transfer Object for course enrollment response data.
+ * Contains enrollment details, course and student info.
+ *
+ * @version 1.0 (2025-12-10)
+ */
 public class CourseEnrollmentResponseDTO {
 
     private Long id;
@@ -11,9 +17,11 @@ public class CourseEnrollmentResponseDTO {
     private Long studentId;
     private String studentName;
 
-    public CourseEnrollmentResponseDTO() {}
+    public CourseEnrollmentResponseDTO() {
+    }
 
-    public CourseEnrollmentResponseDTO(Long id, LocalDateTime enrolledAt, Long courseId, String courseName, Long studentId, String studentName) {
+    public CourseEnrollmentResponseDTO(Long id, LocalDateTime enrolledAt, Long courseId, String courseName,
+            Long studentId, String studentName) {
         this.id = id;
         this.enrolledAt = enrolledAt;
         this.courseId = courseId;
@@ -24,21 +32,51 @@ public class CourseEnrollmentResponseDTO {
 
     // === GETTERS & SETTERS ===
 
-    public Long getId() { return id; }
-    public void setId(Long id) { this.id = id; }
+    public Long getId() {
+        return id;
+    }
 
-    public LocalDateTime getEnrolledAt() { return enrolledAt; }
-    public void setEnrolledAt(LocalDateTime enrolledAt) { this.enrolledAt = enrolledAt; }
+    public void setId(Long id) {
+        this.id = id;
+    }
 
-    public Long getCourseId() { return courseId; }
-    public void setCourseId(Long courseId) { this.courseId = courseId; }
+    public LocalDateTime getEnrolledAt() {
+        return enrolledAt;
+    }
 
-    public String getCourseName() { return courseName; }
-    public void setCourseName(String courseName) { this.courseName = courseName; }
+    public void setEnrolledAt(LocalDateTime enrolledAt) {
+        this.enrolledAt = enrolledAt;
+    }
 
-    public Long getStudentId() { return studentId; }
-    public void setStudentId(Long studentId) { this.studentId = studentId; }
+    public Long getCourseId() {
+        return courseId;
+    }
 
-    public String getStudentName() { return studentName; }
-    public void setStudentName(String studentName) { this.studentName = studentName; }
+    public void setCourseId(Long courseId) {
+        this.courseId = courseId;
+    }
+
+    public String getCourseName() {
+        return courseName;
+    }
+
+    public void setCourseName(String courseName) {
+        this.courseName = courseName;
+    }
+
+    public Long getStudentId() {
+        return studentId;
+    }
+
+    public void setStudentId(Long studentId) {
+        this.studentId = studentId;
+    }
+
+    public String getStudentName() {
+        return studentName;
+    }
+
+    public void setStudentName(String studentName) {
+        this.studentName = studentName;
+    }
 }

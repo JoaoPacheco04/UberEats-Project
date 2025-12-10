@@ -14,6 +14,14 @@ import java.math.BigDecimal;
 import java.util.*;
 import java.util.stream.Collectors;
 
+/**
+ * Service class for generating dashboard statistics in the EduScrum platform.
+ * Provides aggregated data for student dashboards including scores and
+ * achievements.
+ *
+ * @author
+ * @version 1.0 (2025-12-10)
+ */
 @Service
 @Transactional
 public class DashboardService {
@@ -22,6 +30,13 @@ public class DashboardService {
     private final UserRepository userRepository;
     private final AchievementService achievementService;
 
+    /**
+     * Constructs a new DashboardService with required dependencies.
+     *
+     * @param userService        Service for user operations
+     * @param userRepository     Repository for user data access
+     * @param achievementService Service for achievement operations
+     */
     public DashboardService(UserService userService,
             UserRepository userRepository,
             AchievementService achievementService) {
@@ -31,7 +46,8 @@ public class DashboardService {
     }
 
     /**
-     * Get dashboard stats for a student
+     * Retrieves dashboard statistics for a student including global score,
+     * course average, team velocity history, and recent badges.
      */
     @Transactional(readOnly = true)
     public DashboardStatsDTO getStudentDashboardStats(Long studentId) {

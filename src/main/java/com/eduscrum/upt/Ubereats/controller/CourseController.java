@@ -13,6 +13,13 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+/**
+ * REST controller for managing courses in the EduScrum platform.
+ * Provides endpoints for course CRUD operations and teacher management.
+ *
+ * @author
+ * @version 1.0 (2025-12-10)
+ */
 @RestController
 @RequestMapping("/api/courses")
 @CrossOrigin(origins = "*")
@@ -20,10 +27,22 @@ public class CourseController {
 
     private final CourseService courseService;
 
+    /**
+     * Constructs a new CourseController with required dependencies.
+     *
+     * @param courseService Service for course operations
+     */
     public CourseController(CourseService courseService) {
         this.courseService = courseService;
     }
 
+    /**
+     * Creates a new course.
+     *
+     * @param request        The request containing course details
+     * @param authentication The current user's authentication
+     * @return ResponseEntity containing the created course
+     */
     @PostMapping
     @PreAuthorize("hasRole('TEACHER')")
     public ResponseEntity<CourseResponse> createCourse(
@@ -35,6 +54,12 @@ public class CourseController {
         return ResponseEntity.status(HttpStatus.CREATED).body(course);
     }
 
+    /**
+     * Gets all courses for the authenticated teacher.
+     *
+     * @param authentication The current user's authentication
+     * @return ResponseEntity containing the list of courses
+     */
     @GetMapping("/teacher/my-courses")
     @PreAuthorize("hasRole('TEACHER')")
     public ResponseEntity<List<CourseResponse>> getTeacherCourses(Authentication authentication) {

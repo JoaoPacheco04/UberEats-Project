@@ -20,6 +20,14 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+/**
+ * Service class for managing user stories in the EduScrum platform.
+ * Handles creation, updates, assignment, status transitions, and analytics for
+ * user stories.
+ *
+ * @author
+ * @version 1.0 (2025-12-10)
+ */
 @Service
 @Transactional
 public class UserStoryService {
@@ -33,6 +41,18 @@ public class UserStoryService {
     private final ProjectRepository projectRepository;
     private final AnalyticsService analyticsService;
 
+    /**
+     * Constructs a new UserStoryService with required dependencies.
+     *
+     * @param userStoryRepository  Repository for user story data access
+     * @param sprintService        Service for sprint operations
+     * @param teamService          Service for team operations
+     * @param userService          Service for user operations
+     * @param teamMemberRepository Repository for team member data access
+     * @param achievementService   Service for achievement operations
+     * @param projectRepository    Repository for project data access
+     * @param analyticsService     Service for analytics operations
+     */
     public UserStoryService(UserStoryRepository userStoryRepository,
             SprintService sprintService,
             TeamService teamService,
@@ -51,7 +71,13 @@ public class UserStoryService {
         this.analyticsService = analyticsService;
     }
 
-    // === USER STORY CREATION ===
+    /**
+     * Creates a new user story with validation and uniqueness checks.
+     *
+     * @param requestDTO The request containing user story details
+     * @return The created user story as a response DTO
+     * @throws BusinessLogicException if validation fails
+     */
     public UserStoryResponseDTO createUserStory(UserStoryRequestDTO requestDTO) {
         // Validate input parameters
         validateUserStoryInput(requestDTO);

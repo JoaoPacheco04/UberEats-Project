@@ -8,6 +8,12 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * Data Transfer Object for team response data.
+ * Contains team details, member counts, and performance metrics.
+ *
+ * @version 1.0 (2025-12-10)
+ */
 public class TeamResponse {
     private Long id;
     private String name;
@@ -36,15 +42,47 @@ public class TeamResponse {
     }
 
     // Getters
-    public Long getId() { return id; }
-    public String getName() { return name; }
-    public Integer getProjectCount() { return projectCount; }
-    public List<String> getProjectNames() { return projectNames; }
-    public Integer getMemberCount() { return memberCount; }
-    public Integer getTotalPoints() { return totalPoints; }
-    public String getScrumMaster() { return scrumMaster; }
-    public String getProductOwner() { return productOwner; }
-    public BigDecimal getCurrentProgress() { return currentProgress; }
-    public BigDecimal getPerformanceRating() { return performanceRating; }
-    public LocalDateTime getCreatedAt() { return createdAt; }
+    public Long getId() {
+        return id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public Integer getProjectCount() {
+        return projectCount;
+    }
+
+    public List<String> getProjectNames() {
+        return projectNames;
+    }
+
+    public Integer getMemberCount() {
+        return memberCount;
+    }
+
+    public Integer getTotalPoints() {
+        return totalPoints;
+    }
+
+    public String getScrumMaster() {
+        return scrumMaster;
+    }
+
+    public String getProductOwner() {
+        return productOwner;
+    }
+
+    public BigDecimal getCurrentProgress() {
+        return currentProgress;
+    }
+
+    public BigDecimal getPerformanceRating() {
+        return performanceRating;
+    }
+
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
 }

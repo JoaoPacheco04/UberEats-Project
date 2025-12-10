@@ -1,9 +1,14 @@
-// AchievementRequestDTO.java
 package com.eduscrum.upt.Ubereats.dto.request;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
+/**
+ * Data Transfer Object for creating an Achievement.
+ * Contains achievement details and validation annotations.
+ *
+ * @version 1.0 (2025-12-10)
+ */
 public class AchievementRequestDTO {
 
     @NotBlank(message = "Reason is required")
@@ -23,10 +28,11 @@ public class AchievementRequestDTO {
     private Long awardedByUserId;
 
     // Constructors
-    public AchievementRequestDTO() {}
+    public AchievementRequestDTO() {
+    }
 
     public AchievementRequestDTO(String reason, Long badgeId, Long awardedToUserId,
-                                 Long awardedToTeamId, Long projectId, Long sprintId, Long awardedByUserId) {
+            Long awardedToTeamId, Long projectId, Long sprintId, Long awardedByUserId) {
         this.reason = reason;
         this.badgeId = badgeId;
         this.awardedToUserId = awardedToUserId;
@@ -37,24 +43,59 @@ public class AchievementRequestDTO {
     }
 
     // Getters and Setters
-    public String getReason() { return reason; }
-    public void setReason(String reason) { this.reason = reason; }
+    public String getReason() {
+        return reason;
+    }
 
-    public Long getBadgeId() { return badgeId; }
-    public void setBadgeId(Long badgeId) { this.badgeId = badgeId; }
+    public void setReason(String reason) {
+        this.reason = reason;
+    }
 
-    public Long getAwardedToUserId() { return awardedToUserId; }
-    public void setAwardedToUserId(Long awardedToUserId) { this.awardedToUserId = awardedToUserId; }
+    public Long getBadgeId() {
+        return badgeId;
+    }
 
-    public Long getAwardedToTeamId() { return awardedToTeamId; }
-    public void setAwardedToTeamId(Long awardedToTeamId) { this.awardedToTeamId = awardedToTeamId; }
+    public void setBadgeId(Long badgeId) {
+        this.badgeId = badgeId;
+    }
 
-    public Long getProjectId() { return projectId; }
-    public void setProjectId(Long projectId) { this.projectId = projectId; }
+    public Long getAwardedToUserId() {
+        return awardedToUserId;
+    }
 
-    public Long getSprintId() { return sprintId; }
-    public void setSprintId(Long sprintId) { this.sprintId = sprintId; }
+    public void setAwardedToUserId(Long awardedToUserId) {
+        this.awardedToUserId = awardedToUserId;
+    }
 
-    public Long getAwardedByUserId() { return awardedByUserId; }
-    public void setAwardedByUserId(Long awardedByUserId) { this.awardedByUserId = awardedByUserId; }
+    public Long getAwardedToTeamId() {
+        return awardedToTeamId;
+    }
+
+    public void setAwardedToTeamId(Long awardedToTeamId) {
+        this.awardedToTeamId = awardedToTeamId;
+    }
+
+    public Long getProjectId() {
+        return projectId;
+    }
+
+    public void setProjectId(Long projectId) {
+        this.projectId = projectId;
+    }
+
+    public Long getSprintId() {
+        return sprintId;
+    }
+
+    public void setSprintId(Long sprintId) {
+        this.sprintId = sprintId;
+    }
+
+    public Long getAwardedByUserId() {
+        return awardedByUserId;
+    }
+
+    public void setAwardedByUserId(Long awardedByUserId) {
+        this.awardedByUserId = awardedByUserId;
+    }
 }

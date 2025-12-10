@@ -13,6 +13,13 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDate;
 import java.util.List;
 
+/**
+ * Service class for scheduled tasks in the EduScrum platform.
+ * Handles automated operations like checking for overdue sprints.
+ *
+ * @author
+ * @version 1.0 (2025-12-10)
+ */
 @Service
 public class SchedulerService {
 
@@ -20,13 +27,19 @@ public class SchedulerService {
 
     private final SprintRepository sprintRepository;
 
+    /**
+     * Constructs a new SchedulerService with required dependencies.
+     *
+     * @param sprintRepository Repository for sprint data access
+     */
     public SchedulerService(SprintRepository sprintRepository) {
         this.sprintRepository = sprintRepository;
     }
 
     /**
-     * Daily check for overdue sprints.
-     * Runs at midnight.
+     * Daily scheduled task to check for overdue sprints.
+     * Runs at midnight and logs any sprints that have passed their end date
+     * while still being in progress.
      */
     @Scheduled(cron = AppConstants.CRON_DAILY_MIDNIGHT)
     @Transactional
@@ -40,8 +53,6 @@ public class SchedulerService {
             if (sprint.getEndDate().isBefore(today)) {
                 logger.warn("Sprint overdue detected: ID={}, Name={}, EndDate={}",
                         sprint.getId(), sprint.getName(), sprint.getEndDate());
-                // Logic to automatically close or notify could go here
-                // For now, we just log it as per requirements
             }
         }
     }

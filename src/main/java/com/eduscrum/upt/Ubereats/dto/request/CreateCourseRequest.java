@@ -5,9 +5,11 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
-/*
-    * DTO for creating a new Course.
-    * Contains necessary fields and validation annotations.
+/**
+ * Data Transfer Object for creating a new Course.
+ * Contains necessary fields and validation annotations.
+ *
+ * @version 1.0 (2025-12-10)
  */
 public class CreateCourseRequest {
 
@@ -29,10 +31,11 @@ public class CreateCourseRequest {
     private String academicYear;
 
     // Constructors
-    public CreateCourseRequest() {}
+    public CreateCourseRequest() {
+    }
 
     public CreateCourseRequest(String name, String code, String description,
-                               Semester semester, String academicYear) {
+            Semester semester, String academicYear) {
         this.name = name;
         this.code = code;
         this.description = description;
@@ -41,18 +44,43 @@ public class CreateCourseRequest {
     }
 
     // Getters and Setters
-    public String getName() { return name; }
-    public void setName(String name) { this.name = name; }
+    public String getName() {
+        return name;
+    }
 
-    public String getCode() { return code; }
-    public void setCode(String code) { this.code = code; }
+    public void setName(String name) {
+        this.name = name;
+    }
 
-    public String getDescription() { return description; }
-    public void setDescription(String description) { this.description = description; }
+    public String getCode() {
+        return code;
+    }
 
-    public Semester getSemester() { return semester; }
-    public void setSemester(Semester semester) { this.semester = semester; }
+    public void setCode(String code) {
+        this.code = code;
+    }
 
-    public String getAcademicYear() { return academicYear; }
-    public void setAcademicYear(String academicYear) { this.academicYear = academicYear; }
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public Semester getSemester() {
+        return semester;
+    }
+
+    public void setSemester(Semester semester) {
+        this.semester = semester;
+    }
+
+    public String getAcademicYear() {
+        return academicYear;
+    }
+
+    public void setAcademicYear(String academicYear) {
+        this.academicYear = academicYear;
+    }
 }

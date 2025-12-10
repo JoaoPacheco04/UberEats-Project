@@ -3,8 +3,10 @@ package com.eduscrum.upt.Ubereats.dto.response;
 import com.eduscrum.upt.Ubereats.entity.enums.UserRole;
 
 /**
- * Data Transfer Object for sending login response data to frontend
- * Contains fields like JWT token and user role
+ * Data Transfer Object for sending login response data to frontend.
+ * Contains JWT token, user info, and role.
+ *
+ * @version 1.0 (2025-12-10)
  */
 public class LoginResponse {
     private String token;
@@ -16,11 +18,11 @@ public class LoginResponse {
     private String fullName;
 
     // === CONSTRUCTORS ===
-    public LoginResponse() {}
-
+    public LoginResponse() {
+    }
 
     public LoginResponse(String token, Long id, String username, String email,
-                         UserRole role, String fullName) {
+            UserRole role, String fullName) {
         this.token = token;
         this.id = id;
         this.username = username;
@@ -39,26 +41,21 @@ public class LoginResponse {
         this.token = token;
     }
 
-
     public String getType() {
         return type;
     }
-
 
     public void setType(String type) {
         this.type = type;
     }
 
-
     public Long getId() {
         return id;
     }
 
-
     public void setId(Long id) {
         this.id = id;
     }
-
 
     public String getUsername() {
         return username;
@@ -68,26 +65,21 @@ public class LoginResponse {
         this.username = username;
     }
 
-
     public String getEmail() {
         return email;
     }
-
 
     public void setEmail(String email) {
         this.email = email;
     }
 
-
     public UserRole getRole() {
         return role;
     }
 
-
     public void setRole(UserRole role) {
         this.role = role;
     }
-
 
     public String getFullName() {
         return fullName;

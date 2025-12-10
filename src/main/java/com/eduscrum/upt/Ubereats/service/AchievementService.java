@@ -17,11 +17,16 @@ import java.util.Map;
 import java.util.HashMap;
 import java.util.Objects;
 
+/**
+ * Service class for managing achievements in the EduScrum platform.
+ * Handles achievement creation, retrieval, and automatic badge awarding logic.
+ *
+ * @author
+ * @version 1.0 (2025-12-10)
+ */
 @Service
 @Transactional
 public class AchievementService {
-
-    // MIN_STORY_POINTS moved to AppConstants
 
     private final AchievementRepository achievementRepository;
     private final BadgeService badgeService;
@@ -31,6 +36,17 @@ public class AchievementService {
     private final SprintService sprintService;
     private final UserStoryService userStoryService;
 
+    /**
+     * Constructs a new AchievementService with required dependencies.
+     *
+     * @param achievementRepository Repository for achievement data access
+     * @param badgeService          Service for badge operations
+     * @param userService           Service for user operations
+     * @param teamService           Service for team operations
+     * @param projectRepository     Repository for project data access
+     * @param sprintService         Service for sprint operations
+     * @param userStoryService      Service for user story operations
+     */
     public AchievementService(AchievementRepository achievementRepository,
             BadgeService badgeService,
             UserService userService,
@@ -47,8 +63,13 @@ public class AchievementService {
         this.userStoryService = userStoryService;
     }
 
-    // === CRUD OPERATIONS ===
-
+    /**
+     * Creates a new achievement for a user or team.
+     *
+     * @param requestDTO The request containing achievement details
+     * @return The created achievement as a response DTO
+     * @throws IllegalArgumentException if validation fails
+     */
     public AchievementResponseDTO createAchievement(AchievementRequestDTO requestDTO) {
         validateAchievementRequest(requestDTO);
 

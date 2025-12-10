@@ -2,6 +2,12 @@ package com.eduscrum.upt.Ubereats.dto.request;
 
 import jakarta.validation.constraints.NotNull;
 
+/**
+ * Data Transfer Object for enrolling a student in a course.
+ * Contains course and student identifiers.
+ *
+ * @version 1.0 (2025-12-10)
+ */
 public class CourseEnrollmentRequestDTO {
 
     @NotNull(message = "Course ID is required")

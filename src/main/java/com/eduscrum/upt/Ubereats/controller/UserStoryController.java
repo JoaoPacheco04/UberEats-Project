@@ -12,6 +12,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * REST controller for managing user stories in the EduScrum platform.
+ * Provides endpoints for user story CRUD operations and status transitions.
+ *
+ * @author
+ * @version 1.0 (2025-12-10)
+ */
 @RestController
 @RequestMapping("/api/user-stories")
 @CrossOrigin(origins = "*")
@@ -19,6 +26,11 @@ public class UserStoryController {
 
     private final UserStoryService userStoryService;
 
+    /**
+     * Constructs a new UserStoryController with required dependencies.
+     *
+     * @param userStoryService Service for user story operations
+     */
     public UserStoryController(UserStoryService userStoryService) {
         this.userStoryService = userStoryService;
     }
@@ -43,13 +55,15 @@ public class UserStoryController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<UserStoryResponseDTO> updateUserStory(@PathVariable Long id, @Valid @RequestBody UserStoryRequestDTO requestDTO) {
+    public ResponseEntity<UserStoryResponseDTO> updateUserStory(@PathVariable Long id,
+            @Valid @RequestBody UserStoryRequestDTO requestDTO) {
         UserStoryResponseDTO updatedUserStory = userStoryService.updateUserStory(id, requestDTO);
         return ResponseEntity.ok(updatedUserStory);
     }
 
     @PutMapping("/{id}/assign/{assignedToId}")
-    public ResponseEntity<UserStoryResponseDTO> assignUserStory(@PathVariable Long id, @PathVariable Long assignedToId) {
+    public ResponseEntity<UserStoryResponseDTO> assignUserStory(@PathVariable Long id,
+            @PathVariable Long assignedToId) {
         UserStoryResponseDTO response = userStoryService.assignUserStory(id, assignedToId);
         return ResponseEntity.ok(response);
     }
@@ -88,7 +102,8 @@ public class UserStoryController {
         stats.put("totalStoryPoints", totalPoints != null ? totalPoints : 0);
         stats.put("completedStoryPoints", completedPoints != null ? completedPoints : 0);
         stats.put("completionPercentage", completionPercentage != null ? completionPercentage : 0.0);
-        stats.put("remainingStoryPoints", (totalPoints != null ? totalPoints : 0) - (completedPoints != null ? completedPoints : 0));
+        stats.put("remainingStoryPoints",
+                (totalPoints != null ? totalPoints : 0) - (completedPoints != null ? completedPoints : 0));
 
         return ResponseEntity.ok(stats);
     }

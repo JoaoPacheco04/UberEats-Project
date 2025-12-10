@@ -13,6 +13,13 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+/**
+ * Service class for managing badges in the EduScrum platform.
+ * Handles badge creation, updates, retrieval, and automatic badge logic.
+ *
+ * @author
+ * @version 1.0 (2025-12-10)
+ */
 @Service
 @Transactional
 public class BadgeService {
@@ -20,12 +27,24 @@ public class BadgeService {
     private final BadgeRepository badgeRepository;
     private final UserService userService;
 
+    /**
+     * Constructs a new BadgeService with required dependencies.
+     *
+     * @param badgeRepository Repository for badge data access
+     * @param userService     Service for user operations
+     */
     public BadgeService(BadgeRepository badgeRepository, UserService userService) {
         this.badgeRepository = badgeRepository;
         this.userService = userService;
     }
 
-    // === BADGE CREATION ===
+    /**
+     * Creates a new badge with validation and uniqueness checks.
+     *
+     * @param requestDTO The request containing badge details
+     * @return The created badge as a response DTO
+     * @throws IllegalArgumentException if validation fails
+     */
     public BadgeResponseDTO createBadge(BadgeRequestDTO requestDTO) {
         // Validate input parameters
         validateBadgeInput(requestDTO);
