@@ -6,7 +6,10 @@ import com.eduscrum.upt.Ubereats.entity.Course;
 import com.eduscrum.upt.Ubereats.entity.CourseEnrollment;
 import com.eduscrum.upt.Ubereats.entity.TeamMember;
 import com.eduscrum.upt.Ubereats.entity.User;
+import com.eduscrum.upt.Ubereats.entity.UserStory;
+import com.eduscrum.upt.Ubereats.entity.enums.StoryStatus;
 import com.eduscrum.upt.Ubereats.repository.UserRepository;
+import com.eduscrum.upt.Ubereats.repository.UserStoryRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -28,6 +31,7 @@ public class DashboardService {
     private final UserService userService;
     private final UserRepository userRepository;
     private final AchievementService achievementService;
+    private final UserStoryRepository userStoryRepository;
 
     /**
      * Constructs a new DashboardService with required dependencies.
@@ -38,10 +42,12 @@ public class DashboardService {
      */
     public DashboardService(UserService userService,
             UserRepository userRepository,
-            AchievementService achievementService) {
+            AchievementService achievementService,
+            UserStoryRepository userStoryRepository) {
         this.userService = userService;
         this.userRepository = userRepository;
         this.achievementService = achievementService;
+        this.userStoryRepository = userStoryRepository;
     }
 
     /**
@@ -126,6 +132,20 @@ public class DashboardService {
                 .limit(5)
                 .collect(Collectors.toList());
 
-        return new DashboardStatsDTO(globalScore, courseAverageScore, teamVelocityHistory, recentBadges);
+        // 5. Total badges count
+        Integer totalBadges = achievementService.getUserAchievements(studentId).size();
+
+        // 6. Stories completed and total story points for this user
+        List<UserStory> userStories = userStoryRepository.findByAssignedToId(studentId);
+        Integer storiesCompleted = (int) userStories.stream()
+                .filter(us -> us.getStatus() == StoryStatus.DONE)
+                .count();
+        Integer totalStoryPoints = userStories.stream()
+                .filter(us -> us.getStatus() == StoryStatus.DONE)
+                .mapToInt(us -> us.getStoryPoints() != null ? us.getStoryPoints() : 0)
+                .sum();
+
+        return new DashboardStatsDTO(globalScore, courseAverageScore, teamVelocityHistory, recentBadges,
+                storiesCompleted, totalStoryPoints, totalBadges);
     }
 }

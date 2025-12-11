@@ -1,15 +1,16 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import {
     ChevronRight,
     ChevronLeft,
-    Tag,
-    AlertCircle,
-    User
+    User,
+    UserPlus,
+    UserMinus,
+    Lock
 } from 'lucide-react';
 import './UserStoryCard.css';
 
-const UserStoryCard = ({ story, onMoveNext, onMovePrev }) => {
+const UserStoryCard = ({ story, teamMembers = [], onAssign, onUnassign, onMoveNext, onMovePrev }) => {
     const {
         id,
         title,
@@ -17,8 +18,11 @@ const UserStoryCard = ({ story, onMoveNext, onMovePrev }) => {
         storyPoints,
         priority,
         status,
-        assignedToName
+        assignedUserName,  // Fixed: was assignedToName
+        assignedToUserId   // Fixed: was assignedToId
     } = story;
+
+    const [showAssignDropdown, setShowAssignDropdown] = useState(false);
 
     const getPriorityConfig = (priority) => {
         const configs = {
@@ -31,10 +35,36 @@ const UserStoryCard = ({ story, onMoveNext, onMovePrev }) => {
     };
 
     const priorityConfig = getPriorityConfig(priority);
+    const isDone = status === 'DONE';
+
+    const handleAssignClick = (e) => {
+        e.stopPropagation();
+        console.log('Assign click - teamMembers:', teamMembers, 'isDone:', isDone);
+        setShowAssignDropdown(!showAssignDropdown);
+    };
+
+    const handleSelectMember = (e, memberId) => {
+        e.stopPropagation();
+        console.log('Selected member ID:', memberId, 'onAssign function:', !!onAssign);
+        if (onAssign) {
+            onAssign(memberId);
+        } else {
+            console.error('onAssign function is not provided!');
+        }
+        setShowAssignDropdown(false);
+    };
+
+    const handleUnassignClick = (e) => {
+        e.stopPropagation();
+        if (onUnassign) {
+            onUnassign();
+        }
+        setShowAssignDropdown(false);
+    };
 
     return (
         <motion.div
-            className="user-story-card"
+            className={`user-story-card ${isDone ? 'done' : ''}`}
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -10 }}
@@ -49,6 +79,11 @@ const UserStoryCard = ({ story, onMoveNext, onMovePrev }) => {
                 >
                     {priorityConfig.label}
                 </span>
+                {isDone && (
+                    <span className="story-locked" title="Completed - Cannot be moved back">
+                        <Lock size={12} />
+                    </span>
+                )}
             </div>
 
             {/* Content */}
@@ -61,17 +96,62 @@ const UserStoryCard = ({ story, onMoveNext, onMovePrev }) => {
 
             {/* Footer */}
             <div className="story-footer">
-                {assignedToName ? (
-                    <div className="story-assignee">
-                        <User size={14} />
-                        <span>{assignedToName}</span>
-                    </div>
-                ) : (
-                    <div className="story-assignee unassigned">
-                        <User size={14} />
-                        <span>Unassigned</span>
-                    </div>
-                )}
+                <div className="assignee-section">
+                    {assignedUserName ? (
+                        <div className="story-assignee assigned" onClick={handleAssignClick}>
+                            <User size={14} />
+                            <span>{assignedUserName}</span>
+                            {!isDone && onUnassign && (
+                                <button
+                                    className="unassign-btn"
+                                    onClick={handleUnassignClick}
+                                    title="Unassign"
+                                >
+                                    <UserMinus size={12} />
+                                </button>
+                            )}
+                        </div>
+                    ) : (
+                        <div
+                            className="story-assignee unassigned"
+                            onClick={!isDone ? handleAssignClick : undefined}
+                        >
+                            <User size={14} />
+                            <span>Unassigned</span>
+                            {!isDone && onAssign && teamMembers.length > 0 && (
+                                <button className="assign-btn" title="Assign">
+                                    <UserPlus size={12} />
+                                </button>
+                            )}
+                        </div>
+                    )}
+
+                    {/* Assignment Dropdown */}
+                    {showAssignDropdown && teamMembers.length > 0 && !isDone && (
+                        <div className="assign-dropdown" onClick={(e) => e.stopPropagation()}>
+                            <div className="assign-dropdown-header">Assign to:</div>
+                            {teamMembers.map(member => (
+                                <button
+                                    key={member.userId || member.id}
+                                    className="assign-option"
+                                    onClick={(e) => handleSelectMember(e, member.userId || member.id)}
+                                >
+                                    <User size={14} />
+                                    {member.userName || member.fullName || member.name || `User ${member.userId || member.id}`}
+                                </button>
+                            ))}
+                            {assignedToUserId && (
+                                <button
+                                    className="assign-option unassign"
+                                    onClick={handleUnassignClick}
+                                >
+                                    <UserMinus size={14} />
+                                    Remove assignment
+                                </button>
+                            )}
+                        </div>
+                    )}
+                </div>
 
                 <div className="story-actions">
                     {onMovePrev && (

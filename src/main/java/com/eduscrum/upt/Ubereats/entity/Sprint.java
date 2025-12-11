@@ -286,23 +286,43 @@ public class Sprint {
     }
 
     /**
-     * Checks if sprint can be started (PLANNED status and not before start date).
+     * Checks if sprint can be started (PLANNED status).
+     * Date restriction removed for demo flexibility.
      *
      * @return true if sprint can be started, false otherwise
      */
     public boolean canBeStarted() {
-        return status == SprintStatus.PLANNED &&
-                !LocalDate.now().isBefore(startDate);
+        return status == SprintStatus.PLANNED;
     }
 
     /**
-     * Checks if sprint can be completed (IN_PROGRESS and not before end date).
+     * Checks if sprint can be completed (IN_PROGRESS status).
+     * Date restriction removed for demo flexibility.
      *
      * @return true if sprint can be completed, false otherwise
      */
     public boolean canBeCompleted() {
-        return status == SprintStatus.IN_PROGRESS &&
-                !LocalDate.now().isBefore(endDate);
+        return status == SprintStatus.IN_PROGRESS;
+    }
+
+    /**
+     * Checks if sprint can be cancelled.
+     * Completed sprints cannot be cancelled - they are locked.
+     *
+     * @return true if sprint can be cancelled, false otherwise
+     */
+    public boolean canBeCancelled() {
+        return status == SprintStatus.PLANNED || status == SprintStatus.IN_PROGRESS;
+    }
+
+    /**
+     * Checks if sprint status can be changed.
+     * Completed and cancelled sprints are locked.
+     *
+     * @return true if status can change, false otherwise
+     */
+    public boolean canChangeStatus() {
+        return status != SprintStatus.COMPLETED && status != SprintStatus.CANCELLED;
     }
 
     /**

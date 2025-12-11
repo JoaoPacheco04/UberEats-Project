@@ -320,7 +320,7 @@ public class SprintService {
 
         if (!sprint.canBeStarted()) {
             throw new BusinessLogicException(
-                    "Sprint cannot be started. It must be in PLANNED status and start date must be reached.");
+                    "Sprint cannot be started. It must be in PLANNED status.");
         }
 
         sprint.setStatus(SprintStatus.IN_PROGRESS);
@@ -341,7 +341,7 @@ public class SprintService {
 
         if (!sprint.canBeCompleted()) {
             throw new BusinessLogicException(
-                    "Sprint cannot be completed. It must be in IN_PROGRESS status and end date must be reached.");
+                    "Sprint cannot be completed. It must be in IN_PROGRESS status.");
         }
 
         sprint.setStatus(SprintStatus.COMPLETED);
@@ -361,12 +361,20 @@ public class SprintService {
 
     /**
      * Cancels a sprint by changing its status to CANCELLED.
+     * Completed sprints cannot be cancelled (they are locked).
      *
      * @param id The ID of the sprint to cancel
      * @return The cancelled sprint as a response DTO
+     * @throws BusinessLogicException if sprint cannot be cancelled
      */
     public SprintResponseDTO cancelSprint(Long id) {
         Sprint sprint = getSprintEntity(id);
+
+        if (!sprint.canBeCancelled()) {
+            throw new BusinessLogicException(
+                    "Sprint cannot be cancelled. Completed and cancelled sprints are locked.");
+        }
+
         sprint.setStatus(SprintStatus.CANCELLED);
         Sprint updatedSprint = sprintRepository.save(sprint);
         return convertToDTO(updatedSprint);

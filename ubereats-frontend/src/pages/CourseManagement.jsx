@@ -21,7 +21,8 @@ import {
     getTeamByProject,
     createTeam,
     addMemberToTeam,
-    exportCourseGrades
+    exportCourseGrades,
+    getCurrentUser
 } from '../services/api';
 import ProjectCard from '../components/ProjectCard';
 import TeamCard from '../components/TeamCard';
@@ -47,6 +48,9 @@ const CourseManagement = () => {
     const [error, setError] = useState(null);
     const [activeTab, setActiveTab] = useState('projects');
     const [showCreateModal, setShowCreateModal] = useState(false);
+
+    // Get current user for role-based navigation
+    const currentUser = getCurrentUser();
 
     // Award Badge Modal State
     const [awardModalOpen, setAwardModalOpen] = useState(false);
@@ -238,6 +242,14 @@ const CourseManagement = () => {
         return student?.studentName || student?.name || 'Unknown';
     };
 
+    // Determine dashboard route based on user role
+    const getDashboardRoute = () => {
+        if (currentUser?.role === 'STUDENT') {
+            return '/student/dashboard';
+        }
+        return '/teacher/dashboard';
+    };
+
     const tabs = [
         { id: 'projects', label: 'Projects', icon: FolderKanban, count: projects.length },
         { id: 'students', label: 'Students', icon: Users, count: students.length },
@@ -267,7 +279,7 @@ const CourseManagement = () => {
         <div className="course-management">
             {/* Header */}
             <header className="course-header">
-                <button className="back-btn" onClick={() => navigate('/teacher/dashboard')}>
+                <button className="back-btn" onClick={() => navigate(getDashboardRoute())}>
                     <ArrowLeft size={20} />
                     <span>Back to Dashboard</span>
                 </button>

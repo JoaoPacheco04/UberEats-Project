@@ -13,7 +13,8 @@ import {
     Users,
     TrendingUp,
     LogOut,
-    Sparkles
+    Sparkles,
+    BarChart3
 } from 'lucide-react';
 import CourseCard from '../components/CourseCard';
 import CreateResourceModal from '../components/CreateResourceModal';
@@ -34,6 +35,7 @@ const TeacherDashboard = () => {
     const [studentRankings, setStudentRankings] = useState([]);
     const [teamRankings, setTeamRankings] = useState([]);
     const [rankingsLoading, setRankingsLoading] = useState(false);
+    const [selectedCourseFilter, setSelectedCourseFilter] = useState('all');
 
     // Fetch courses on mount
     useEffect(() => {
@@ -293,6 +295,16 @@ const TeacherDashboard = () => {
                                     </div>
                                 </div>
                                 <button
+                                    onClick={() => navigate('/teacher/analytics')}
+                                    className="flex items-center gap-2 px-4 py-3 rounded-xl bg-indigo-500/20 hover:bg-indigo-500/30 backdrop-blur-sm transition-all border border-indigo-400/30"
+                                >
+                                    <BarChart3 className="text-indigo-400" size={24} />
+                                    <div className="text-left">
+                                        <p className="text-indigo-100/80 text-xs">View</p>
+                                        <p className="text-base font-bold text-indigo-400">Analytics</p>
+                                    </div>
+                                </button>
+                                <button
                                     onClick={() => navigate('/teacher/badges')}
                                     className="flex items-center gap-2 px-4 py-3 rounded-xl bg-amber-500/20 hover:bg-amber-500/30 backdrop-blur-sm transition-all border border-amber-400/30"
                                 >
@@ -414,15 +426,28 @@ const TeacherDashboard = () => {
 
                     {/* Right Column - Leaderboards (1/3 width) */}
                     <div className="space-y-6">
-                        {/* Leaderboard Header */}
-                        <div className="flex items-center gap-3">
-                            <div className="flex items-center justify-center w-10 h-10 rounded-xl bg-gradient-to-br from-amber-400 to-orange-500 shadow-lg shadow-amber-500/30">
-                                <TrendingUp size={20} className="text-white" />
+                        {/* Leaderboard Header with Course Filter */}
+                        <div className="flex items-center justify-between gap-3 mb-4">
+                            <div className="flex items-center gap-3">
+                                <div className="flex items-center justify-center w-10 h-10 rounded-xl bg-gradient-to-br from-amber-400 to-orange-500 shadow-lg shadow-amber-500/30">
+                                    <TrendingUp size={20} className="text-white" />
+                                </div>
+                                <div>
+                                    <h2 className="text-xl font-bold text-slate-800">Leaderboards</h2>
+                                    <p className="text-sm text-slate-500">Top performers</p>
+                                </div>
                             </div>
-                            <div>
-                                <h2 className="text-xl font-bold text-slate-800">Leaderboards</h2>
-                                <p className="text-sm text-slate-500">Top performers</p>
-                            </div>
+                            {/* Course Filter Dropdown */}
+                            <select
+                                value={selectedCourseFilter}
+                                onChange={(e) => setSelectedCourseFilter(e.target.value)}
+                                className="px-3 py-2 rounded-xl bg-white border border-slate-200 text-sm text-slate-700 shadow-sm focus:outline-none focus:ring-2 focus:ring-violet-500 focus:border-transparent"
+                            >
+                                <option value="all">All Courses</option>
+                                {courses.map(course => (
+                                    <option key={course.id} value={course.name}>{course.name}</option>
+                                ))}
+                            </select>
                         </div>
 
                         {/* Student Rankings */}
@@ -443,28 +468,29 @@ const TeacherDashboard = () => {
                                 </div>
                             ) : studentRankings.length > 0 ? (
                                 <div className="space-y-2">
-                                    {studentRankings.slice(0, 5).map((student, index) => (
-                                        <div
-                                            key={student.id}
-                                            className="flex items-center gap-3 p-2.5 rounded-xl bg-slate-50 hover:bg-slate-100 transition-colors"
-                                        >
-                                            <div className={`flex-shrink-0 w-7 h-7 rounded-full flex items-center justify-center font-bold text-xs ${index === 0 ? 'bg-gradient-to-br from-amber-400 to-yellow-500 text-amber-900 shadow-lg shadow-amber-400/40' :
-                                                index === 1 ? 'bg-gradient-to-br from-slate-300 to-slate-400 text-slate-700' :
-                                                    index === 2 ? 'bg-gradient-to-br from-orange-300 to-orange-400 text-orange-800' :
-                                                        'bg-slate-200 text-slate-600'
-                                                }`}>
-                                                {index + 1}
+                                    {studentRankings
+                                        .slice(0, 5).map((student, index) => (
+                                            <div
+                                                key={student.id}
+                                                className="flex items-center gap-3 p-2.5 rounded-xl bg-slate-50 hover:bg-slate-100 transition-colors"
+                                            >
+                                                <div className={`flex-shrink-0 w-7 h-7 rounded-full flex items-center justify-center font-bold text-xs ${index === 0 ? 'bg-gradient-to-br from-amber-400 to-yellow-500 text-amber-900 shadow-lg shadow-amber-400/40' :
+                                                    index === 1 ? 'bg-gradient-to-br from-slate-300 to-slate-400 text-slate-700' :
+                                                        index === 2 ? 'bg-gradient-to-br from-orange-300 to-orange-400 text-orange-800' :
+                                                            'bg-slate-200 text-slate-600'
+                                                    }`}>
+                                                    {index + 1}
+                                                </div>
+                                                <div className="flex-1 min-w-0">
+                                                    <p className="font-medium text-slate-800 text-sm truncate">{student.name}</p>
+                                                    <p className="text-xs text-slate-500 truncate">{student.courseName}</p>
+                                                </div>
+                                                <div className="flex items-center gap-1 px-2 py-1 rounded-full bg-violet-100 text-violet-700 font-semibold text-xs">
+                                                    <Award size={12} />
+                                                    {student.globalScore}
+                                                </div>
                                             </div>
-                                            <div className="flex-1 min-w-0">
-                                                <p className="font-medium text-slate-800 text-sm truncate">{student.name}</p>
-                                                <p className="text-xs text-slate-500 truncate">{student.courseName}</p>
-                                            </div>
-                                            <div className="flex items-center gap-1 px-2 py-1 rounded-full bg-violet-100 text-violet-700 font-semibold text-xs">
-                                                <Award size={12} />
-                                                {student.globalScore}
-                                            </div>
-                                        </div>
-                                    ))}
+                                        ))}
                                 </div>
                             ) : (
                                 <div className="text-center py-6 text-slate-400">
@@ -492,28 +518,30 @@ const TeacherDashboard = () => {
                                 </div>
                             ) : teamRankings.length > 0 ? (
                                 <div className="space-y-2">
-                                    {teamRankings.slice(0, 5).map((team, index) => (
-                                        <div
-                                            key={team.id}
-                                            className="flex items-center gap-3 p-2.5 rounded-xl bg-slate-50 hover:bg-slate-100 transition-colors"
-                                        >
-                                            <div className={`flex-shrink-0 w-7 h-7 rounded-full flex items-center justify-center font-bold text-xs ${index === 0 ? 'bg-gradient-to-br from-amber-400 to-yellow-500 text-amber-900 shadow-lg shadow-amber-400/40' :
-                                                index === 1 ? 'bg-gradient-to-br from-slate-300 to-slate-400 text-slate-700' :
-                                                    index === 2 ? 'bg-gradient-to-br from-orange-300 to-orange-400 text-orange-800' :
-                                                        'bg-slate-200 text-slate-600'
-                                                }`}>
-                                                {index + 1}
+                                    {teamRankings
+                                        .filter(team => selectedCourseFilter === 'all' || team.courseName === selectedCourseFilter)
+                                        .slice(0, 5).map((team, index) => (
+                                            <div
+                                                key={team.id}
+                                                className="flex items-center gap-3 p-2.5 rounded-xl bg-slate-50 hover:bg-slate-100 transition-colors"
+                                            >
+                                                <div className={`flex-shrink-0 w-7 h-7 rounded-full flex items-center justify-center font-bold text-xs ${index === 0 ? 'bg-gradient-to-br from-amber-400 to-yellow-500 text-amber-900 shadow-lg shadow-amber-400/40' :
+                                                    index === 1 ? 'bg-gradient-to-br from-slate-300 to-slate-400 text-slate-700' :
+                                                        index === 2 ? 'bg-gradient-to-br from-orange-300 to-orange-400 text-orange-800' :
+                                                            'bg-slate-200 text-slate-600'
+                                                    }`}>
+                                                    {index + 1}
+                                                </div>
+                                                <div className="flex-1 min-w-0">
+                                                    <p className="font-medium text-slate-800 text-sm truncate">{team.name}</p>
+                                                    <p className="text-xs text-slate-500 truncate">{team.projectName}</p>
+                                                </div>
+                                                <div className="flex items-center gap-1 px-2 py-1 rounded-full bg-emerald-100 text-emerald-700 font-semibold text-xs">
+                                                    <Trophy size={12} />
+                                                    {team.points}
+                                                </div>
                                             </div>
-                                            <div className="flex-1 min-w-0">
-                                                <p className="font-medium text-slate-800 text-sm truncate">{team.name}</p>
-                                                <p className="text-xs text-slate-500 truncate">{team.projectName}</p>
-                                            </div>
-                                            <div className="flex items-center gap-1 px-2 py-1 rounded-full bg-emerald-100 text-emerald-700 font-semibold text-xs">
-                                                <Trophy size={12} />
-                                                {team.points}
-                                            </div>
-                                        </div>
-                                    ))}
+                                        ))}
                                 </div>
                             ) : (
                                 <div className="text-center py-6 text-slate-400">

@@ -152,6 +152,7 @@ export const getStudentDashboard = (studentId) => api.get(`/dashboard/student/${
 export const getProjectBurndown = (projectId) => api.get(`/analytics/project/${projectId}/burndown`);
 export const getSprintAnalytics = (sprintId, teamId) =>
     api.get(`/analytics?sprintId=${sprintId}&teamId=${teamId}`);
+export const getProjectAnalytics = (projectId) => api.get(`/analytics/project/${projectId}`);
 
 // 16. Export Services
 export const exportCourseGrades = (courseId) =>

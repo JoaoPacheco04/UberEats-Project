@@ -133,6 +133,16 @@
     color: #7c3aed;
 }
 
+.status-badge.in_progress {
+    background: #d1fae5;
+    color: #059669;
+}
+
+.status-badge.cancelled {
+    background: #fee2e2;
+    color: #dc2626;
+}
+
 .sprint-goal {
     font-size: 0.9rem;
     opacity: 0.85;
@@ -207,11 +217,77 @@
     box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
 }
 
+/* Sprint Controls */
+.sprint-controls {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.sprint-action-btn {
+    display: flex;
+    align-items: center;
+    gap: 0.375rem;
+    padding: 0.5rem 1rem;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 0.875rem;
+    font-weight: 500;
+    transition: all 0.2s;
+}
+
+.sprint-action-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.sprint-action-btn.start {
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+    color: white;
+}
+
+.sprint-action-btn.start:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+}
+
+.sprint-action-btn.complete {
+    background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+    color: white;
+}
+
+.sprint-action-btn.complete:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+}
+
+.sprint-action-btn.cancel {
+    background: #f1f5f9;
+    color: #64748b;
+}
+
+.sprint-action-btn.cancel:hover:not(:disabled) {
+    background: #fee2e2;
+    color: #dc2626;
+}
+
+.sprint-locked-badge {
+    display: flex;
+    align-items: center;
+    gap: 0.375rem;
+    padding: 0.5rem 1rem;
+    background: #e2e8f0;
+    color: #64748b;
+    border-radius: 8px;
+    font-size: 0.875rem;
+    font-weight: 500;
+}
+
 /* Kanban Board */
 .kanban-board {
     flex: 1;
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(4, 1fr);
     gap: 1.5rem;
     padding: 1.5rem 2rem;
     overflow-x: auto;
@@ -373,9 +449,13 @@
 /* Responsive */
 @media (max-width: 1024px) {
     .kanban-board {
-        grid-template-columns: repeat(3, 280px);
+        grid-template-columns: repeat(4, 280px);
         overflow-x: scroll;
         padding-bottom: 2rem;
+    }
+
+    .sprint-controls {
+        flex-wrap: wrap;
     }
 }
 

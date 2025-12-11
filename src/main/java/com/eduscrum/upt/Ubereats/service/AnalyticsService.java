@@ -158,6 +158,20 @@ public class AnalyticsService {
                 .collect(Collectors.toList());
     }
 
+    /**
+     * Retrieves all analytics for a project (across all sprints and teams).
+     *
+     * @param projectId The ID of the project
+     * @return List of analytics response DTOs
+     */
+    @Transactional(readOnly = true)
+    public List<AnalyticsResponseDTO> getAnalyticsByProject(Long projectId) {
+        List<Analytic> metrics = analyticRepository.findByProjectId(projectId);
+        return metrics.stream()
+                .map(this::convertToDTO)
+                .collect(Collectors.toList());
+    }
+
     private AnalyticsResponseDTO convertToDTO(Analytic analytic) {
         AnalyticsResponseDTO dto = new AnalyticsResponseDTO();
         dto.setId(analytic.getId());

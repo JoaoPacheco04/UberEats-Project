@@ -14,10 +14,15 @@ public class DashboardStatsDTO {
     private Integer globalScore;
     private Double courseAverageScore;
     private Map<String, Integer> teamVelocityHistory;
-    private List<AchievementResponseDTO> recentBadges; // Prompt said BadgeResponseDTO, but usually we list achievements
-                                                       // (Badge + Date). Prompt said "List<BadgeResponseDTO>
-                                                       // recentBadges". Using AchievementResponseDTO might be better or
-                                                       // I should use BadgeResponseDTO as requested.
+    private List<AchievementResponseDTO> recentBadges;
+
+    // Story tracking fields
+    private Integer storiesCompleted;
+    private Integer totalStoryPoints;
+    private Integer totalBadges;
+    // (Badge + Date). Prompt said "List<BadgeResponseDTO>
+    // recentBadges". Using AchievementResponseDTO might be better or
+    // I should use BadgeResponseDTO as requested.
     // Prompt said: "List<BadgeResponseDTO> recentBadges".
     // I will check if BadgeResponseDTO exists. If not, I'll use
     // AchievementResponseDTO or create one.
@@ -33,11 +38,15 @@ public class DashboardStatsDTO {
     }
 
     public DashboardStatsDTO(Integer globalScore, Double courseAverageScore, Map<String, Integer> teamVelocityHistory,
-            List<AchievementResponseDTO> recentBadges) {
+            List<AchievementResponseDTO> recentBadges, Integer storiesCompleted, Integer totalStoryPoints,
+            Integer totalBadges) {
         this.globalScore = globalScore;
         this.courseAverageScore = courseAverageScore;
         this.teamVelocityHistory = teamVelocityHistory;
         this.recentBadges = recentBadges;
+        this.storiesCompleted = storiesCompleted;
+        this.totalStoryPoints = totalStoryPoints;
+        this.totalBadges = totalBadges;
     }
 
     /** @return The global score */
@@ -71,5 +80,29 @@ public class DashboardStatsDTO {
 
     public void setRecentBadges(List<AchievementResponseDTO> recentBadges) {
         this.recentBadges = recentBadges;
+    }
+
+    public Integer getStoriesCompleted() {
+        return storiesCompleted;
+    }
+
+    public void setStoriesCompleted(Integer storiesCompleted) {
+        this.storiesCompleted = storiesCompleted;
+    }
+
+    public Integer getTotalStoryPoints() {
+        return totalStoryPoints;
+    }
+
+    public void setTotalStoryPoints(Integer totalStoryPoints) {
+        this.totalStoryPoints = totalStoryPoints;
+    }
+
+    public Integer getTotalBadges() {
+        return totalBadges;
+    }
+
+    public void setTotalBadges(Integer totalBadges) {
+        this.totalBadges = totalBadges;
     }
 }

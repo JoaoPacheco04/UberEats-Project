@@ -10,18 +10,25 @@ import {
     Loader2,
     PlayCircle,
     ListTodo,
-    Users
+    Users,
+    Lock
 } from 'lucide-react';
 import {
     getSprintById,
     getProjectById,
     getTeamByProject,
+    getTeamMembers,
     getUserStoriesBySprint,
     createUserStory,
+    assignUserStory,
+    unassignUserStory,
     moveToNextStatus,
     moveToPreviousStatus,
     getSprintStats,
-    getCurrentUser
+    getCurrentUser,
+    startSprint,
+    completeSprint,
+    cancelSprint
 } from '../services/api';
 import UserStoryCard from '../components/UserStoryCard';
 import './SprintBoard.css';
@@ -33,6 +40,7 @@ const SprintBoard = () => {
     const [sprint, setSprint] = useState(null);
     const [project, setProject] = useState(null);
     const [team, setTeam] = useState(null);
+    const [teamMembers, setTeamMembers] = useState([]);
     const [stories, setStories] = useState([]);
     const [stats, setStats] = useState(null);
     const [loading, setLoading] = useState(true);
@@ -40,6 +48,7 @@ const SprintBoard = () => {
     const [showCreateModal, setShowCreateModal] = useState(false);
     const [createError, setCreateError] = useState(null);
     const [currentUser, setCurrentUser] = useState(null);
+    const [sprintActionLoading, setSprintActionLoading] = useState(false);
 
     // Create Story Form State - includes required teamId and createdByUserId
     const [newStory, setNewStory] = useState({
@@ -74,15 +83,95 @@ const SprintBoard = () => {
             setStories(storiesRes.data || []);
             setStats(statsRes.data);
 
-            // Set team ID if team exists
+            // Set team ID and fetch team members if team exists
             if (teamRes.data?.id) {
+                console.log('Team found with ID:', teamRes.data.id);
                 setNewStory(prev => ({ ...prev, teamId: teamRes.data.id }));
+                // Fetch team members for assignment dropdown
+                try {
+                    console.log('Fetching team members for team:', teamRes.data.id);
+                    const membersRes = await getTeamMembers(teamRes.data.id);
+                    console.log('Team members API response:', membersRes);
+                    console.log('Team members data:', membersRes.data);
+                    setTeamMembers(membersRes.data || []);
+                } catch (err) {
+                    console.error('Error fetching team members:', err);
+                    setTeamMembers([]);
+                }
+            } else {
+                console.log('No team found. teamRes.data:', teamRes.data);
             }
         } catch (err) {
             console.error('Error fetching sprint data:', err);
             setError('Failed to load sprint data. Please try again.');
         } finally {
             setLoading(false);
+        }
+    };
+
+    // Assignment handlers
+    const handleAssign = async (storyId, userId) => {
+        console.log('handleAssign called with storyId:', storyId, 'userId:', userId);
+        try {
+            const response = await assignUserStory(storyId, userId);
+            console.log('Assignment response:', response);
+            console.log('Refreshing data after assignment...');
+            await fetchData();
+            console.log('Data refreshed successfully');
+        } catch (err) {
+            console.error('Error assigning story:', err);
+            console.error('Error details:', err.response?.data);
+            alert('Failed to assign user story: ' + (err.response?.data?.message || err.message));
+        }
+    };
+
+    const handleUnassign = async (storyId) => {
+        console.log('handleUnassign called with storyId:', storyId);
+        try {
+            await unassignUserStory(storyId);
+            console.log('Refreshing data after unassign...');
+            await fetchData();
+            console.log('Data refreshed successfully');
+        } catch (err) {
+            console.error('Error unassigning story:', err);
+            alert('Failed to unassign user story: ' + (err.response?.data?.message || err.message));
+        }
+    };
+
+    // Sprint control handlers
+    const handleStartSprint = async () => {
+        setSprintActionLoading(true);
+        try {
+            await startSprint(sprintId);
+            fetchData();
+        } catch (err) {
+            console.error('Error starting sprint:', err);
+        } finally {
+            setSprintActionLoading(false);
+        }
+    };
+
+    const handleCompleteSprint = async () => {
+        setSprintActionLoading(true);
+        try {
+            await completeSprint(sprintId);
+            fetchData();
+        } catch (err) {
+            console.error('Error completing sprint:', err);
+        } finally {
+            setSprintActionLoading(false);
+        }
+    };
+
+    const handleCancelSprint = async () => {
+        setSprintActionLoading(true);
+        try {
+            await cancelSprint(sprintId);
+            fetchData();
+        } catch (err) {
+            console.error('Error cancelling sprint:', err);
+        } finally {
+            setSprintActionLoading(false);
         }
     };
 
@@ -229,6 +318,47 @@ const SprintBoard = () => {
                     <Users size={16} />
                     <span>{team ? '1 team' : 'No team'}</span>
                 </div>
+
+                {/* Sprint Control Buttons */}
+                <div className="sprint-controls">
+                    {sprint?.status === 'PLANNED' && (
+                        <button
+                            className="sprint-action-btn start"
+                            onClick={handleStartSprint}
+                            disabled={sprintActionLoading}
+                        >
+                            <PlayCircle size={16} />
+                            {sprintActionLoading ? 'Starting...' : 'Start Sprint'}
+                        </button>
+                    )}
+                    {sprint?.status === 'IN_PROGRESS' && (
+                        <button
+                            className="sprint-action-btn complete"
+                            onClick={handleCompleteSprint}
+                            disabled={sprintActionLoading}
+                        >
+                            <CheckCircle2 size={16} />
+                            {sprintActionLoading ? 'Completing...' : 'Complete Sprint'}
+                        </button>
+                    )}
+                    {(sprint?.status === 'PLANNED' || sprint?.status === 'IN_PROGRESS') && (
+                        <button
+                            className="sprint-action-btn cancel"
+                            onClick={handleCancelSprint}
+                            disabled={sprintActionLoading}
+                        >
+                            <AlertCircle size={16} />
+                            Cancel
+                        </button>
+                    )}
+                    {(sprint?.status === 'COMPLETED' || sprint?.status === 'CANCELLED') && (
+                        <span className="sprint-locked-badge">
+                            <Lock size={14} />
+                            {sprint?.status === 'COMPLETED' ? 'Sprint Completed' : 'Sprint Cancelled'}
+                        </span>
+                    )}
+                </div>
+
                 {currentUser?.role === 'STUDENT' && (
                     <button
                         className="create-story-btn"
@@ -258,8 +388,11 @@ const SprintBoard = () => {
                                     <UserStoryCard
                                         key={story.id}
                                         story={story}
+                                        teamMembers={teamMembers}
+                                        onAssign={(userId) => handleAssign(story.id, userId)}
+                                        onUnassign={() => handleUnassign(story.id)}
                                         onMoveNext={column.id !== 'DONE' ? () => handleMoveNext(story.id) : null}
-                                        onMovePrev={column.id !== 'TODO' ? () => handleMovePrev(story.id) : null}
+                                        onMovePrev={column.id !== 'TODO' && column.id !== 'DONE' ? () => handleMovePrev(story.id) : null}
                                     />
                                 ))}
                             </AnimatePresence>

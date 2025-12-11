@@ -335,20 +335,21 @@ public class UserStory {
 
     /**
      * Moves user story to previous workflow status.
+     * Note: DONE stories cannot be moved back - this is enforced to preserve
+     * completion integrity.
      */
     public void moveToPreviousStatus() {
         switch (status) {
-            case DONE:
-                this.status = StoryStatus.IN_REVIEW;
-                break;
             case IN_REVIEW:
                 this.status = StoryStatus.IN_PROGRESS;
                 break;
             case IN_PROGRESS:
                 this.status = StoryStatus.TODO;
                 break;
+            case DONE:
             case TODO:
-                break;
+                // Cannot move back from DONE (locked) or TODO (already first status)
+                return;
         }
         this.updatedAt = LocalDateTime.now();
     }
@@ -382,11 +383,12 @@ public class UserStory {
 
     /**
      * Checks if user story can be moved to previous status.
+     * DONE stories cannot be moved back to preserve completion integrity.
      *
-     * @return true if not TODO, false otherwise
+     * @return true if not TODO and not DONE, false otherwise
      */
     public boolean canMoveToPreviousStatus() {
-        return status != StoryStatus.TODO;
+        return status != StoryStatus.TODO && status != StoryStatus.DONE;
     }
 
     /**

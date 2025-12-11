@@ -66,6 +66,18 @@ public class AnalyticsController {
     }
 
     /**
+     * Gets all analytics for a project (all sprints, all teams).
+     *
+     * @param projectId The ID of the project
+     * @return ResponseEntity containing the list of analytics
+     */
+    @GetMapping("/project/{projectId}")
+    public ResponseEntity<List<AnalyticsResponseDTO>> getProjectAnalytics(@PathVariable Long projectId) {
+        List<AnalyticsResponseDTO> analytics = analyticsService.getAnalyticsByProject(projectId);
+        return ResponseEntity.ok(analytics);
+    }
+
+    /**
      * Gets project burndown data.
      *
      * @param projectId The ID of the project

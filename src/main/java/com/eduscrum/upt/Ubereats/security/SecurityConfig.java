@@ -71,7 +71,7 @@ public class SecurityConfig {
                                                 // 3. Teacher-only access for management tasks
                                                 .requestMatchers(HttpMethod.POST, "/api/courses/**", "/api/projects/**",
                                                                 "/api/sprints/**",
-                                                                "/api/teams/**", "/api/enrollments")
+                                                                "/api/teams/**")
                                                 .hasAuthority("ROLE_TEACHER")
                                                 .requestMatchers(HttpMethod.PUT, "/api/courses/**", "/api/projects/**",
                                                                 "/api/sprints/**",
@@ -86,7 +86,11 @@ public class SecurityConfig {
                                                 .requestMatchers(HttpMethod.POST, "/api/achievements")
                                                 .hasAuthority("ROLE_TEACHER")
 
-                                                // 4. Student-only access
+                                                // 4. Enrollment - allow both teachers and students
+                                                .requestMatchers(HttpMethod.POST, "/api/enrollments")
+                                                .hasAnyAuthority("ROLE_TEACHER", "ROLE_STUDENT")
+
+                                                // 5. Student-only access
                                                 .requestMatchers(HttpMethod.POST, "/api/progress-metrics")
                                                 .hasAuthority("ROLE_STUDENT")
 

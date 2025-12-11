@@ -49,4 +49,13 @@ public interface AnalyticRepository extends JpaRepository<Analytic, Long> {
      * @return List of analytics
      */
     List<Analytic> findByTeamIdAndSprintProjectId(@Param("teamId") Long teamId, @Param("projectId") Long projectId);
+
+    /**
+     * Finds all analytics for a project (all sprints, all teams).
+     *
+     * @param projectId The project ID
+     * @return List of analytics for the project
+     */
+    @Query("SELECT a FROM Analytic a WHERE a.sprint.project.id = :projectId ORDER BY a.sprint.id, a.recordedDate ASC")
+    List<Analytic> findByProjectId(@Param("projectId") Long projectId);
 }

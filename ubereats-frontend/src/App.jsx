@@ -9,6 +9,7 @@ import ProjectDetail from './pages/ProjectDetail';
 import SprintBoard from './pages/SprintBoard';
 import TeamDetail from './pages/TeamDetail';
 import BadgeManagement from './pages/BadgeManagement';
+import TeacherAnalytics from './pages/TeacherAnalytics';
 
 function App() {
   return (
@@ -24,6 +25,7 @@ function App() {
         <Route path="/teacher/projects/:projectId/sprints/:sprintId" element={<SprintBoard />} />
         <Route path="/teacher/teams/:teamId" element={<TeamDetail />} />
         <Route path="/teacher/badges" element={<BadgeManagement />} />
+        <Route path="/teacher/analytics" element={<TeacherAnalytics />} />
         {/* Student Routes */}
         <Route path="/student/dashboard" element={<StudentDashboard />} />
         <Route path="/student/courses/:courseId" element={<CourseManagement />} />
