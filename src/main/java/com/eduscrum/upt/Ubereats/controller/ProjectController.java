@@ -57,12 +57,21 @@ public class ProjectController {
         return ResponseEntity.ok(projects);
     }
 
+<<<<<<< HEAD
     /**
      * Gets a project by its ID.
      *
      * @param id The ID of the project
      * @return ResponseEntity containing the project
      */
+=======
+    @GetMapping("/course/{courseId}")
+    public ResponseEntity<List<ProjectResponse>> getByCourse(@PathVariable Long courseId) {
+        List<ProjectResponse> projects = projectService.getProjectsByCourse(courseId);
+        return ResponseEntity.ok(projects);
+    }
+
+>>>>>>> Yesh_Branch
     @GetMapping("/{id}")
     public ResponseEntity<ProjectResponse> getById(@PathVariable Long id) {
         ProjectResponse project = projectService.getProjectById(id);

@@ -218,8 +218,15 @@ public class Course {
         if (projects.isEmpty())
             return 0.0;
 
-        double totalScore = projects.stream()
-                .flatMap(project -> project.getTeams().stream())
+        List<Team> teamsWithProjects = projects.stream()
+                .map(Project::getTeam)
+                .filter(team -> team != null)
+                .collect(Collectors.toList());
+
+        if (teamsWithProjects.isEmpty())
+            return 0.0;
+
+        double totalScore = teamsWithProjects.stream()
                 .mapToDouble(team -> {
                     // Calculate team score based on achievements and performance
                     int teamPoints = team.getTeamAchievements().stream()
@@ -230,11 +237,7 @@ public class Course {
                 })
                 .sum();
 
-        long teamCount = projects.stream()
-                .flatMap(project -> project.getTeams().stream())
-                .count();
-
-        return teamCount > 0 ? totalScore / teamCount : 0.0;
+        return totalScore / teamsWithProjects.size();
     }
 
     /**

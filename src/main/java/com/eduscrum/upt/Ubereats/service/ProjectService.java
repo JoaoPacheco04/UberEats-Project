@@ -82,6 +82,7 @@ public class ProjectService {
                 .collect(Collectors.toList());
     }
 
+<<<<<<< HEAD
     /**
      * Retrieves a project by its ID.
      *
@@ -89,6 +90,15 @@ public class ProjectService {
      * @return The project as a response DTO
      * @throws ResourceNotFoundException if the project is not found or is archived
      */
+=======
+    public List<ProjectResponse> getProjectsByCourse(Long courseId) {
+        // Return only non-archived projects for the given course
+        return projectRepository.findByCourseIdAndStatusNot(courseId, ProjectStatus.ARCHIVED).stream()
+                .map(this::mapToResponse)
+                .collect(Collectors.toList());
+    }
+
+>>>>>>> Yesh_Branch
     public ProjectResponse getProjectById(Long id) {
         Project project = projectRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Project not found: " + id));
@@ -158,8 +168,10 @@ public class ProjectService {
         project.setStatus(ProjectStatus.COMPLETED);
         Project updatedProject = projectRepository.save(project);
 
-        // Close all team memberships
-        project.getTeams().forEach(team -> teamService.closeTeamMemberships(team.getId()));
+        // Close team memberships if team is assigned
+        if (project.getTeam() != null) {
+            teamService.closeTeamMemberships(project.getTeam().getId());
+        }
 
         // Trigger automatic badge checks for project completion
         achievementService.checkAutomaticBadgesOnProjectCompletion(id);
@@ -184,6 +196,8 @@ public class ProjectService {
                 p.getCreatedAt(),
                 p.getUpdatedAt(),
                 p.getCourse().getId(),
-                p.getCourse().getName());
+                p.getCourse().getName(),
+                p.getTeam() != null ? p.getTeam().getId() : null,
+                p.getTeam() != null ? p.getTeam().getName() : null);
     }
 }

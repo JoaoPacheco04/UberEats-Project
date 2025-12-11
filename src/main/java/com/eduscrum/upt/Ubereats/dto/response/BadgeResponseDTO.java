@@ -1,6 +1,7 @@
 package com.eduscrum.upt.Ubereats.dto.response;
 
 import com.eduscrum.upt.Ubereats.entity.enums.BadgeType;
+import com.eduscrum.upt.Ubereats.entity.enums.RecipientType;
 import java.time.LocalDateTime;
 
 /**
@@ -16,6 +17,7 @@ public class BadgeResponseDTO {
     private String description;
     private Integer points;
     private BadgeType badgeType;
+    private RecipientType recipientType;
     private String triggerCondition;
     private String icon;
     private String color;
@@ -28,7 +30,11 @@ public class BadgeResponseDTO {
     private Long createdByUserId;
     private String createdByName;
 
+<<<<<<< HEAD
     /** Default constructor. */
+=======
+    // Constructors
+>>>>>>> Yesh_Branch
     public BadgeResponseDTO() {
     }
 
@@ -53,7 +59,11 @@ public class BadgeResponseDTO {
         this.createdByName = createdByName;
     }
 
+<<<<<<< HEAD
     /** @return The badge ID */
+=======
+    // Getters and Setters
+>>>>>>> Yesh_Branch
     public Long getId() {
         return id;
     }
@@ -94,6 +104,7 @@ public class BadgeResponseDTO {
         this.badgeType = badgeType;
     }
 
+<<<<<<< HEAD
     public String getTriggerCondition() {
         return triggerCondition;
     }
@@ -106,6 +117,28 @@ public class BadgeResponseDTO {
         return icon;
     }
 
+=======
+    public RecipientType getRecipientType() {
+        return recipientType;
+    }
+
+    public void setRecipientType(RecipientType recipientType) {
+        this.recipientType = recipientType;
+    }
+
+    public String getTriggerCondition() {
+        return triggerCondition;
+    }
+
+    public void setTriggerCondition(String triggerCondition) {
+        this.triggerCondition = triggerCondition;
+    }
+
+    public String getIcon() {
+        return icon;
+    }
+
+>>>>>>> Yesh_Branch
     public void setIcon(String icon) {
         this.icon = icon;
     }

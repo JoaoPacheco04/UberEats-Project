@@ -393,11 +393,16 @@ public class AchievementService {
     /**
      * Check for and awards automatic team badges when a sprint is completed.
      * (Sprint Master)
+     * FIXED: Now checks per-team completion, not sprint-level completion.
+     * A team only gets the badge if THEY completed 100% of THEIR story points.
      */
     public void checkAutomaticTeamBadgesOnSprintCompletion(Long sprintId) {
         Sprint sprint = sprintService.getSprintEntity(sprintId);
         Long projectId = sprint.getProject().getId();
-        List<Team> teams = sprint.getProject().getTeams();
+        Team team = sprint.getProject().getTeam();
+
+        if (team == null)
+            return;
 
         Badge sprintMasterBadge = badgeService.getBadgeByName("Sprint Master")
                 .map(dto -> badgeService.getBadgeEntity(dto.getId()))
@@ -407,23 +412,23 @@ public class AchievementService {
             return;
         }
 
-        for (Team team : teams) {
-            Long teamId = team.getId();
-            Integer totalPoints = userStoryService.getTotalStoryPointsBySprint(sprintId);
-            Integer completedPoints = userStoryService.getCompletedStoryPointsBySprint(sprintId);
+        Long teamId = team.getId();
+        // FIXED: Use per-team methods instead of sprint-level methods
+        Integer totalPoints = userStoryService.getTotalStoryPointsBySprintAndTeam(sprintId, teamId);
+        Integer completedPoints = userStoryService.getCompletedStoryPointsBySprintAndTeam(sprintId, teamId);
 
-            if (totalPoints > 0 && completedPoints.equals(totalPoints)) {
-                AchievementRequestDTO request = new AchievementRequestDTO(
-                        "Concluded 100% of planned Story Points for Sprint " + sprint.getSprintNumber(),
-                        sprintMasterBadge.getId(), null, teamId, projectId, sprintId, null);
+        // Award badge only if team has story points AND completed 100% of them
+        if (totalPoints > 0 && completedPoints.equals(totalPoints)) {
+            AchievementRequestDTO request = new AchievementRequestDTO(
+                    "Concluded 100% of planned Story Points for Sprint " + sprint.getSprintNumber(),
+                    sprintMasterBadge.getId(), null, teamId, projectId, sprintId, null);
 
-                try {
-                    createAchievement(request);
-                } catch (IllegalArgumentException e) {
-                    if (!e.getMessage().contains("already has this badge")) {
-                        System.err.println(
-                                "Error awarding Sprint Master to Team " + team.getName() + ": " + e.getMessage());
-                    }
+            try {
+                createAchievement(request);
+            } catch (IllegalArgumentException e) {
+                if (!e.getMessage().contains("already has this badge")) {
+                    System.err.println(
+                            "Error awarding Sprint Master to Team " + team.getName() + ": " + e.getMessage());
                 }
             }
         }
@@ -463,23 +468,21 @@ public class AchievementService {
         if (highImpactDevBadge == null || !highImpactDevBadge.isAutomatic())
             return;
 
-        List<Team> teams = project.getTeams();
-        if (teams.isEmpty())
+        Team team = project.getTeam();
+        if (team == null)
             return;
 
         Map<Long, Integer> studentImpactScores = new HashMap<>();
         Integer maxScore = 0;
 
-        for (Team team : teams) {
-            for (TeamMember member : team.getActiveMembers()) {
-                Long userId = member.getUser().getId();
-                // Usa a query implementada no UserStoryRepository
-                Integer score = userStoryService.sumHighPriorityCompletedStoryPointsByProject(userId, projectId);
+        for (TeamMember member : team.getActiveMembers()) {
+            Long userId = member.getUser().getId();
+            // Usa a query implementada no UserStoryRepository
+            Integer score = userStoryService.sumHighPriorityCompletedStoryPointsByProject(userId, projectId);
 
-                studentImpactScores.put(userId, score);
-                if (score > maxScore) {
-                    maxScore = score;
-                }
+            studentImpactScores.put(userId, score);
+            if (score > maxScore) {
+                maxScore = score;
             }
         }
 
@@ -529,13 +532,12 @@ public class AchievementService {
         if (consistentContributorBadge == null || !consistentContributorBadge.isAutomatic())
             return;
 
-        List<Team> teams = project.getTeams();
-        if (teams.isEmpty())
+        Team team = project.getTeam();
+        if (team == null)
             return;
 
-        // Collect all unique active students in the project
-        List<User> students = teams.stream()
-                .flatMap(team -> team.getActiveMembers().stream())
+        // Collect all unique active students in the project from the single team
+        List<User> students = team.getActiveMembers().stream()
                 .map(TeamMember::getUser)
                 .filter(Objects::nonNull) // Ensure user is not null
                 .distinct()
@@ -614,21 +616,20 @@ public class AchievementService {
         boolean allSprintsOnTime = sprintService.checkIfAllSprintsInProjectCompletedOnTime(projectId);
 
         if (allSprintsOnTime) {
-            for (Team team : project.getTeams()) {
-                if (achievementRepository.existsByTeamIdAndBadgeId(team.getId(), onTimeLegendBadge.getId())) {
-                    continue;
-                }
+            Team team = project.getTeam();
+            if (team != null) {
+                if (!achievementRepository.existsByTeamIdAndBadgeId(team.getId(), onTimeLegendBadge.getId())) {
+                    AchievementRequestDTO request = new AchievementRequestDTO(
+                            "All project sprints were completed on or before the deadline.",
+                            onTimeLegendBadge.getId(), null, team.getId(), projectId, null, null);
 
-                AchievementRequestDTO request = new AchievementRequestDTO(
-                        "All project sprints were completed on or before the deadline.",
-                        onTimeLegendBadge.getId(), null, team.getId(), projectId, null, null);
-
-                try {
-                    createAchievement(request);
-                } catch (IllegalArgumentException e) {
-                    if (!e.getMessage().contains("already has this badge")) {
-                        System.err.println(
-                                "Error awarding On-Time Legend to Team " + team.getName() + ": " + e.getMessage());
+                    try {
+                        createAchievement(request);
+                    } catch (IllegalArgumentException e) {
+                        if (!e.getMessage().contains("already has this badge")) {
+                            System.err.println(
+                                    "Error awarding On-Time Legend to Team " + team.getName() + ": " + e.getMessage());
+                        }
                     }
                 }
             }
@@ -651,28 +652,28 @@ public class AchievementService {
             return;
         }
 
-        for (Team team : project.getTeams()) {
+        Team team = project.getTeam();
+        if (team != null) {
             Long teamId = team.getId();
 
-            if (achievementRepository.existsByTeamIdAndBadgeId(teamId, projectMultiplierBadge.getId())) {
-                continue;
-            }
+            if (!achievementRepository.existsByTeamIdAndBadgeId(teamId, projectMultiplierBadge.getId())) {
+                // Usa o método implementado no TeamService
+                Long completedProjectsCount = teamService.countCompletedProjectsByTeamInCourse(teamId, courseId);
 
-            // Usa o método implementado no TeamService
-            Long completedProjectsCount = teamService.countCompletedProjectsByTeamInCourse(teamId, courseId);
+                if (completedProjectsCount >= MIN_PROJECTS_REQUIRED) {
 
-            if (completedProjectsCount >= MIN_PROJECTS_REQUIRED) {
+                    AchievementRequestDTO request = new AchievementRequestDTO(
+                            "Team successfully completed " + completedProjectsCount + " projects in the course.",
+                            projectMultiplierBadge.getId(), null, teamId, projectId, null, null);
 
-                AchievementRequestDTO request = new AchievementRequestDTO(
-                        "Team successfully completed " + completedProjectsCount + " projects in the course.",
-                        projectMultiplierBadge.getId(), null, teamId, projectId, null, null);
-
-                try {
-                    createAchievement(request);
-                } catch (IllegalArgumentException e) {
-                    if (!e.getMessage().contains("already has this badge")) {
-                        System.err.println(
-                                "Error awarding Project Multiplier to Team " + team.getName() + ": " + e.getMessage());
+                    try {
+                        createAchievement(request);
+                    } catch (IllegalArgumentException e) {
+                        if (!e.getMessage().contains("already has this badge")) {
+                            System.err.println(
+                                    "Error awarding Project Multiplier to Team " + team.getName() + ": "
+                                            + e.getMessage());
+                        }
                     }
                 }
             }

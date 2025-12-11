@@ -25,6 +25,7 @@ public interface CourseEnrollmentRepository extends JpaRepository<CourseEnrollme
      */
     List<CourseEnrollment> findByStudentId(Long studentId);
 
+<<<<<<< HEAD
     /**
      * Finds enrollment by course and student.
      *
@@ -32,6 +33,12 @@ public interface CourseEnrollmentRepository extends JpaRepository<CourseEnrollme
      * @param studentId The student ID
      * @return Optional containing the enrollment
      */
+=======
+    // Find all enrollments for a specific course
+    List<CourseEnrollment> findByCourseId(Long courseId);
+
+    // Find enrollment by course and student
+>>>>>>> Yesh_Branch
     Optional<CourseEnrollment> findByCourseIdAndStudentId(Long courseId, Long studentId);
 
     /**

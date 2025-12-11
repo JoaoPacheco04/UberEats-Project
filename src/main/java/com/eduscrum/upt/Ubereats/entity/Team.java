@@ -42,8 +42,7 @@ public class Team {
     private LocalDateTime updatedAt;
 
     // === RELATIONS ===
-    @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(name = "team_projects", joinColumns = @JoinColumn(name = "team_id"), inverseJoinColumns = @JoinColumn(name = "project_id"))
+    @OneToMany(mappedBy = "team", fetch = FetchType.LAZY)
     private List<Project> projects = new ArrayList<>();
 
     @OneToMany(mappedBy = "team", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
@@ -138,7 +137,7 @@ public class Team {
     public void addProject(Project project) {
         if (!this.projects.contains(project)) {
             this.projects.add(project);
-            project.getTeams().add(this);
+            project.setTeam(this);
         }
     }
 

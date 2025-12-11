@@ -58,4 +58,14 @@ public class CourseEnrollmentController {
         List<CourseEnrollmentResponseDTO> enrollments = enrollmentService.getStudentEnrollments(studentId);
         return ResponseEntity.ok(enrollments);
     }
+<<<<<<< HEAD
 }
+=======
+
+    @GetMapping("/course/{courseId}")
+    public ResponseEntity<List<CourseEnrollmentResponseDTO>> getCourseEnrollments(@PathVariable Long courseId) {
+        List<CourseEnrollmentResponseDTO> enrollments = enrollmentService.getCourseEnrollments(courseId);
+        return ResponseEntity.ok(enrollments);
+    }
+}
+>>>>>>> Yesh_Branch

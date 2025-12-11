@@ -58,6 +58,7 @@ public class UserStoryController {
         return ResponseEntity.ok(userStories);
     }
 
+<<<<<<< HEAD
     /**
      * Retrieves a user story by its ID.
      *
@@ -65,6 +66,14 @@ public class UserStoryController {
      * @return ResponseEntity containing the user story
      * @throws IllegalArgumentException if user story not found
      */
+=======
+    @GetMapping("/sprint/{sprintId}")
+    public ResponseEntity<List<UserStoryResponseDTO>> getUserStoriesBySprint(@PathVariable Long sprintId) {
+        List<UserStoryResponseDTO> userStories = userStoryService.getUserStoriesBySprint(sprintId);
+        return ResponseEntity.ok(userStories);
+    }
+
+>>>>>>> Yesh_Branch
     @GetMapping("/{id}")
     public ResponseEntity<UserStoryResponseDTO> getUserStoryById(@PathVariable Long id) {
         UserStoryResponseDTO userStory = userStoryService.getUserStoryById(id)

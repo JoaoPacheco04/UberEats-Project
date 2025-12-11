@@ -541,7 +541,27 @@ public class UserStoryService {
         return userStoryRepository.sumHighPriorityCompletedStoryPointsByProject(userId, projectId);
     }
 
+<<<<<<< HEAD
     // region UTILITY METHODS
+=======
+    /**
+     * Gets total story points for a specific team in a sprint
+     */
+    @Transactional(readOnly = true)
+    public Integer getTotalStoryPointsBySprintAndTeam(Long sprintId, Long teamId) {
+        return userStoryRepository.sumStoryPointsBySprintIdAndTeamId(sprintId, teamId);
+    }
+
+    /**
+     * Gets completed story points for a specific team in a sprint
+     */
+    @Transactional(readOnly = true)
+    public Integer getCompletedStoryPointsBySprintAndTeam(Long sprintId, Long teamId) {
+        return userStoryRepository.sumCompletedStoryPointsBySprintIdAndTeamId(sprintId, teamId);
+    }
+
+    // === UTILITY METHODS ===
+>>>>>>> Yesh_Branch
 
     private void updateProjectProgress(Long projectId) {
         com.eduscrum.upt.Ubereats.entity.Project project = projectRepository.findById(projectId)

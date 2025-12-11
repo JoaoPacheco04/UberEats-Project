@@ -69,8 +69,9 @@ public class Project {
     @JoinColumn(name = "course_id", nullable = false)
     private Course course;
 
-    @ManyToMany(mappedBy = "projects", fetch = FetchType.LAZY)
-    private List<Team> teams = new ArrayList<>();
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "team_id")
+    private Team team;
 
     @OneToMany(mappedBy = "project", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Sprint> sprints = new ArrayList<>();
@@ -196,12 +197,12 @@ public class Project {
         this.course = course;
     }
 
-    public List<Team> getTeams() {
-        return teams;
+    public Team getTeam() {
+        return team;
     }
 
-    public void setTeams(List<Team> teams) {
-        this.teams = teams;
+    public void setTeam(Team team) {
+        this.team = team;
     }
 
     public List<Sprint> getSprints() {
@@ -223,12 +224,16 @@ public class Project {
     // === BUSINESS METHODS ===
 
     /**
+<<<<<<< HEAD
      * Gets the number of teams in this project.
      *
      * @return The count of teams
+=======
+     * Check if project has a team assigned
+>>>>>>> Yesh_Branch
      */
-    public Integer getTeamCount() {
-        return teams.size();
+    public boolean hasTeam() {
+        return team != null;
     }
 
     /**
@@ -314,9 +319,9 @@ public class Project {
      * @return The total count of active team members across all teams
      */
     public Integer getTotalStudents() {
-        return teams.stream()
-                .mapToInt(team -> team.getActiveMembers().size())
-                .sum();
+        if (team == null)
+            return 0;
+        return team.getActiveMembers().size();
     }
 
     /**
@@ -348,14 +353,19 @@ public class Project {
     }
 
     /**
+<<<<<<< HEAD
      * Calculates average team score across all teams.
      *
      * @return The average score as BigDecimal, or ZERO if no teams
+=======
+     * Get team score for this project's team
+>>>>>>> Yesh_Branch
      */
-    public BigDecimal getAverageTeamScore() {
-        if (teams.isEmpty())
+    public BigDecimal getTeamScore() {
+        if (team == null)
             return BigDecimal.ZERO;
 
+<<<<<<< HEAD
         BigDecimal totalScore = teams.stream()
                 .map(team -> {
                     int teamPoints = team.getTeamAchievements().stream()
@@ -366,6 +376,13 @@ public class Project {
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
 
         return totalScore.divide(new BigDecimal(teams.size()), 2, RoundingMode.HALF_UP);
+=======
+        // Calculate team score based on achievements
+        int teamPoints = team.getTeamAchievements().stream()
+                .mapToInt(achievement -> achievement.getBadge().getPoints())
+                .sum();
+        return new BigDecimal(teamPoints);
+>>>>>>> Yesh_Branch
     }
 
     /**

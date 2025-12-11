@@ -5,10 +5,12 @@ import com.eduscrum.upt.Ubereats.dto.response.BadgeResponseDTO;
 import com.eduscrum.upt.Ubereats.entity.Badge;
 import com.eduscrum.upt.Ubereats.entity.User;
 import com.eduscrum.upt.Ubereats.entity.enums.BadgeType;
+import com.eduscrum.upt.Ubereats.entity.enums.RecipientType;
 import com.eduscrum.upt.Ubereats.repository.BadgeRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -139,6 +141,10 @@ public class BadgeService {
             badge.setColor(requestDTO.getColor());
         }
 
+        if (requestDTO.getRecipientType() != null) {
+            badge.setRecipientType(requestDTO.getRecipientType());
+        }
+
         return badge;
     }
 
@@ -216,6 +222,23 @@ public class BadgeService {
                 .collect(Collectors.toList());
     }
 
+<<<<<<< HEAD
+=======
+    /**
+     * Finds active badges by recipient type (INDIVIDUAL or TEAM)
+     * Returns badges matching the specific type OR badges marked as BOTH
+     */
+    @Transactional(readOnly = true)
+    public List<BadgeResponseDTO> getActiveBadgesByRecipientType(RecipientType recipientType) {
+        List<RecipientType> types = Arrays.asList(recipientType, RecipientType.BOTH);
+        return badgeRepository.findByIsActiveTrueAndRecipientTypeIn(types).stream()
+                .map(this::convertToDTO)
+                .collect(Collectors.toList());
+    }
+
+    // === BADGE EXISTENCE CHECKS ===
+
+>>>>>>> Yesh_Branch
     /**
      * Checks if a badge with the given name exists.
      *
@@ -264,6 +287,7 @@ public class BadgeService {
         badge.setTriggerCondition(requestDTO.getTriggerCondition());
         badge.setIcon(requestDTO.getIcon());
         badge.setColor(requestDTO.getColor());
+        badge.setRecipientType(requestDTO.getRecipientType());
 
         // Update createdBy if different
         if (!badge.getCreatedBy().getId().equals(requestDTO.getCreatedByUserId())) {
@@ -371,6 +395,7 @@ public class BadgeService {
         dto.setDescription(badge.getDescription());
         dto.setPoints(badge.getPoints());
         dto.setBadgeType(badge.getBadgeType());
+        dto.setRecipientType(badge.getRecipientType());
         dto.setTriggerCondition(badge.getTriggerCondition());
         dto.setIcon(badge.getIcon());
         dto.setColor(badge.getColor());

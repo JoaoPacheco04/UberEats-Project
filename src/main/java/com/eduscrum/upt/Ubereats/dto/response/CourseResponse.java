@@ -2,6 +2,7 @@ package com.eduscrum.upt.Ubereats.dto.response;
 
 import com.eduscrum.upt.Ubereats.entity.enums.Semester;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.time.LocalDateTime;
 
@@ -21,6 +22,8 @@ public class CourseResponse {
     private String description;
     private Semester semester;
     private String academicYear;
+
+    @JsonProperty("isActive")
     private Boolean isActive;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
@@ -34,7 +37,11 @@ public class CourseResponse {
     private Integer projectCount;
     private Double averageTeamScore;
 
+<<<<<<< HEAD
     /** Default constructor. */
+=======
+    // Constructors
+>>>>>>> Yesh_Branch
     public CourseResponse() {
     }
 

@@ -7,6 +7,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Repository interface for Team entity.
@@ -18,6 +19,7 @@ import java.util.List;
 @Repository
 public interface TeamRepository extends JpaRepository<Team, Long> {
 
+<<<<<<< HEAD
     /**
      * Finds teams by project ID.
      *
@@ -25,6 +27,11 @@ public interface TeamRepository extends JpaRepository<Team, Long> {
      * @return List of teams in the project
      */
     List<Team> findByProjects_Id(Long projectId);
+=======
+    // Find team assigned to a specific project (single team per project)
+    @Query("SELECT t FROM Team t JOIN t.projects p WHERE p.id = :projectId")
+    Optional<Team> findByProjectId(@Param("projectId") Long projectId);
+>>>>>>> Yesh_Branch
 
     /**
      * Checks if a team with the given name exists.
