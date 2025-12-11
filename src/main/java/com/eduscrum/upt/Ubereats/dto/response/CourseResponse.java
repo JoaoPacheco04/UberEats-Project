@@ -37,11 +37,7 @@ public class CourseResponse {
     private Integer projectCount;
     private Double averageTeamScore;
 
-<<<<<<< HEAD
-    /** Default constructor. */
-=======
     // Constructors
->>>>>>> Yesh_Branch
     public CourseResponse() {
     }
 

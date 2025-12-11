@@ -82,15 +82,6 @@ public class ProjectService {
                 .collect(Collectors.toList());
     }
 
-<<<<<<< HEAD
-    /**
-     * Retrieves a project by its ID.
-     *
-     * @param id The ID of the project to retrieve
-     * @return The project as a response DTO
-     * @throws ResourceNotFoundException if the project is not found or is archived
-     */
-=======
     public List<ProjectResponse> getProjectsByCourse(Long courseId) {
         // Return only non-archived projects for the given course
         return projectRepository.findByCourseIdAndStatusNot(courseId, ProjectStatus.ARCHIVED).stream()
@@ -98,7 +89,13 @@ public class ProjectService {
                 .collect(Collectors.toList());
     }
 
->>>>>>> Yesh_Branch
+    /**
+     * Retrieves a project by its ID.
+     *
+     * @param id The ID of the project to retrieve
+     * @return The project as a response DTO
+     * @throws ResourceNotFoundException if the project is not found or is archived
+     */
     public ProjectResponse getProjectById(Long id) {
         Project project = projectRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Project not found: " + id));

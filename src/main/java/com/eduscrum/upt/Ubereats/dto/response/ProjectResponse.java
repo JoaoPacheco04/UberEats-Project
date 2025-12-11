@@ -29,10 +29,6 @@ public class ProjectResponse {
     private Long teamId;
     private String teamName;
 
-<<<<<<< HEAD
-    /** Default constructor. */
-=======
->>>>>>> Yesh_Branch
     public ProjectResponse() {
     }
 
@@ -40,12 +36,8 @@ public class ProjectResponse {
             LocalDate startDate, LocalDate endDate,
             ProjectStatus status,
             LocalDateTime createdAt, LocalDateTime updatedAt,
-<<<<<<< HEAD
-            Long courseId, String courseName) {
-=======
             Long courseId, String courseName,
             Long teamId, String teamName) {
->>>>>>> Yesh_Branch
         this.id = id;
         this.name = name;
         this.description = description;
@@ -60,90 +52,47 @@ public class ProjectResponse {
         this.teamName = teamName;
     }
 
-<<<<<<< HEAD
-    /** @return The project ID */
-=======
     // === GETTERS & SETTERS ===
->>>>>>> Yesh_Branch
     public Long getId() {
         return id;
     }
 
-<<<<<<< HEAD
-    /** @return The project name */
-=======
->>>>>>> Yesh_Branch
     public String getName() {
         return name;
     }
 
-<<<<<<< HEAD
-    /** @return The description */
-=======
->>>>>>> Yesh_Branch
     public String getDescription() {
         return description;
     }
 
-<<<<<<< HEAD
-    /** @return The start date */
-=======
->>>>>>> Yesh_Branch
     public LocalDate getStartDate() {
         return startDate;
     }
 
-<<<<<<< HEAD
-    /** @return The end date */
-=======
->>>>>>> Yesh_Branch
     public LocalDate getEndDate() {
         return endDate;
     }
 
-<<<<<<< HEAD
-    /** @return The project status */
-=======
->>>>>>> Yesh_Branch
     public ProjectStatus getStatus() {
         return status;
     }
 
-<<<<<<< HEAD
-    /** @return The creation timestamp */
-=======
->>>>>>> Yesh_Branch
     public LocalDateTime getCreatedAt() {
         return createdAt;
     }
 
-<<<<<<< HEAD
-    /** @return The update timestamp */
-=======
->>>>>>> Yesh_Branch
     public LocalDateTime getUpdatedAt() {
         return updatedAt;
     }
 
-<<<<<<< HEAD
-    /** @return The course ID */
-=======
->>>>>>> Yesh_Branch
     public Long getCourseId() {
         return courseId;
     }
 
-<<<<<<< HEAD
-    /** @return The course name */
-=======
->>>>>>> Yesh_Branch
     public String getCourseName() {
         return courseName;
     }
 
-<<<<<<< HEAD
-    /** @param id The project ID */
-=======
     public Long getTeamId() {
         return teamId;
     }
@@ -152,82 +101,42 @@ public class ProjectResponse {
         return teamName;
     }
 
->>>>>>> Yesh_Branch
     public void setId(Long id) {
         this.id = id;
     }
 
-<<<<<<< HEAD
-    /** @param name The project name */
-=======
->>>>>>> Yesh_Branch
     public void setName(String name) {
         this.name = name;
     }
 
-<<<<<<< HEAD
-    /** @param description The description */
-=======
->>>>>>> Yesh_Branch
     public void setDescription(String description) {
         this.description = description;
     }
 
-<<<<<<< HEAD
-    /** @param startDate The start date */
-=======
->>>>>>> Yesh_Branch
     public void setStartDate(LocalDate startDate) {
         this.startDate = startDate;
     }
 
-<<<<<<< HEAD
-    /** @param endDate The end date */
-=======
->>>>>>> Yesh_Branch
     public void setEndDate(LocalDate endDate) {
         this.endDate = endDate;
     }
 
-<<<<<<< HEAD
-    /** @param status The project status */
-=======
->>>>>>> Yesh_Branch
     public void setStatus(ProjectStatus status) {
         this.status = status;
     }
 
-<<<<<<< HEAD
-    /** @param createdAt The creation timestamp */
-=======
->>>>>>> Yesh_Branch
     public void setCreatedAt(LocalDateTime createdAt) {
         this.createdAt = createdAt;
     }
 
-<<<<<<< HEAD
-    /** @param updatedAt The update timestamp */
-=======
->>>>>>> Yesh_Branch
     public void setUpdatedAt(LocalDateTime updatedAt) {
         this.updatedAt = updatedAt;
     }
 
-<<<<<<< HEAD
-    /** @param courseId The course ID */
-=======
->>>>>>> Yesh_Branch
     public void setCourseId(Long courseId) {
         this.courseId = courseId;
     }
 
-<<<<<<< HEAD
-    /** @param courseName The course name */
-    public void setCourseName(String courseName) {
-        this.courseName = courseName;
-    }
-}
-=======
     public void setCourseName(String courseName) {
         this.courseName = courseName;
     }
@@ -240,4 +149,3 @@ public class ProjectResponse {
         this.teamName = teamName;
     }
 }
->>>>>>> Yesh_Branch

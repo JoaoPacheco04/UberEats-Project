@@ -37,15 +37,6 @@ public class BadgeController {
         this.badgeService = badgeService;
     }
 
-<<<<<<< HEAD
-    /**
-     * Creates a new badge.
-     *
-     * @param requestDTO The request containing badge details
-     * @return ResponseEntity containing the created badge or error message
-     */
-=======
->>>>>>> Yesh_Branch
     @PostMapping
     @PreAuthorize("hasAuthority('ROLE_TEACHER')")
     public ResponseEntity<?> createBadge(@Valid @RequestBody BadgeRequestDTO requestDTO) {
@@ -59,14 +50,6 @@ public class BadgeController {
         }
     }
 
-<<<<<<< HEAD
-    /**
-     * Retrieves all badges.
-     *
-     * @return ResponseEntity containing the list of all badges
-     */
-=======
->>>>>>> Yesh_Branch
     @GetMapping
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<List<BadgeResponseDTO>> getAllBadges() {
@@ -74,14 +57,6 @@ public class BadgeController {
         return ResponseEntity.ok(badges);
     }
 
-<<<<<<< HEAD
-    /**
-     * Retrieves all active badges.
-     *
-     * @return ResponseEntity containing the list of active badges
-     */
-=======
->>>>>>> Yesh_Branch
     @GetMapping("/active")
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<List<BadgeResponseDTO>> getActiveBadges() {
@@ -89,15 +64,6 @@ public class BadgeController {
         return ResponseEntity.ok(badges);
     }
 
-<<<<<<< HEAD
-    /**
-     * Retrieves all badges of a specific type.
-     *
-     * @param badgeType The type of badges to retrieve
-     * @return ResponseEntity containing the list of badges
-     */
-=======
->>>>>>> Yesh_Branch
     @GetMapping("/type/{badgeType}")
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<List<BadgeResponseDTO>> getBadgesByType(@PathVariable BadgeType badgeType) {
@@ -105,14 +71,6 @@ public class BadgeController {
         return ResponseEntity.ok(badges);
     }
 
-<<<<<<< HEAD
-    /**
-     * Retrieves a badge by its ID.
-     *
-     * @param id The ID of the badge
-     * @return ResponseEntity containing the badge or error message
-     */
-=======
     @GetMapping("/recipient-type/{recipientType}")
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<List<BadgeResponseDTO>> getActiveBadgesByRecipientType(
@@ -121,7 +79,6 @@ public class BadgeController {
         return ResponseEntity.ok(badges);
     }
 
->>>>>>> Yesh_Branch
     @GetMapping("/{id}")
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<?> getBadgeById(@PathVariable Long id) {
@@ -156,16 +113,6 @@ public class BadgeController {
         }
     }
 
-<<<<<<< HEAD
-    /**
-     * Updates an existing badge.
-     *
-     * @param id         The ID of the badge to update
-     * @param requestDTO The request containing updated badge details
-     * @return ResponseEntity containing the updated badge or error message
-     */
-=======
->>>>>>> Yesh_Branch
     @PutMapping("/{id}")
     @PreAuthorize("hasAuthority('ROLE_TEACHER')")
     public ResponseEntity<?> updateBadge(@PathVariable Long id, @Valid @RequestBody BadgeRequestDTO requestDTO) {
@@ -200,15 +147,6 @@ public class BadgeController {
         }
     }
 
-<<<<<<< HEAD
-    /**
-     * Deletes a badge.
-     *
-     * @param id The ID of the badge to delete
-     * @return ResponseEntity with success or error message
-     */
-=======
->>>>>>> Yesh_Branch
     @DeleteMapping("/{id}")
     @PreAuthorize("hasAuthority('ROLE_TEACHER')")
     public ResponseEntity<?> deleteBadge(@PathVariable Long id) {

@@ -151,8 +151,10 @@ class TeamServiceTest {
         Team created = teamService.createTeam(request);
 
         assertNotNull(created);
-        assertFalse(created.getProjects().isEmpty());
-        assertEquals(project.getId(), created.getProjects().get(0).getId());
+        // Verify project has the team assigned
+        Project updatedProject = projectRepository.findById(project.getId()).get();
+        assertNotNull(updatedProject.getTeam());
+        assertEquals(created.getId(), updatedProject.getTeam().getId());
     }
 
     @Test
@@ -194,10 +196,12 @@ class TeamServiceTest {
         request.setName("Project Bound Team");
         Team team = teamService.createTeam(request);
 
-        Team updated = teamService.addTeamToProject(team.getId(), project.getId());
+        teamService.addTeamToProject(team.getId(), project.getId());
 
-        assertEquals(1, updated.getProjects().size());
-        assertEquals(project.getId(), updated.getProjects().get(0).getId());
+        // Verify team is assigned to project
+        Project updatedProject = projectRepository.findById(project.getId()).get();
+        assertNotNull(updatedProject.getTeam());
+        assertEquals(team.getId(), updatedProject.getTeam().getId());
     }
 
     @Test
@@ -417,27 +421,25 @@ class TeamServiceTest {
         });
     }
 
-    // ===================== GET TEAMS BY PROJECT TESTS =====================
+    // ===================== GET TEAM BY PROJECT TESTS =====================
 
     @Test
-    void getTeamsByProject_ReturnsCorrectTeams() {
-        CreateTeamRequest request1 = new CreateTeamRequest();
-        request1.setName("Project Team 1");
-        request1.setProjectId(project.getId());
-        teamService.createTeam(request1);
+    void getTeamByProject_ReturnsCorrectTeam() {
+        CreateTeamRequest request = new CreateTeamRequest();
+        request.setName("Project Team");
+        request.setProjectId(project.getId());
+        Team created = teamService.createTeam(request);
 
-        CreateTeamRequest request2 = new CreateTeamRequest();
-        request2.setName("Project Team 2");
-        request2.setProjectId(project.getId());
-        teamService.createTeam(request2);
+        Team projectTeam = teamService.getTeamByProject(project.getId());
 
-        CreateTeamRequest request3 = new CreateTeamRequest();
-        request3.setName("Standalone Team");
-        teamService.createTeam(request3);
+        assertNotNull(projectTeam);
+        assertEquals(created.getId(), projectTeam.getId());
+    }
 
-        List<Team> projectTeams = teamService.getTeamsByProject(project.getId());
-
-        assertEquals(2, projectTeams.size());
+    @Test
+    void getTeamByProject_NoTeamAssigned_ReturnsNull() {
+        Team projectTeam = teamService.getTeamByProject(project.getId());
+        assertNull(projectTeam);
     }
 
     // ===================== GET USER TEAMS TESTS =====================

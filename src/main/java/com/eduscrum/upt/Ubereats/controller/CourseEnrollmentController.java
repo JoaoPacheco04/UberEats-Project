@@ -58,9 +58,6 @@ public class CourseEnrollmentController {
         List<CourseEnrollmentResponseDTO> enrollments = enrollmentService.getStudentEnrollments(studentId);
         return ResponseEntity.ok(enrollments);
     }
-<<<<<<< HEAD
-}
-=======
 
     @GetMapping("/course/{courseId}")
     public ResponseEntity<List<CourseEnrollmentResponseDTO>> getCourseEnrollments(@PathVariable Long courseId) {
@@ -68,4 +65,3 @@ public class CourseEnrollmentController {
         return ResponseEntity.ok(enrollments);
     }
 }
->>>>>>> Yesh_Branch

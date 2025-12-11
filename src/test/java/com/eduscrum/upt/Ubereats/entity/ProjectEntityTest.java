@@ -36,7 +36,6 @@ class ProjectEntityTest {
         project.setId(1L);
         project.setStatus(ProjectStatus.PLANNING);
         project.setSprints(new ArrayList<>());
-        project.setTeams(new ArrayList<>());
         project.setAchievements(new ArrayList<>());
     }
 
@@ -118,19 +117,17 @@ class ProjectEntityTest {
         assertEquals(activeSprint, project.getActiveSprints().get(0));
     }
 
-    // ===================== TEAM COUNTS =====================
+    // ===================== TEAM TESTS =====================
 
     @Test
-    void getTeamCount_NoTeams_ReturnsZero() {
-        assertEquals(0, project.getTeamCount());
+    void hasTeam_NoTeam_ReturnsFalse() {
+        assertFalse(project.hasTeam());
     }
 
     @Test
-    void getTeamCount_WithTeams_ReturnsCount() {
-        project.getTeams().add(new Team("Team 1"));
-        project.getTeams().add(new Team("Team 2"));
-
-        assertEquals(2, project.getTeamCount());
+    void hasTeam_WithTeam_ReturnsTrue() {
+        project.setTeam(new Team("Team 1"));
+        assertTrue(project.hasTeam());
     }
 
     // ===================== DURATION TESTS =====================

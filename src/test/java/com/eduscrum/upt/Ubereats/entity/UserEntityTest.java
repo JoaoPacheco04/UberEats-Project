@@ -14,7 +14,7 @@ import static org.junit.jupiter.api.Assertions.*;
  * No Spring context needed - tests entity methods directly.
  *
  * @author UberEats
- * @version 0.3.0 
+ * @version 0.3.0
  */
 class UserEntityTest {
 
@@ -269,7 +269,6 @@ class UserEntityTest {
     void getTeamPointsInProject_WithTeamAchievement_ReturnsSharePerMember() {
         Project project = createProject("Test Project");
         project.setId(1L);
-        project.setTeams(new ArrayList<>());
 
         Team team = new Team("Test Team");
         team.setId(1L);
@@ -302,7 +301,7 @@ class UserEntityTest {
         team.getTeamAchievements().add(teamAchievement);
 
         user.getTeamMemberships().add(member1);
-        project.getTeams().add(team);
+        project.setTeam(team);
 
         assertEquals(50, user.getTeamPointsInProject(project));
     }
@@ -311,7 +310,6 @@ class UserEntityTest {
     void getTeamPointsInProject_InactiveTeamMember_ReturnsZero() {
         Project project = createProject("Test Project");
         project.setId(1L);
-        project.setTeams(new ArrayList<>());
 
         Team team = new Team("Test Team");
         team.setId(1L);
@@ -356,7 +354,6 @@ class UserEntityTest {
     void getCombinedPointsInProject_WithBothIndividualAndTeam_ReturnsCombined() {
         Project project = createProject("Test Project");
         project.setId(1L);
-        project.setTeams(new ArrayList<>());
 
         Badge individualBadge = createBadge("Individual Badge", 50);
         Achievement individualAch = createAchievement(individualBadge);
@@ -384,7 +381,7 @@ class UserEntityTest {
         team.getTeamAchievements().add(teamAchievement);
 
         user.getTeamMemberships().add(member);
-        project.getTeams().add(team);
+        project.setTeam(team);
 
         assertEquals(150, user.getCombinedPointsInProject(project));
     }

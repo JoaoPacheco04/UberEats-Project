@@ -222,8 +222,6 @@ public class BadgeService {
                 .collect(Collectors.toList());
     }
 
-<<<<<<< HEAD
-=======
     /**
      * Finds active badges by recipient type (INDIVIDUAL or TEAM)
      * Returns badges matching the specific type OR badges marked as BOTH
@@ -238,7 +236,6 @@ public class BadgeService {
 
     // === BADGE EXISTENCE CHECKS ===
 
->>>>>>> Yesh_Branch
     /**
      * Checks if a badge with the given name exists.
      *

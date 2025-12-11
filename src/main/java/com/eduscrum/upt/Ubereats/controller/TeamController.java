@@ -38,16 +38,7 @@ public class TeamController {
         this.teamService = teamService;
     }
 
-<<<<<<< HEAD
-    /**
-     * Creates a new team.
-     *
-     * @param request The request containing team details
-     * @return ResponseEntity containing the created team
-     */
-=======
     // Create new team (teachers and students can create teams)
->>>>>>> Yesh_Branch
     @PostMapping
     @PreAuthorize("hasAnyAuthority('ROLE_TEACHER', 'ROLE_STUDENT')")
     public ResponseEntity<TeamResponse> createTeam(@Valid @RequestBody CreateTeamRequest request) {
@@ -69,16 +60,7 @@ public class TeamController {
         return ResponseEntity.ok(new TeamResponse(team));
     }
 
-<<<<<<< HEAD
-    /**
-     * Retrieves all teams for a specific project.
-     *
-     * @param projectId The ID of the project
-     * @return ResponseEntity containing the list of teams
-     */
-=======
     // Get team for project (single team per project)
->>>>>>> Yesh_Branch
     @GetMapping("/project/{projectId}")
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<TeamResponse> getProjectTeam(@PathVariable Long projectId) {
@@ -118,17 +100,7 @@ public class TeamController {
         return ResponseEntity.ok(new TeamResponse(team));
     }
 
-<<<<<<< HEAD
-    /**
-     * Adds a member to a team.
-     *
-     * @param teamId  The ID of the team
-     * @param request The request containing member details
-     * @return ResponseEntity containing the added team member
-     */
-=======
     // Add member to team (teachers and students can add members)
->>>>>>> Yesh_Branch
     @PostMapping("/{teamId}/members")
     @PreAuthorize("hasAnyAuthority('ROLE_TEACHER', 'ROLE_STUDENT')")
     public ResponseEntity<TeamMemberResponse> addMember(

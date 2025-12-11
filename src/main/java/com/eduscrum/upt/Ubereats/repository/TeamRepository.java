@@ -19,19 +19,9 @@ import java.util.Optional;
 @Repository
 public interface TeamRepository extends JpaRepository<Team, Long> {
 
-<<<<<<< HEAD
-    /**
-     * Finds teams by project ID.
-     *
-     * @param projectId The project ID
-     * @return List of teams in the project
-     */
-    List<Team> findByProjects_Id(Long projectId);
-=======
     // Find team assigned to a specific project (single team per project)
     @Query("SELECT t FROM Team t JOIN t.projects p WHERE p.id = :projectId")
     Optional<Team> findByProjectId(@Param("projectId") Long projectId);
->>>>>>> Yesh_Branch
 
     /**
      * Checks if a team with the given name exists.

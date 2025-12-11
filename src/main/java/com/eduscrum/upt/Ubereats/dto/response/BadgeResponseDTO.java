@@ -30,11 +30,7 @@ public class BadgeResponseDTO {
     private Long createdByUserId;
     private String createdByName;
 
-<<<<<<< HEAD
-    /** Default constructor. */
-=======
     // Constructors
->>>>>>> Yesh_Branch
     public BadgeResponseDTO() {
     }
 
@@ -59,11 +55,7 @@ public class BadgeResponseDTO {
         this.createdByName = createdByName;
     }
 
-<<<<<<< HEAD
-    /** @return The badge ID */
-=======
     // Getters and Setters
->>>>>>> Yesh_Branch
     public Long getId() {
         return id;
     }
@@ -104,20 +96,6 @@ public class BadgeResponseDTO {
         this.badgeType = badgeType;
     }
 
-<<<<<<< HEAD
-    public String getTriggerCondition() {
-        return triggerCondition;
-    }
-
-    public void setTriggerCondition(String triggerCondition) {
-        this.triggerCondition = triggerCondition;
-    }
-
-    public String getIcon() {
-        return icon;
-    }
-
-=======
     public RecipientType getRecipientType() {
         return recipientType;
     }
@@ -138,7 +116,6 @@ public class BadgeResponseDTO {
         return icon;
     }
 
->>>>>>> Yesh_Branch
     public void setIcon(String icon) {
         this.icon = icon;
     }

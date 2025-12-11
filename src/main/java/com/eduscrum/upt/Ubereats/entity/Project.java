@@ -224,13 +224,7 @@ public class Project {
     // === BUSINESS METHODS ===
 
     /**
-<<<<<<< HEAD
-     * Gets the number of teams in this project.
-     *
-     * @return The count of teams
-=======
      * Check if project has a team assigned
->>>>>>> Yesh_Branch
      */
     public boolean hasTeam() {
         return team != null;
@@ -353,36 +347,19 @@ public class Project {
     }
 
     /**
-<<<<<<< HEAD
-     * Calculates average team score across all teams.
-     *
-     * @return The average score as BigDecimal, or ZERO if no teams
-=======
      * Get team score for this project's team
->>>>>>> Yesh_Branch
+     *
+     * @return The team score as BigDecimal, or ZERO if no team assigned
      */
     public BigDecimal getTeamScore() {
         if (team == null)
             return BigDecimal.ZERO;
 
-<<<<<<< HEAD
-        BigDecimal totalScore = teams.stream()
-                .map(team -> {
-                    int teamPoints = team.getTeamAchievements().stream()
-                            .mapToInt(achievement -> achievement.getBadge().getPoints())
-                            .sum();
-                    return new BigDecimal(teamPoints);
-                })
-                .reduce(BigDecimal.ZERO, BigDecimal::add);
-
-        return totalScore.divide(new BigDecimal(teams.size()), 2, RoundingMode.HALF_UP);
-=======
         // Calculate team score based on achievements
         int teamPoints = team.getTeamAchievements().stream()
                 .mapToInt(achievement -> achievement.getBadge().getPoints())
                 .sum();
         return new BigDecimal(teamPoints);
->>>>>>> Yesh_Branch
     }
 
     /**

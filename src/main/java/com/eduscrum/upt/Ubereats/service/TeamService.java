@@ -145,20 +145,9 @@ public class TeamService {
         return teamMemberRepository.save(member);
     }
 
-<<<<<<< HEAD
-    /**
-     * Retrieves all teams associated with a specific project.
-     *
-     * @param projectId The ID of the project
-     * @return List of teams in the project
-     */
-    public List<Team> getTeamsByProject(Long projectId) {
-        return teamRepository.findByProjects_Id(projectId);
-=======
     // Get team for project (single team per project)
     public Team getTeamByProject(Long projectId) {
         return teamRepository.findByProjectId(projectId).orElse(null);
->>>>>>> Yesh_Branch
     }
 
     /**

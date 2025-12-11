@@ -47,96 +47,48 @@ public class TeamResponse {
         this.createdAt = team.getCreatedAt();
     }
 
-<<<<<<< HEAD
-    /** @return The team ID */
-=======
     // Getters
->>>>>>> Yesh_Branch
     public Long getId() {
         return id;
     }
 
-<<<<<<< HEAD
-    /** @return The team name */
-=======
->>>>>>> Yesh_Branch
     public String getName() {
         return name;
     }
 
-<<<<<<< HEAD
-    /** @return The project count */
-=======
->>>>>>> Yesh_Branch
     public Integer getProjectCount() {
         return projectCount;
     }
 
-<<<<<<< HEAD
-    /** @return The project names */
-=======
->>>>>>> Yesh_Branch
     public List<String> getProjectNames() {
         return projectNames;
     }
 
-<<<<<<< HEAD
-    /** @return The member count */
-=======
->>>>>>> Yesh_Branch
     public Integer getMemberCount() {
         return memberCount;
     }
 
-<<<<<<< HEAD
-    /** @return The total points */
-=======
->>>>>>> Yesh_Branch
     public Integer getTotalPoints() {
         return totalPoints;
     }
 
-<<<<<<< HEAD
-    /** @return The Scrum Master name */
-=======
->>>>>>> Yesh_Branch
     public String getScrumMaster() {
         return scrumMaster;
     }
 
-<<<<<<< HEAD
-    /** @return The Product Owner name */
-=======
->>>>>>> Yesh_Branch
     public String getProductOwner() {
         return productOwner;
     }
 
-<<<<<<< HEAD
-    /** @return The current progress */
-=======
->>>>>>> Yesh_Branch
     public BigDecimal getCurrentProgress() {
         return currentProgress;
     }
 
-<<<<<<< HEAD
-    /** @return The performance rating */
-=======
->>>>>>> Yesh_Branch
     public BigDecimal getPerformanceRating() {
         return performanceRating;
     }
 
-<<<<<<< HEAD
-    /** @return The creation timestamp */
     public LocalDateTime getCreatedAt() {
         return createdAt;
     }
 }
-=======
-    public LocalDateTime getCreatedAt() {
-        return createdAt;
-    }
-}
->>>>>>> Yesh_Branch

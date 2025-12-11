@@ -541,9 +541,6 @@ public class UserStoryService {
         return userStoryRepository.sumHighPriorityCompletedStoryPointsByProject(userId, projectId);
     }
 
-<<<<<<< HEAD
-    // region UTILITY METHODS
-=======
     /**
      * Gets total story points for a specific team in a sprint
      */
@@ -561,7 +558,6 @@ public class UserStoryService {
     }
 
     // === UTILITY METHODS ===
->>>>>>> Yesh_Branch
 
     private void updateProjectProgress(Long projectId) {
         com.eduscrum.upt.Ubereats.entity.Project project = projectRepository.findById(projectId)
