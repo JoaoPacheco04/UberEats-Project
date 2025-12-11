@@ -111,7 +111,7 @@ const StudentDashboard = () => {
     };
 
     // Calculate stats
-    const totalPoints = dashboardData?.globalScore || achievements.reduce((sum, a) => sum + (a.points || 0), 0);
+    const totalPoints = dashboardData?.globalScore || achievements.reduce((sum, a) => sum + Number(a.points || 0), 0);
     const totalBadges = achievements.length;
     const courseAverage = dashboardData?.courseAverage || 0;
 
@@ -198,8 +198,8 @@ const StudentDashboard = () => {
                                 <button onClick={handleLogout} className="logout-btn">
                                     <LogOut size={24} />
                                     <div>
-                                        <span className="stat-label">Sign Out</span>
-                                        <span className="stat-value">Logout</span>
+                                        <span className="logout-label">Sign Out</span>
+                                        <span className="logout-text">Logout</span>
                                     </div>
                                 </button>
                             </div>
@@ -336,50 +336,7 @@ const StudentDashboard = () => {
 
                     {/* Right Column - Stats & Achievements */}
                     <div className="side-column">
-                        {/* Score Comparison */}
-                        <div className="stat-card">
-                            <div className="stat-card-header">
-                                <div className="stat-card-icon comparison-icon">
-                                    <TrendingUp size={18} />
-                                </div>
-                                <div>
-                                    <h3>Your Performance</h3>
-                                    <p>vs Course Average</p>
-                                </div>
-                            </div>
-                            <div className="comparison-chart">
-                                <div className="comparison-bar">
-                                    <div className="bar-label">You</div>
-                                    <div className="bar-track">
-                                        <motion.div
-                                            className="bar-fill your-score"
-                                            initial={{ width: 0 }}
-                                            animate={{ width: `${Math.min((totalPoints / Math.max(totalPoints, courseAverage, 100)) * 100, 100)}%` }}
-                                            transition={{ duration: 1, delay: 0.5 }}
-                                        />
-                                    </div>
-                                    <div className="bar-value">{totalPoints}</div>
-                                </div>
-                                <div className="comparison-bar">
-                                    <div className="bar-label">Avg</div>
-                                    <div className="bar-track">
-                                        <motion.div
-                                            className="bar-fill avg-score"
-                                            initial={{ width: 0 }}
-                                            animate={{ width: `${Math.min((courseAverage / Math.max(totalPoints, courseAverage, 100)) * 100, 100)}%` }}
-                                            transition={{ duration: 1, delay: 0.7 }}
-                                        />
-                                    </div>
-                                    <div className="bar-value">{courseAverage}</div>
-                                </div>
-                            </div>
-                            {totalPoints > courseAverage && (
-                                <div className="comparison-message success">
-                                    <Trophy size={16} />
-                                    You're above average! Keep it up!
-                                </div>
-                            )}
-                        </div>
+
 
                         {/* Recent Achievements */}
                         <div className="stat-card achievements-card">

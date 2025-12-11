@@ -1,7 +1,8 @@
 /* SprintBoard.css */
 .sprint-board {
     min-height: 100vh;
-    background: #f1f5f9;
+    background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+    /* Matches TeamDetail/ProjectDetail */
     display: flex;
     flex-direction: column;
 }
@@ -186,6 +187,16 @@
     margin-top: 0.5rem;
     font-size: 0.8rem;
     opacity: 0.8;
+}
+
+.header-stats .stat-label {
+    color: rgba(255, 255, 255, 0.9);
+    font-weight: 600;
+}
+
+.header-stats .stat-box {
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
 }
 
 /* Board Toolbar */

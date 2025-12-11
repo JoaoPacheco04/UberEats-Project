@@ -168,8 +168,7 @@ const ProjectDetail = () => {
 
     const tabs = [
         { id: 'sprints', label: 'Sprints', icon: Target, count: sprints.length },
-        { id: 'team', label: 'Team', icon: Users, count: team ? 1 : 0 },
-        { id: 'analytics', label: 'Analytics', icon: BarChart3, count: null }
+        { id: 'team', label: 'Team', icon: Users, count: team ? 1 : 0 }
     ];
 
     if (loading) {
@@ -409,21 +408,7 @@ const ProjectDetail = () => {
                         </motion.div>
                     )}
 
-                    {activeTab === 'analytics' && (
-                        <motion.div
-                            key="analytics"
-                            initial={{ opacity: 0, y: 10 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            exit={{ opacity: 0, y: -10 }}
-                            className="analytics-section"
-                        >
-                            <div className="empty-state">
-                                <BarChart3 size={64} strokeWidth={1} />
-                                <h3>Analytics Dashboard</h3>
-                                <p>Project analytics coming soon.</p>
-                            </div>
-                        </motion.div>
-                    )}
+
                 </AnimatePresence>
             </main>
 
