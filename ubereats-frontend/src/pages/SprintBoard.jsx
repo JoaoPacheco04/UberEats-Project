@@ -15,7 +15,7 @@ import {
 import {
     getSprintById,
     getProjectById,
-    getTeamsByProject,
+    getTeamByProject,
     getUserStoriesBySprint,
     createUserStory,
     moveToNextStatus,
@@ -32,7 +32,7 @@ const SprintBoard = () => {
 
     const [sprint, setSprint] = useState(null);
     const [project, setProject] = useState(null);
-    const [teams, setTeams] = useState([]);
+    const [team, setTeam] = useState(null);
     const [stories, setStories] = useState([]);
     const [stats, setStats] = useState(null);
     const [loading, setLoading] = useState(true);
@@ -60,23 +60,23 @@ const SprintBoard = () => {
             setLoading(true);
             setError(null);
 
-            const [sprintRes, projectRes, teamsRes, storiesRes, statsRes] = await Promise.all([
+            const [sprintRes, projectRes, teamRes, storiesRes, statsRes] = await Promise.all([
                 getSprintById(sprintId),
                 getProjectById(projectId),
-                getTeamsByProject(projectId),
+                getTeamByProject(projectId).catch(() => ({ data: null })),
                 getUserStoriesBySprint(sprintId).catch(() => ({ data: [] })),
                 getSprintStats(sprintId).catch(() => ({ data: null }))
             ]);
 
             setSprint(sprintRes.data);
             setProject(projectRes.data);
-            setTeams(teamsRes.data || []);
+            setTeam(teamRes.data);
             setStories(storiesRes.data || []);
             setStats(statsRes.data);
 
-            // Set default team if only one team
-            if (teamsRes.data?.length === 1) {
-                setNewStory(prev => ({ ...prev, teamId: teamsRes.data[0].id }));
+            // Set team ID if team exists
+            if (teamRes.data?.id) {
+                setNewStory(prev => ({ ...prev, teamId: teamRes.data.id }));
             }
         } catch (err) {
             console.error('Error fetching sprint data:', err);
@@ -121,7 +121,7 @@ const SprintBoard = () => {
 
             await createUserStory(storyData);
             setShowCreateModal(false);
-            setNewStory({ title: '', description: '', storyPoints: 3, priority: 'MEDIUM', teamId: teams[0]?.id || '' });
+            setNewStory({ title: '', description: '', storyPoints: 3, priority: 'MEDIUM', teamId: team?.id || '' });
             setCreateError(null);
             fetchData();
         } catch (err) {
@@ -227,14 +227,14 @@ const SprintBoard = () => {
             <div className="board-toolbar">
                 <div className="toolbar-info">
                     <Users size={16} />
-                    <span>{teams.length} team{teams.length !== 1 ? 's' : ''}</span>
+                    <span>{team ? '1 team' : 'No team'}</span>
                 </div>
                 {currentUser?.role === 'STUDENT' && (
                     <button
                         className="create-story-btn"
                         onClick={() => setShowCreateModal(true)}
-                        disabled={teams.length === 0}
-                        title={teams.length === 0 ? 'No teams available' : 'Add User Story'}
+                        disabled={!team}
+                        title={!team ? 'No team available' : 'Add User Story'}
                     >
                         <Plus size={20} />
                         Add User Story
@@ -303,18 +303,13 @@ const SprintBoard = () => {
                             <form onSubmit={handleCreateStory}>
                                 <div className="form-group">
                                     <label>Team *</label>
-                                    <select
-                                        value={newStory.teamId}
-                                        onChange={e => setNewStory({ ...newStory, teamId: e.target.value })}
-                                        required
-                                    >
-                                        <option value="">Select a team...</option>
-                                        {teams.map(team => (
-                                            <option key={team.id} value={team.id}>
-                                                {team.name}
-                                            </option>
-                                        ))}
-                                    </select>
+                                    <input
+                                        type="text"
+                                        value={team?.name || 'No team assigned'}
+                                        disabled
+                                        style={{ background: '#f1f5f9', cursor: 'not-allowed' }}
+                                    />
+                                    <input type="hidden" value={newStory.teamId} />
                                 </div>
 
                                 <div className="form-group">

@@ -18,7 +18,7 @@ import {
     getCourseById,
     getProjectsByCourse,
     getCourseEnrollments,
-    getTeamsByProject,
+    getTeamByProject,
     createTeam,
     addMemberToTeam,
     exportCourseGrades
@@ -90,19 +90,18 @@ const CourseManagement = () => {
             setProjects(projectsRes.data || []);
             setStudents(studentsRes.data || []);
 
-            // Fetch teams for all projects
+            // Fetch teams for all projects (one team per project now)
             const projectList = projectsRes.data || [];
             if (projectList.length > 0) {
                 const teamPromises = projectList.map(p =>
-                    getTeamsByProject(p.id).catch(() => ({ data: [] }))
+                    getTeamByProject(p.id).catch(() => ({ data: null }))
                 );
                 const teamResults = await Promise.all(teamPromises);
-                const allTeams = teamResults.flatMap(r => r.data || []);
-                // Remove duplicates by id
-                const uniqueTeams = allTeams.filter((team, index, self) =>
-                    index === self.findIndex(t => t.id === team.id)
-                );
-                setTeams(uniqueTeams);
+                // Filter out null results and collect teams
+                const allTeams = teamResults
+                    .map(r => r.data)
+                    .filter(team => team != null);
+                setTeams(allTeams);
             } else {
                 setTeams([]);
             }

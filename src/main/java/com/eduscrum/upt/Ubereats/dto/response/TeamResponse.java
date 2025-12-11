@@ -36,15 +36,47 @@ public class TeamResponse {
     }
 
     // Getters
-    public Long getId() { return id; }
-    public String getName() { return name; }
-    public Integer getProjectCount() { return projectCount; }
-    public List<String> getProjectNames() { return projectNames; }
-    public Integer getMemberCount() { return memberCount; }
-    public Integer getTotalPoints() { return totalPoints; }
-    public String getScrumMaster() { return scrumMaster; }
-    public String getProductOwner() { return productOwner; }
-    public BigDecimal getCurrentProgress() { return currentProgress; }
-    public BigDecimal getPerformanceRating() { return performanceRating; }
-    public LocalDateTime getCreatedAt() { return createdAt; }
+    public Long getId() {
+        return id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public Integer getProjectCount() {
+        return projectCount;
+    }
+
+    public List<String> getProjectNames() {
+        return projectNames;
+    }
+
+    public Integer getMemberCount() {
+        return memberCount;
+    }
+
+    public Integer getTotalPoints() {
+        return totalPoints;
+    }
+
+    public String getScrumMaster() {
+        return scrumMaster;
+    }
+
+    public String getProductOwner() {
+        return productOwner;
+    }
+
+    public BigDecimal getCurrentProgress() {
+        return currentProgress;
+    }
+
+    public BigDecimal getPerformanceRating() {
+        return performanceRating;
+    }
+
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
 }

@@ -22,7 +22,7 @@ const Login = () => {
             if (userData.role === 'TEACHER') {
                 navigate('/teacher/dashboard');
             } else if (userData.role === 'STUDENT') {
-                navigate('/student/dashboard'); // TODO: Create student dashboard
+                navigate('/student/dashboard');
             } else {
                 // Default fallback
                 navigate('/dashboard');

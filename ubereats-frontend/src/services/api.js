@@ -61,6 +61,10 @@ export const createCourse = async (courseData) => {
     }
 };
 
+// 5b. Student Course Services  
+export const getAvailableCourses = () => api.get('/courses/available');
+export const getUserTeams = (userId) => api.get(`/teams/user/${userId}`);
+
 // 6. Course Services
 export const getCourseById = (courseId) => api.get(`/courses/${courseId}`);
 export const getCourseStudents = (courseId) => api.get(`/enrollments/course/${courseId}`);
@@ -81,7 +85,7 @@ export const completeProject = (projectId) => api.put(`/projects/${projectId}/co
 export const deleteProject = (projectId) => api.delete(`/projects/${projectId}`);
 
 // 8. Team Services
-export const getTeamsByProject = (projectId) => api.get(`/teams/project/${projectId}`);
+export const getTeamByProject = (projectId) => api.get(`/teams/project/${projectId}`);
 export const getTeamById = (teamId) => api.get(`/teams/${teamId}`);
 export const getTeamMembers = (teamId) => api.get(`/teams/${teamId}/members`);
 export const createTeam = (teamData) => api.post('/teams', teamData);

@@ -27,7 +27,9 @@ const AwardBadgeModal = ({ isOpen, onClose, recipient, recipientType = 'user', p
             setError(null);
             setSuccess(false);
         }
-    }, [isOpen, recipientType, existingAchievements]);
+        // Note: existingAchievements is intentionally not in deps - it's read in fetchBadges closure
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [isOpen, recipientType]);
 
     const fetchBadges = async () => {
         try {

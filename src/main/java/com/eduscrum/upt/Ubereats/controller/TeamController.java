@@ -26,9 +26,9 @@ public class TeamController {
         this.teamService = teamService;
     }
 
-    // Create new team (now independent of a project)
+    // Create new team (teachers and students can create teams)
     @PostMapping
-    @PreAuthorize("hasAuthority('ROLE_TEACHER')")
+    @PreAuthorize("hasAnyAuthority('ROLE_TEACHER', 'ROLE_STUDENT')")
     public ResponseEntity<TeamResponse> createTeam(@Valid @RequestBody CreateTeamRequest request) {
         Team team = teamService.createTeam(request);
         return ResponseEntity.ok(new TeamResponse(team));
@@ -42,15 +42,15 @@ public class TeamController {
         return ResponseEntity.ok(new TeamResponse(team));
     }
 
-    // Get teams for project
+    // Get team for project (single team per project)
     @GetMapping("/project/{projectId}")
     @PreAuthorize("isAuthenticated()")
-    public ResponseEntity<List<TeamResponse>> getProjectTeams(@PathVariable Long projectId) {
-        List<Team> teams = teamService.getTeamsByProject(projectId);
-        List<TeamResponse> response = teams.stream()
-                .map(TeamResponse::new)
-                .collect(Collectors.toList());
-        return ResponseEntity.ok(response);
+    public ResponseEntity<TeamResponse> getProjectTeam(@PathVariable Long projectId) {
+        Team team = teamService.getTeamByProject(projectId);
+        if (team == null) {
+            return ResponseEntity.ok(null);
+        }
+        return ResponseEntity.ok(new TeamResponse(team));
     }
 
     // Get user's teams
@@ -72,9 +72,9 @@ public class TeamController {
         return ResponseEntity.ok(new TeamResponse(team));
     }
 
-    // Add member to team
+    // Add member to team (teachers and students can add members)
     @PostMapping("/{teamId}/members")
-    @PreAuthorize("hasAuthority('ROLE_TEACHER')")
+    @PreAuthorize("hasAnyAuthority('ROLE_TEACHER', 'ROLE_STUDENT')")
     public ResponseEntity<TeamMemberResponse> addMember(
             @PathVariable Long teamId,
             @Valid @RequestBody AddMemberRequest request) {

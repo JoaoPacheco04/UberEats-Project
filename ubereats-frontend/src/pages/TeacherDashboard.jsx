@@ -17,7 +17,7 @@ import {
 } from 'lucide-react';
 import CourseCard from '../components/CourseCard';
 import CreateResourceModal from '../components/CreateResourceModal';
-import { getTeacherCourses, createCourse, createProject, getCourseEnrollments, getStudentDashboard, getTeamsByProject, getTeamPoints, getProjectsByCourse } from '../services/api';
+import { getTeacherCourses, createCourse, createProject, getCourseEnrollments, getStudentDashboard, getTeamByProject, getTeamPoints, getProjectsByCourse } from '../services/api';
 
 /**
  * TeacherDashboard - Professional academic dashboard
@@ -98,34 +98,32 @@ const TeacherDashboard = () => {
 
                     for (const project of projects) {
                         try {
-                            const teamsRes = await getTeamsByProject(project.id);
-                            const teams = teamsRes.data || [];
+                            const teamRes = await getTeamByProject(project.id);
+                            const team = teamRes.data;
 
-                            for (const team of teams) {
-                                if (!teamMap.has(team.id)) {
-                                    try {
-                                        const pointsRes = await getTeamPoints(team.id);
-                                        const points = pointsRes.data?.totalPoints || 0;
-                                        teamMap.set(team.id, {
-                                            id: team.id,
-                                            name: team.name,
-                                            points: points,
-                                            projectName: project.name,
-                                            courseName: course.name
-                                        });
-                                    } catch {
-                                        teamMap.set(team.id, {
-                                            id: team.id,
-                                            name: team.name,
-                                            points: 0,
-                                            projectName: project.name,
-                                            courseName: course.name
-                                        });
-                                    }
+                            if (team && !teamMap.has(team.id)) {
+                                try {
+                                    const pointsRes = await getTeamPoints(team.id);
+                                    const points = pointsRes.data?.totalPoints || 0;
+                                    teamMap.set(team.id, {
+                                        id: team.id,
+                                        name: team.name,
+                                        points: points,
+                                        projectName: project.name,
+                                        courseName: course.name
+                                    });
+                                } catch {
+                                    teamMap.set(team.id, {
+                                        id: team.id,
+                                        name: team.name,
+                                        points: 0,
+                                        projectName: project.name,
+                                        courseName: course.name
+                                    });
                                 }
                             }
                         } catch {
-                            // Skip if can't get teams
+                            // Skip if can't get team
                         }
                     }
                 } catch {

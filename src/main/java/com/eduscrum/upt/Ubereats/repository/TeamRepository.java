@@ -7,12 +7,14 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface TeamRepository extends JpaRepository<Team, Long> {
 
-    // Find teams by project ID
-    List<Team> findByProjects_Id(Long projectId);
+    // Find team assigned to a specific project (single team per project)
+    @Query("SELECT t FROM Team t JOIN t.projects p WHERE p.id = :projectId")
+    Optional<Team> findByProjectId(@Param("projectId") Long projectId);
 
     // Check if a team with a given name exists
     boolean existsByName(String name);

@@ -59,10 +59,11 @@ public class Course {
     private List<CourseEnrollment> enrollments = new ArrayList<>();
 
     // === CONSTRUCTORS ===
-    public Course() {}
+    public Course() {
+    }
 
     public Course(String name, String code, String description, Semester semester,
-                  String academicYear, User teacher) {
+            String academicYear, User teacher) {
         this.name = name;
         this.code = code;
         this.description = description;
@@ -73,41 +74,101 @@ public class Course {
     }
 
     // === GETTERS & SETTERS ===
-    public Long getId() { return id; }
-    public void setId(Long id) { this.id = id; }
+    public Long getId() {
+        return id;
+    }
 
-    public String getName() { return name; }
-    public void setName(String name) { this.name = name; }
+    public void setId(Long id) {
+        this.id = id;
+    }
 
-    public String getCode() { return code; }
-    public void setCode(String code) { this.code = code; }
+    public String getName() {
+        return name;
+    }
 
-    public String getDescription() { return description; }
-    public void setDescription(String description) { this.description = description; }
+    public void setName(String name) {
+        this.name = name;
+    }
 
-    public Semester getSemester() { return semester; }
-    public void setSemester(Semester semester) { this.semester = semester; }
+    public String getCode() {
+        return code;
+    }
 
-    public String getAcademicYear() { return academicYear; }
-    public void setAcademicYear(String academicYear) { this.academicYear = academicYear; }
+    public void setCode(String code) {
+        this.code = code;
+    }
 
-    public Boolean getIsActive() { return isActive; }
-    public void setIsActive(Boolean isActive) { this.isActive = isActive; }
+    public String getDescription() {
+        return description;
+    }
 
-    public LocalDateTime getCreatedAt() { return createdAt; }
-    public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }
+    public void setDescription(String description) {
+        this.description = description;
+    }
 
-    public LocalDateTime getUpdatedAt() { return updatedAt; }
-    public void setUpdatedAt(LocalDateTime updatedAt) { this.updatedAt = updatedAt; }
+    public Semester getSemester() {
+        return semester;
+    }
 
-    public User getTeacher() { return teacher; }
-    public void setTeacher(User teacher) { this.teacher = teacher; }
+    public void setSemester(Semester semester) {
+        this.semester = semester;
+    }
 
-    public List<Project> getProjects() { return projects; }
-    public void setProjects(List<Project> projects) { this.projects = projects; }
+    public String getAcademicYear() {
+        return academicYear;
+    }
 
-    public List<CourseEnrollment> getEnrollments() { return enrollments; }
-    public void setEnrollments(List<CourseEnrollment> enrollments) { this.enrollments = enrollments; }
+    public void setAcademicYear(String academicYear) {
+        this.academicYear = academicYear;
+    }
+
+    public Boolean getIsActive() {
+        return isActive;
+    }
+
+    public void setIsActive(Boolean isActive) {
+        this.isActive = isActive;
+    }
+
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public LocalDateTime getUpdatedAt() {
+        return updatedAt;
+    }
+
+    public void setUpdatedAt(LocalDateTime updatedAt) {
+        this.updatedAt = updatedAt;
+    }
+
+    public User getTeacher() {
+        return teacher;
+    }
+
+    public void setTeacher(User teacher) {
+        this.teacher = teacher;
+    }
+
+    public List<Project> getProjects() {
+        return projects;
+    }
+
+    public void setProjects(List<Project> projects) {
+        this.projects = projects;
+    }
+
+    public List<CourseEnrollment> getEnrollments() {
+        return enrollments;
+    }
+
+    public void setEnrollments(List<CourseEnrollment> enrollments) {
+        this.enrollments = enrollments;
+    }
 
     // === BUSINESS METHODS ===
 
@@ -141,10 +202,18 @@ public class Course {
      * Calculate average team score across all projects
      */
     public Double getAverageTeamScore() {
-        if (projects.isEmpty()) return 0.0;
+        if (projects.isEmpty())
+            return 0.0;
 
-        double totalScore = projects.stream()
-                .flatMap(project -> project.getTeams().stream())
+        List<Team> teamsWithProjects = projects.stream()
+                .map(Project::getTeam)
+                .filter(team -> team != null)
+                .collect(Collectors.toList());
+
+        if (teamsWithProjects.isEmpty())
+            return 0.0;
+
+        double totalScore = teamsWithProjects.stream()
                 .mapToDouble(team -> {
                     // Calculate team score based on achievements and performance
                     int teamPoints = team.getTeamAchievements().stream()
@@ -155,11 +224,7 @@ public class Course {
                 })
                 .sum();
 
-        long teamCount = projects.stream()
-                .flatMap(project -> project.getTeams().stream())
-                .count();
-
-        return teamCount > 0 ? totalScore / teamCount : 0.0;
+        return totalScore / teamsWithProjects.size();
     }
 
     /**
@@ -206,8 +271,10 @@ public class Course {
     // === UTILITY METHODS ===
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof Course)) return false;
+        if (this == o)
+            return true;
+        if (!(o instanceof Course))
+            return false;
         Course course = (Course) o;
         return Objects.equals(id, course.id) &&
                 Objects.equals(code, course.code);

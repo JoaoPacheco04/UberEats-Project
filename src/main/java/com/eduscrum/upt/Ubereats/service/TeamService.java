@@ -44,15 +44,24 @@ public class TeamService {
             throw new BusinessLogicException("Team name '" + request.getName() + "' already exists");
         }
         Team team = new Team(request.getName());
+        Team savedTeam = teamRepository.save(team);
 
         if (request.getProjectId() != null) {
             Project project = projectRepository.findById(request.getProjectId())
                     .orElseThrow(() -> new ResourceNotFoundException(
                             "Project not found with id: " + request.getProjectId()));
-            team.addProject(project);
+
+            // Check if project already has a team
+            if (project.getTeam() != null) {
+                throw new BusinessLogicException(
+                        "Project already has a team assigned. Remove the existing team first.");
+            }
+
+            project.setTeam(savedTeam);
+            projectRepository.save(project);
         }
 
-        return teamRepository.save(team);
+        return savedTeam;
     }
 
     // Associate a team with a project
@@ -61,12 +70,17 @@ public class TeamService {
         Project project = projectRepository.findById(projectId)
                 .orElseThrow(() -> new ResourceNotFoundException("Project not found with id: " + projectId));
 
-        if (team.getProjects().contains(project)) {
-            throw new BusinessLogicException("Team is already in this project.");
+        // Check if project already has a team
+        if (project.getTeam() != null) {
+            if (project.getTeam().getId().equals(teamId)) {
+                throw new BusinessLogicException("This team is already assigned to this project.");
+            }
+            throw new BusinessLogicException("Project already has a team assigned. Remove the existing team first.");
         }
 
-        team.addProject(project);
-        return teamRepository.save(team);
+        project.setTeam(team);
+        projectRepository.save(project);
+        return team;
     }
 
     // Add member to team
@@ -94,9 +108,9 @@ public class TeamService {
         return teamMemberRepository.save(member);
     }
 
-    // Get teams for project
-    public List<Team> getTeamsByProject(Long projectId) {
-        return teamRepository.findByProjects_Id(projectId);
+    // Get team for project (single team per project)
+    public Team getTeamByProject(Long projectId) {
+        return teamRepository.findByProjectId(projectId).orElse(null);
     }
 
     // Get user's teams

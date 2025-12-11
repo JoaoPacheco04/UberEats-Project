@@ -10,18 +10,22 @@ import {
     AlertCircle,
     Loader2,
     Target,
-    BarChart3
+    BarChart3,
+    Crown,
+    Star,
+    TrendingUp,
+    Award
 } from 'lucide-react';
 import {
     getProjectById,
     getSprintsByProject,
-    getTeamsByProject,
+    getTeamByProject,
+    getTeamMembers,
     createSprint,
     startSprint as startSprintApi,
     completeSprint as completeSprintApi
 } from '../services/api';
 import SprintCard from '../components/SprintCard';
-import TeamCard from '../components/TeamCard';
 import './ProjectDetail.css';
 
 const ProjectDetail = () => {
@@ -30,7 +34,8 @@ const ProjectDetail = () => {
 
     const [project, setProject] = useState(null);
     const [sprints, setSprints] = useState([]);
-    const [teams, setTeams] = useState([]);
+    const [team, setTeam] = useState(null);
+    const [teamMembers, setTeamMembers] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [createError, setCreateError] = useState(null);
@@ -55,15 +60,25 @@ const ProjectDetail = () => {
             setLoading(true);
             setError(null);
 
-            const [projectRes, sprintsRes, teamsRes] = await Promise.all([
+            const [projectRes, sprintsRes, teamRes] = await Promise.all([
                 getProjectById(projectId),
                 getSprintsByProject(projectId).catch(() => ({ data: [] })),
-                getTeamsByProject(projectId).catch(() => ({ data: [] }))
+                getTeamByProject(projectId).catch(() => ({ data: null }))
             ]);
 
             setProject(projectRes.data);
             setSprints(sprintsRes.data || []);
-            setTeams(teamsRes.data || []);
+            setTeam(teamRes.data);
+
+            // Fetch team members if team exists
+            if (teamRes.data?.id) {
+                try {
+                    const membersRes = await getTeamMembers(teamRes.data.id);
+                    setTeamMembers(membersRes.data || []);
+                } catch {
+                    setTeamMembers([]);
+                }
+            }
 
             // Auto-increment sprint number for next sprint
             if (sprintsRes.data?.length) {
@@ -138,9 +153,22 @@ const ProjectDetail = () => {
         });
     };
 
+    const getRoleBadge = (role) => {
+        switch (role) {
+            case 'SCRUM_MASTER':
+                return { label: 'Scrum Master', color: '#7c3aed', icon: Crown };
+            case 'PRODUCT_OWNER':
+                return { label: 'Product Owner', color: '#f59e0b', icon: Star };
+            case 'DEVELOPER':
+                return { label: 'Developer', color: '#3b82f6', icon: Users };
+            default:
+                return { label: role, color: '#64748b', icon: Users };
+        }
+    };
+
     const tabs = [
         { id: 'sprints', label: 'Sprints', icon: Target, count: sprints.length },
-        { id: 'teams', label: 'Teams', icon: Users, count: teams.length },
+        { id: 'team', label: 'Team', icon: Users, count: team ? 1 : 0 },
         { id: 'analytics', label: 'Analytics', icon: BarChart3, count: null }
     ];
 
@@ -164,6 +192,8 @@ const ProjectDetail = () => {
     }
 
     const statusConfig = getStatusConfig(project?.status);
+    const progress = team?.currentProgress ? Number(team.currentProgress) : 0;
+    const rating = team?.performanceRating ? Number(team.performanceRating) : 0;
 
     return (
         <div className="project-detail">
@@ -193,7 +223,7 @@ const ProjectDetail = () => {
                     <div className="project-meta">
                         <span><Calendar size={16} /> {formatDate(project?.startDate)} - {formatDate(project?.endDate)}</span>
                         <span><Target size={16} /> {sprints.length} Sprints</span>
-                        <span><Users size={16} /> {teams.length} Teams</span>
+                        <span><Users size={16} /> {team ? team.name : 'No Team'}</span>
                     </div>
                 </div>
             </header>
@@ -264,29 +294,116 @@ const ProjectDetail = () => {
                         </motion.div>
                     )}
 
-                    {activeTab === 'teams' && (
+                    {activeTab === 'team' && (
                         <motion.div
-                            key="teams"
+                            key="team"
                             initial={{ opacity: 0, y: 10 }}
                             animate={{ opacity: 1, y: 0 }}
                             exit={{ opacity: 0, y: -10 }}
-                            className="teams-section"
+                            className="team-section"
                         >
                             <div className="section-header">
-                                <h2>Teams</h2>
+                                <h2>Team Details</h2>
                             </div>
 
-                            {teams.length === 0 ? (
+                            {!team ? (
                                 <div className="empty-state">
                                     <Users size={64} strokeWidth={1} />
-                                    <h3>No teams assigned</h3>
-                                    <p>Teams haven't been assigned to this project yet.</p>
+                                    <h3>No team assigned</h3>
+                                    <p>A team hasn't been assigned to this project yet.</p>
                                 </div>
                             ) : (
-                                <div className="teams-grid">
-                                    {teams.map(team => (
-                                        <TeamCard key={team.id} team={team} />
-                                    ))}
+                                <div className="team-detail-container">
+                                    {/* Team Overview Card */}
+                                    <div className="team-overview-card">
+                                        <div className="team-overview-header">
+                                            <div className="team-avatar">
+                                                <Users size={32} />
+                                            </div>
+                                            <div className="team-info">
+                                                <h3>{team.name}</h3>
+                                                <span className="member-count">{team.memberCount || 0} members</span>
+                                            </div>
+                                        </div>
+
+                                        {/* Team Stats */}
+                                        <div className="team-stats-grid">
+                                            <div className="stat-card">
+                                                <TrendingUp size={20} className="stat-icon progress" />
+                                                <div className="stat-info">
+                                                    <span className="stat-value">{progress.toFixed(0)}%</span>
+                                                    <span className="stat-label">Progress</span>
+                                                </div>
+                                            </div>
+                                            <div className="stat-card">
+                                                <BarChart3 size={20} className="stat-icon rating" />
+                                                <div className="stat-info">
+                                                    <span className="stat-value">{rating.toFixed(1)}</span>
+                                                    <span className="stat-label">Rating</span>
+                                                </div>
+                                            </div>
+                                            <div className="stat-card">
+                                                <Award size={20} className="stat-icon points" />
+                                                <div className="stat-info">
+                                                    <span className="stat-value">{team.totalPoints || 0}</span>
+                                                    <span className="stat-label">Points</span>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        {/* Team Roles */}
+                                        <div className="team-roles-section">
+                                            <h4>Key Roles</h4>
+                                            <div className="roles-grid">
+                                                <div className="role-card">
+                                                    <Crown size={18} className="role-icon scrum-master" />
+                                                    <div className="role-info">
+                                                        <span className="role-label">Scrum Master</span>
+                                                        <span className="role-name">{team.scrumMaster || 'Not assigned'}</span>
+                                                    </div>
+                                                </div>
+                                                <div className="role-card">
+                                                    <Star size={18} className="role-icon product-owner" />
+                                                    <div className="role-info">
+                                                        <span className="role-label">Product Owner</span>
+                                                        <span className="role-name">{team.productOwner || 'Not assigned'}</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    {/* Team Members List */}
+                                    <div className="team-members-card">
+                                        <h4>Team Members ({teamMembers.length})</h4>
+                                        {teamMembers.length === 0 ? (
+                                            <p className="no-members">No members in this team yet.</p>
+                                        ) : (
+                                            <div className="members-list">
+                                                {teamMembers.map(member => {
+                                                    const roleBadge = getRoleBadge(member.role);
+                                                    const RoleIcon = roleBadge.icon;
+                                                    return (
+                                                        <div key={member.id} className="member-item">
+                                                            <div className="member-avatar">
+                                                                {member.userName?.charAt(0)?.toUpperCase() || '?'}
+                                                            </div>
+                                                            <div className="member-info">
+                                                                <span className="member-name">{member.userName}</span>
+                                                                <span
+                                                                    className="member-role"
+                                                                    style={{ color: roleBadge.color }}
+                                                                >
+                                                                    <RoleIcon size={12} />
+                                                                    {roleBadge.label}
+                                                                </span>
+                                                            </div>
+                                                        </div>
+                                                    );
+                                                })}
+                                            </div>
+                                        )}
+                                    </div>
                                 </div>
                             )}
                         </motion.div>
