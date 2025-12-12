@@ -104,6 +104,27 @@
     gap: 0.25rem;
 }
 
+/* Delete button */
+.delete-story-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    background: rgba(239, 68, 68, 0.1);
+    color: #ef4444;
+    transition: all 0.15s;
+    margin-left: auto;
+}
+
+.delete-story-btn:hover {
+    background: rgba(239, 68, 68, 0.2);
+    color: #dc2626;
+}
+
 .move-btn {
     display: flex;
     align-items: center;
@@ -183,7 +204,8 @@
     color: inherit;
 }
 
-.assign-btn, .unassign-btn {
+.assign-btn,
+.unassign-btn {
     display: flex;
     align-items: center;
     justify-content: center;

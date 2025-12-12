@@ -82,7 +82,7 @@ public class SecurityConfig {
                                                                 "/api/teams/**")
                                                 .hasAuthority("ROLE_TEACHER")
                                                 .requestMatchers(HttpMethod.DELETE, "/api/user-stories/**")
-                                                .hasAuthority("ROLE_TEACHER")
+                                                .hasAnyAuthority("ROLE_TEACHER", "ROLE_STUDENT")
                                                 .requestMatchers(HttpMethod.POST, "/api/achievements")
                                                 .hasAuthority("ROLE_TEACHER")
 

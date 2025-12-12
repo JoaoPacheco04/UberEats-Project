@@ -6,11 +6,12 @@ import {
     User,
     UserPlus,
     UserMinus,
-    Lock
+    Lock,
+    Trash2
 } from 'lucide-react';
 import './UserStoryCard.css';
 
-const UserStoryCard = ({ story, teamMembers = [], onAssign, onUnassign, onMoveNext, onMovePrev }) => {
+const UserStoryCard = ({ story, teamMembers = [], onAssign, onUnassign, onMoveNext, onMovePrev, onDelete }) => {
     const {
         id,
         title,
@@ -83,6 +84,15 @@ const UserStoryCard = ({ story, teamMembers = [], onAssign, onUnassign, onMoveNe
                     <span className="story-locked" title="Completed - Cannot be moved back">
                         <Lock size={12} />
                     </span>
+                )}
+                {!isDone && onDelete && (
+                    <button
+                        className="delete-story-btn"
+                        onClick={(e) => { e.stopPropagation(); if (confirm('Delete this user story?')) onDelete(); }}
+                        title="Delete story"
+                    >
+                        <Trash2 size={14} />
+                    </button>
                 )}
             </div>
 

@@ -295,10 +295,12 @@ const CourseManagement = () => {
                     </p>
                 </div>
 
-                <button className="export-btn" onClick={handleExportCsv}>
-                    <Download size={18} />
-                    Export Grades
-                </button>
+                {currentUser?.role === 'TEACHER' && (
+                    <button className="export-btn" onClick={handleExportCsv}>
+                        <Download size={18} />
+                        Export Grades
+                    </button>
+                )}
             </header>
 
             {/* Tabs */}

@@ -20,6 +20,7 @@ import {
     getTeamMembers,
     getUserStoriesBySprint,
     createUserStory,
+    deleteUserStory,
     assignUserStory,
     unassignUserStory,
     moveToNextStatus,
@@ -135,6 +136,18 @@ const SprintBoard = () => {
         } catch (err) {
             console.error('Error unassigning story:', err);
             alert('Failed to unassign user story: ' + (err.response?.data?.message || err.message));
+        }
+    };
+
+    const handleDelete = async (storyId) => {
+        console.log('handleDelete called with storyId:', storyId);
+        try {
+            await deleteUserStory(storyId);
+            console.log('Story deleted, refreshing data...');
+            await fetchData();
+        } catch (err) {
+            console.error('Error deleting story:', err);
+            alert('Failed to delete user story: ' + (err.response?.data?.message || err.message));
         }
     };
 
@@ -359,7 +372,7 @@ const SprintBoard = () => {
                     )}
                 </div>
 
-                {currentUser?.role === 'STUDENT' && (
+                {currentUser?.role === 'STUDENT' && sprint?.status !== 'COMPLETED' && sprint?.status !== 'CANCELLED' && (
                     <button
                         className="create-story-btn"
                         onClick={() => setShowCreateModal(true)}
@@ -384,17 +397,21 @@ const SprintBoard = () => {
 
                         <div className="column-content">
                             <AnimatePresence>
-                                {getStoriesByStatus(column.id).map(story => (
-                                    <UserStoryCard
-                                        key={story.id}
-                                        story={story}
-                                        teamMembers={teamMembers}
-                                        onAssign={(userId) => handleAssign(story.id, userId)}
-                                        onUnassign={() => handleUnassign(story.id)}
-                                        onMoveNext={column.id !== 'DONE' ? () => handleMoveNext(story.id) : null}
-                                        onMovePrev={column.id !== 'TODO' && column.id !== 'DONE' ? () => handleMovePrev(story.id) : null}
-                                    />
-                                ))}
+                                {getStoriesByStatus(column.id).map(story => {
+                                    const isSprintFrozen = sprint?.status === 'COMPLETED' || sprint?.status === 'CANCELLED';
+                                    return (
+                                        <UserStoryCard
+                                            key={story.id}
+                                            story={story}
+                                            teamMembers={isSprintFrozen ? [] : teamMembers}
+                                            onAssign={isSprintFrozen ? null : (userId) => handleAssign(story.id, userId)}
+                                            onUnassign={isSprintFrozen ? null : () => handleUnassign(story.id)}
+                                            onMoveNext={isSprintFrozen || column.id === 'DONE' ? null : () => handleMoveNext(story.id)}
+                                            onMovePrev={isSprintFrozen || column.id === 'TODO' || column.id === 'DONE' ? null : () => handleMovePrev(story.id)}
+                                            onDelete={isSprintFrozen || story.status === 'DONE' ? null : () => handleDelete(story.id)}
+                                        />
+                                    );
+                                })}
                             </AnimatePresence>
 
                             {getStoriesByStatus(column.id).length === 0 && (
