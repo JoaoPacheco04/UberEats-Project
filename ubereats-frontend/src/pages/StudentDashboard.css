@@ -955,3 +955,46 @@
         grid-template-columns: 1fr;
     }
 }
+
+/* Score Comparison Chart */
+.score-comparison-card {
+    overflow: hidden;
+}
+
+.score-chart-container {
+    margin-top: 0.5rem;
+}
+
+.score-comparison-summary {
+    margin-top: 1rem;
+    padding-top: 1rem;
+    border-top: 1px solid #e2e8f0;
+}
+
+.score-comparison-summary span {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+    padding: 0.75rem;
+    border-radius: 8px;
+}
+
+.score-comparison-summary .above-average {
+    background: linear-gradient(135deg, #dcfce7 0%, #d1fae5 100%);
+    color: #166534;
+}
+
+.score-comparison-summary .above-average svg {
+    color: #22c55e;
+}
+
+.score-comparison-summary .below-average {
+    background: linear-gradient(135deg, #fef3c7 0%, #fef9c3 100%);
+    color: #92400e;
+}
+
+.score-comparison-summary .below-average svg {
+    color: #f59e0b;
+}
