@@ -11,6 +11,9 @@ import java.util.List;
 import com.eduscrum.upt.Ubereats.entity.Achievement;
 import com.eduscrum.upt.Ubereats.entity.Team;
 import com.eduscrum.upt.Ubereats.entity.TeamMember;
+import com.eduscrum.upt.Ubereats.entity.UserStory;
+import com.eduscrum.upt.Ubereats.entity.enums.StoryStatus;
+import com.eduscrum.upt.Ubereats.repository.UserStoryRepository;
 import java.util.Optional;
 
 /**
@@ -26,16 +29,20 @@ public class UserService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final UserStoryRepository userStoryRepository;
 
     /**
      * Constructs a new UserService with required dependencies.
      *
-     * @param userRepository  Repository for user data access
-     * @param passwordEncoder Encoder for password hashing
+     * @param userRepository      Repository for user data access
+     * @param passwordEncoder     Encoder for password hashing
+     * @param userStoryRepository Repository for user story data access
      */
-    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder) {
+    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder,
+            UserStoryRepository userStoryRepository) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
+        this.userStoryRepository = userStoryRepository;
     }
 
     /**
@@ -259,7 +266,11 @@ public class UserService {
 
     /**
      * Calculates the global score for a user.
-     * Logic: Sum(Individual_Badge_Points) + Sum(Team_Badge_Points / Team_Size)
+     * Formula:
+     * - Individual Badge Points
+     * - Team Badge Points / Team Size
+     * - 10 points per completed story (base reward for completion)
+     * - 2× Story Points from completed stories (effort-based reward)
      *
      * @param userId The ID of the user
      * @return The calculated global score
@@ -270,7 +281,7 @@ public class UserService {
         User user = findById(userId)
                 .orElseThrow(() -> new IllegalArgumentException("User not found with id: " + userId));
 
-        // 1. Sum Individual Achievements
+        // 1. Sum Individual Achievements (badge points)
         int individualScore = user.getIndividualAchievements().stream()
                 .mapToInt(Achievement::getPoints)
                 .sum();
@@ -299,6 +310,21 @@ public class UserService {
             }
         }
 
-        return individualScore + teamScore;
+        // 3. Calculate Story-based Score from completed user stories
+        // Use repository to fetch stories assigned to this user
+        List<UserStory> userStories = userStoryRepository.findByAssignedToId(userId);
+        int storyScore = 0;
+        for (UserStory story : userStories) {
+            if (story.getStatus() == StoryStatus.DONE) {
+                // 25 base points per completed story (reward for completion)
+                storyScore += 25;
+                // Plus 5× the story points (rewarding harder stories more significantly)
+                if (story.getStoryPoints() != null) {
+                    storyScore += story.getStoryPoints() * 5;
+                }
+            }
+        }
+
+        return individualScore + teamScore + storyScore;
     }
 }

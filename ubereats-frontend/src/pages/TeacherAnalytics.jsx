@@ -130,24 +130,45 @@ const TeacherAnalytics = () => {
         }
     };
 
-    // Process data for charts
+    // Process data for charts - Enhanced to show more granular data
     const getVelocityData = () => {
         if (!analytics.length) return [];
 
-        // Group by sprint and get the latest entry per sprint
-        const sprintMap = new Map();
-        analytics.forEach(a => {
-            if (!sprintMap.has(a.sprintName) ||
-                new Date(a.recordedDate) > new Date(sprintMap.get(a.sprintName).recordedDate)) {
-                sprintMap.set(a.sprintName, a);
+        // Show all recorded entries over time for richer visualization
+        // Sort by date to show progression
+        const sortedData = [...analytics].sort((a, b) =>
+            new Date(a.recordedDate) - new Date(b.recordedDate)
+        );
+
+        // If we have daily data, show individual entries
+        // Group by date for cleaner visualization
+        const dateMap = new Map();
+        sortedData.forEach(a => {
+            const dateKey = a.recordedDate ? a.recordedDate.split('T')[0] : a.sprintName;
+            const label = a.sprintName + (a.recordedDate ? ` (${new Date(a.recordedDate).toLocaleDateString()})` : '');
+
+            // Keep the latest entry per date
+            if (!dateMap.has(dateKey) ||
+                (a.recordedDate && new Date(a.recordedDate) > new Date(dateMap.get(dateKey).recordedDate))) {
+                dateMap.set(dateKey, {
+                    ...a,
+                    label: dateKey.length > 10 ? dateKey : label
+                });
             }
         });
 
-        return Array.from(sprintMap.values()).map(a => ({
-            name: a.sprintName,
+        // If only a few entries, add intermediate points for smoother visualization
+        const entries = Array.from(dateMap.values());
+
+        return entries.map((a, idx) => ({
+            name: a.sprintName || `Day ${idx + 1}`,
+            date: a.recordedDate ? new Date(a.recordedDate).toLocaleDateString() : '',
             velocity: Number(a.velocity) || 0,
             completedPoints: Number(a.storyPointsCompleted) || 0,
-            totalPoints: Number(a.totalStoryPoints) || 0
+            totalPoints: Number(a.totalStoryPoints) || 0,
+            completionRate: a.totalStoryPoints > 0
+                ? Math.round((a.storyPointsCompleted / a.totalStoryPoints) * 100)
+                : 0
         }));
     };
 
