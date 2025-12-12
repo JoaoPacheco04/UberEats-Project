@@ -19,8 +19,20 @@ import {
     FolderOpen,
     AlertCircle,
     Loader2,
-    Star
+    Star,
+    BarChart3
 } from 'lucide-react';
+import {
+    BarChart,
+    Bar,
+    XAxis,
+    YAxis,
+    CartesianGrid,
+    Tooltip,
+    ResponsiveContainer,
+    Cell,
+    Legend
+} from 'recharts';
 import {
     getStudentDashboard,
     getUserAchievements,
@@ -336,6 +348,83 @@ const StudentDashboard = () => {
 
                     {/* Right Column - Stats & Achievements */}
                     <div className="side-column">
+                        {/* Score Comparison Chart */}
+                        <div className="stat-card score-comparison-card">
+                            <div className="stat-card-header">
+                                <div className="stat-card-icon comparison-icon">
+                                    <BarChart3 size={18} />
+                                </div>
+                                <div>
+                                    <h3>Score vs Average</h3>
+                                    <p>Your performance comparison</p>
+                                </div>
+                            </div>
+                            <div className="score-chart-container">
+                                <ResponsiveContainer width="100%" height={200}>
+                                    <BarChart
+                                        data={[
+                                            {
+                                                name: 'Your Score',
+                                                value: totalPoints,
+                                                fill: '#6366f1'
+                                            },
+                                            {
+                                                name: 'Course Avg',
+                                                value: Math.round(courseAverage),
+                                                fill: '#94a3b8'
+                                            }
+                                        ]}
+                                        layout="vertical"
+                                        margin={{ top: 10, right: 30, left: 10, bottom: 10 }}
+                                    >
+                                        <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" horizontal={false} />
+                                        <XAxis type="number" stroke="#64748b" fontSize={12} />
+                                        <YAxis
+                                            dataKey="name"
+                                            type="category"
+                                            stroke="#64748b"
+                                            fontSize={12}
+                                            width={80}
+                                        />
+                                        <Tooltip
+                                            contentStyle={{
+                                                backgroundColor: 'rgba(255,255,255,0.95)',
+                                                border: 'none',
+                                                borderRadius: '12px',
+                                                boxShadow: '0 4px 20px rgba(0,0,0,0.1)'
+                                            }}
+                                            formatter={(value) => [`${value} pts`, 'Score']}
+                                        />
+                                        <Bar
+                                            dataKey="value"
+                                            radius={[0, 8, 8, 0]}
+                                            barSize={30}
+                                        >
+                                            {[
+                                                { name: 'Your Score', fill: totalPoints >= courseAverage ? '#22c55e' : '#6366f1' },
+                                                { name: 'Course Avg', fill: '#94a3b8' }
+                                            ].map((entry, index) => (
+                                                <Cell key={`cell-${index}`} fill={entry.fill} />
+                                            ))}
+                                        </Bar>
+                                    </BarChart>
+                                </ResponsiveContainer>
+                                <div className="score-comparison-summary">
+                                    {totalPoints >= courseAverage ? (
+                                        <span className="above-average">
+                                            <TrendingUp size={16} />
+                                            You're above average!
+                                        </span>
+                                    ) : (
+                                        <span className="below-average">
+                                            <Target size={16} />
+                                            Keep going! Complete more stories to improve.
+                                        </span>
+                                    )}
+                                </div>
+                            </div>
+                        </div>
+
 
 
                         {/* Recent Achievements */}
