@@ -81,6 +81,7 @@ public class SecurityConfig {
                                                                 "/api/projects/**", "/api/sprints/**",
                                                                 "/api/teams/**")
                                                 .hasAuthority("ROLE_TEACHER")
+
                                                 .requestMatchers(HttpMethod.DELETE, "/api/user-stories/**")
                                                 .hasAnyAuthority("ROLE_TEACHER", "ROLE_STUDENT")
                                                 .requestMatchers(HttpMethod.POST, "/api/achievements")
