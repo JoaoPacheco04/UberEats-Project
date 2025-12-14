@@ -1,7 +1,9 @@
+// Import necessary modules from React and external libraries
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { motion } from 'framer-motion';
+import { motion } from 'framer-motion'; // For animations and transitions
 import {
+    // Lucide icons for visual representation
     GraduationCap,
     BookOpen,
     Users,
@@ -24,6 +26,7 @@ import {
     Settings,
 } from 'lucide-react';
 import {
+    // Recharts components for the score comparison chart
     BarChart,
     Bar,
     XAxis,
@@ -35,6 +38,7 @@ import {
     Legend
 } from 'recharts';
 import {
+    // API service calls for fetching and modifying student data
     getStudentDashboard,
     getUserAchievements,
     getUserTeams,
@@ -43,39 +47,50 @@ import {
     enrollStudent,
     getCurrentUser
 } from '../services/api';
+// Custom component imports
 import EditProfileModal from '../components/EditProfileModal';
 import './StudentDashboard.css';
 
+// Main Student Dashboard component
 const StudentDashboard = () => {
+    // Hook to handle navigation (e.g., redirecting to login or course details)
     const navigate = useNavigate();
+
+    // --- State Variables ---
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
 
-    // Dashboard data
-    const [dashboardData, setDashboardData] = useState(null);
-    const [achievements, setAchievements] = useState([]);
-    const [teams, setTeams] = useState([]);
-    const [enrollments, setEnrollments] = useState([]);
-    const [availableCourses, setAvailableCourses] = useState([]);
+    // Dashboard specific data states
+    const [dashboardData, setDashboardData] = useState(null); // High-level stats (e.g., global score, average)
+    const [achievements, setAchievements] = useState([]); // List of badges/awards earned
+    const [teams, setTeams] = useState([]); // List of teams the student is part of
+    const [enrollments, setEnrollments] = useState([]); // List of courses the student is enrolled in
+    const [availableCourses, setAvailableCourses] = useState([]); // Courses not yet enrolled in
 
-    // Modal state
+    // Modal state management
     const [showEnrollModal, setShowEnrollModal] = useState(false);
     const [showEditProfileModal, setShowEditProfileModal] = useState(false);
-    const [enrolling, setEnrolling] = useState(false);
+    const [enrolling, setEnrolling] = useState(false); // Loading state for enrollment action
 
+    // Get current user information from local storage or context
     const user = getCurrentUser();
 
+    // --- Effects (Data Fetching) ---
     useEffect(() => {
+        // Only attempt to fetch data if a user ID is available
         if (user?.id) {
             fetchAllData();
         }
-    }, [user?.id]);
+    }, [user?.id]); // Re-run if user ID changes (though usually only runs once on mount)
 
+    // Function to fetch all necessary dashboard data concurrently
     const fetchAllData = async () => {
         try {
             setLoading(true);
             setError(null);
 
+            // Use Promise.all to fetch data in parallel,
+            // providing fallback data ({ data: [] } or { data: {} }) for robust error handling
             const [dashRes, achieveRes, teamsRes, enrollRes, coursesRes] = await Promise.all([
                 getStudentDashboard(user.id).catch(() => ({ data: {} })),
                 getUserAchievements(user.id).catch(() => ({ data: [] })),
@@ -84,12 +99,13 @@ const StudentDashboard = () => {
                 getAvailableCourses().catch(() => ({ data: [] }))
             ]);
 
+            // Set the fetched data to state
             setDashboardData(dashRes.data || {});
             setAchievements(achieveRes.data || []);
             setTeams(teamsRes.data || []);
             setEnrollments(enrollRes.data || []);
 
-            // Filter out already enrolled courses
+            // Filter available courses to show only those the student is NOT already enrolled in
             const enrolledCourseIds = (enrollRes.data || []).map(e => e.courseId);
             const available = (coursesRes.data || []).filter(c => !enrolledCourseIds.includes(c.id));
             setAvailableCourses(available);
@@ -101,12 +117,14 @@ const StudentDashboard = () => {
         }
     };
 
+    // Handler for course enrollment action
     const handleEnroll = async (courseId) => {
         try {
             setEnrolling(true);
             await enrollStudent({ courseId, studentId: user.id });
+            // Re-fetch all data to update the 'My Courses' and 'Available Courses' sections
             await fetchAllData();
-            setShowEnrollModal(false);
+            setShowEnrollModal(false); // Close the modal on success
         } catch (err) {
             console.error('Error enrolling:', err);
             alert('Failed to enroll in course');
@@ -115,21 +133,27 @@ const StudentDashboard = () => {
         }
     };
 
+    // Handler for user logout
     const handleLogout = () => {
+        // Clear user session data
         localStorage.removeItem('user');
         localStorage.removeItem('token');
+        // Redirect to the login page
         navigate('/login');
     };
 
+    // Utility function to safely get the user's name for display
     const getUserName = () => {
         return user?.fullName || user?.firstName || 'Student';
     };
 
-    // Calculate stats
+    // --- Calculated Stats ---
+    // Safely calculate total points, prioritizing dashboardData.globalScore
     const totalPoints = dashboardData?.globalScore || achievements.reduce((sum, a) => sum + Number(a.points || 0), 0);
     const totalBadges = achievements.length;
-    const courseAverage = dashboardData?.courseAverage || 0;
+    const courseAverage = dashboardData?.courseAverage || 0; // Average score across all courses/students
 
+    // --- Loading State Render ---
     if (loading) {
         return (
             <div className="student-dashboard-loading">
@@ -139,10 +163,12 @@ const StudentDashboard = () => {
         );
     }
 
+    // --- Main Component Render ---
     return (
         <div className="student-dashboard">
-            {/* Animated Background */}
+            {/* Animated Background using framer-motion for visual effect */}
             <div className="dashboard-bg">
+                {/* Motion divs for moving orbs/decorations */}
                 <motion.div
                     animate={{ x: [0, 50, 0], y: [0, -30, 0], scale: [1, 1.1, 1] }}
                     transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
@@ -162,7 +188,7 @@ const StudentDashboard = () => {
             </div>
 
             <div className="dashboard-container">
-                {/* Header Section */}
+                {/* Header Section with Welcome Message and Quick Stats */}
                 <motion.header
                     initial={{ opacity: 0, y: -20 }}
                     animate={{ opacity: 1, y: 0 }}
@@ -170,6 +196,7 @@ const StudentDashboard = () => {
                 >
                     <div className="header-banner">
                         <div className="header-decorations">
+                            {/* Decorative elements (circles, sparkles) */}
                             <div className="decoration-circle top-right" />
                             <div className="decoration-circle bottom-left" />
                             <Sparkles className="sparkle-icon" size={40} />
@@ -183,11 +210,11 @@ const StudentDashboard = () => {
                                     </div>
                                     <span className="header-label">Student Dashboard</span>
                                 </div>
-                                <h1>Welcome, {getUserName()}!</h1>
+                                <h1>Welcome, **{getUserName()}**!</h1>
                                 <p>Track your progress and achievements</p>
                             </div>
 
-                            {/* Quick Stats */}
+                            {/* Quick Stats: Points, Badges, Teams */}
                             <div className="header-stats">
                                 <div className="stat-box">
                                     <Trophy size={24} />
@@ -212,7 +239,7 @@ const StudentDashboard = () => {
                                 </div>
                             </div>
 
-                            {/* Action Buttons */}
+                            {/* Action Buttons: Edit Profile and Logout */}
                             <div className="header-actions">
                                 <button
                                     onClick={() => setShowEditProfileModal(true)}
@@ -230,6 +257,7 @@ const StudentDashboard = () => {
                     </div>
                 </motion.header>
 
+                {/* Error Banner */}
                 {
                     error && (
                         <div className="error-banner">
@@ -240,9 +268,9 @@ const StudentDashboard = () => {
                     )
                 }
 
-                {/* Main Content Grid */}
+                {/* Main Content Grid Layout */}
                 <div className="dashboard-grid">
-                    {/* Left Column - Main Content */}
+                    {/* Left Column - Courses & Teams */}
                     <div className="main-column">
                         {/* My Courses Section */}
                         <section className="dashboard-section">
@@ -256,6 +284,7 @@ const StudentDashboard = () => {
                                         <p>Courses you're enrolled in</p>
                                     </div>
                                 </div>
+                                {/* Button to open the enrollment modal */}
                                 <button
                                     className="action-btn primary"
                                     onClick={() => setShowEnrollModal(true)}
@@ -265,13 +294,14 @@ const StudentDashboard = () => {
                                 </button>
                             </div>
 
+                            {/* Display enrolled courses or an empty state */}
                             {enrollments.length > 0 ? (
                                 <div className="courses-grid">
                                     {enrollments.map((enrollment) => (
                                         <motion.div
                                             key={enrollment.id}
                                             className="course-card"
-                                            whileHover={{ y: -4 }}
+                                            whileHover={{ y: -4 }} // Hover effect
                                             onClick={() => navigate(`/student/courses/${enrollment.courseId}`)}
                                         >
                                             <div className="course-card-header">
@@ -293,6 +323,7 @@ const StudentDashboard = () => {
                                     ))}
                                 </div>
                             ) : (
+                                // Empty state when no courses are enrolled
                                 <div className="empty-state">
                                     <BookOpen size={48} />
                                     <h3>No Courses Yet</h3>
@@ -322,13 +353,14 @@ const StudentDashboard = () => {
                                 </div>
                             </div>
 
+                            {/* Display student's teams or an empty state */}
                             {teams.length > 0 ? (
                                 <div className="teams-grid">
                                     {teams.map((team) => (
                                         <motion.div
                                             key={team.id}
                                             className="team-card"
-                                            whileHover={{ y: -4 }}
+                                            whileHover={{ y: -4 }} // Hover effect
                                             onClick={() => navigate(`/student/teams/${team.id}`)}
                                         >
                                             <div className="team-card-header">
@@ -350,6 +382,7 @@ const StudentDashboard = () => {
                                     ))}
                                 </div>
                             ) : (
+                                // Empty state when not part of any team
                                 <div className="empty-state">
                                     <Users size={48} />
                                     <h3>No Teams Yet</h3>
@@ -373,18 +406,19 @@ const StudentDashboard = () => {
                                 </div>
                             </div>
                             <div className="score-chart-container">
+                                {/* Bar Chart using Recharts */}
                                 <ResponsiveContainer width="100%" height={200}>
                                     <BarChart
                                         data={[
                                             {
                                                 name: 'Your Score',
                                                 value: totalPoints,
-                                                fill: '#6366f1'
+                                                fill: '#6366f1' // Default color
                                             },
                                             {
                                                 name: 'Course Avg',
                                                 value: Math.round(courseAverage),
-                                                fill: '#94a3b8'
+                                                fill: '#94a3b8' // Average color
                                             }
                                         ]}
                                         layout="vertical"
@@ -413,6 +447,7 @@ const StudentDashboard = () => {
                                             radius={[0, 8, 8, 0]}
                                             barSize={30}
                                         >
+                                            {/* Dynamically set color for 'Your Score' bar: green if above average, default otherwise */}
                                             {[
                                                 { name: 'Your Score', fill: totalPoints >= courseAverage ? '#22c55e' : '#6366f1' },
                                                 { name: 'Course Avg', fill: '#94a3b8' }
@@ -423,6 +458,7 @@ const StudentDashboard = () => {
                                     </BarChart>
                                 </ResponsiveContainer>
                                 <div className="score-comparison-summary">
+                                    {/* Conditional message based on performance vs average */}
                                     {totalPoints >= courseAverage ? (
                                         <span className="above-average">
                                             <TrendingUp size={16} />
@@ -438,9 +474,7 @@ const StudentDashboard = () => {
                             </div>
                         </div>
 
-
-
-                        {/* Recent Achievements */}
+                        {/* Recent Achievements Card */}
                         <div className="stat-card achievements-card">
                             <div className="stat-card-header">
                                 <div className="stat-card-icon achievements-icon">
@@ -452,8 +486,10 @@ const StudentDashboard = () => {
                                 </div>
                             </div>
 
+                            {/* Display recent achievements */}
                             {achievements.length > 0 ? (
                                 <div className="achievements-list">
+                                    {/* Slice(0, 5) shows only the 5 most recent achievements */}
                                     {achievements.slice(0, 5).map((achievement, index) => (
                                         <motion.div
                                             key={achievement.id}
@@ -486,7 +522,7 @@ const StudentDashboard = () => {
                             )}
                         </div>
 
-                        {/* Progression Timeline */}
+                        {/* Progression Timeline Card (Summary) */}
                         <div className="stat-card progression-card">
                             <div className="stat-card-header">
                                 <div className="stat-card-icon progression-icon">
@@ -498,6 +534,7 @@ const StudentDashboard = () => {
                                 </div>
                             </div>
                             <div className="progression-stats">
+                                {/* Calculated counts for overall progression summary */}
                                 <div className="progression-stat">
                                     <span className="prog-value">{enrollments.length}</span>
                                     <span className="prog-label">Courses</span>
@@ -516,7 +553,7 @@ const StudentDashboard = () => {
                 </div>
             </div >
 
-            {/* Enroll Modal */}
+            {/* Enroll Modal (Hidden by default) */}
             {
                 showEnrollModal && (
                     <div className="modal-overlay" onClick={() => setShowEnrollModal(false)}>
@@ -524,7 +561,7 @@ const StudentDashboard = () => {
                             className="modal-content enroll-modal"
                             initial={{ scale: 0.9, opacity: 0 }}
                             animate={{ scale: 1, opacity: 1 }}
-                            onClick={e => e.stopPropagation()}
+                            onClick={e => e.stopPropagation()} // Prevents closing when clicking inside modal
                         >
                             <h2>Enroll in a Course</h2>
                             <p className="modal-subtitle">Select a course to join</p>
@@ -545,6 +582,7 @@ const StudentDashboard = () => {
                                                 onClick={() => handleEnroll(course.id)}
                                                 disabled={enrolling}
                                             >
+                                                {/* Show spinner when enrolling */}
                                                 {enrolling ? <Loader2 className="spinner" size={16} /> : <UserPlus size={16} />}
                                                 Enroll
                                             </button>
@@ -572,14 +610,14 @@ const StudentDashboard = () => {
                 )
             }
 
-            {/* Edit Profile Modal */}
+            {/* Edit Profile Modal (External Component) */}
             <EditProfileModal
                 isOpen={showEditProfileModal}
                 onClose={() => setShowEditProfileModal(false)}
                 currentUser={user}
                 onUpdateSuccess={() => {
                     setShowEditProfileModal(false);
-                    // Refresh page to show updated name
+                    // Refresh the page to ensure the updated name is displayed globally
                     window.location.reload();
                 }}
             />

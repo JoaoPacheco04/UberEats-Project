@@ -1,191 +1,132 @@
-import React, { useState } from 'react';
-import { motion } from 'framer-motion';
+import React from 'react';
+import { useNavigate } from 'react-router-dom'; // Hook for programmatic navigation
+import { motion } from 'framer-motion'; // Library for animation and interaction (used here for hover effect)
 import {
-    ChevronRight,
-    ChevronLeft,
-    User,
-    UserPlus,
-    UserMinus,
-    Lock,
-    Trash2
-} from 'lucide-react';
-import './UserStoryCard.css';
+    Users,      // Icon for the team itself
+    Crown,      // Icon for Scrum Master role
+    Star,       // Icon for Product Owner role
+    TrendingUp, // Icon for progress/trend
+    BarChart3,  // Icon for performance rating
+    ChevronRight // Icon for indicating clickable navigation
+} from 'lucide-react'; // Importing icons
+import './TeamCard.css'; // Importing component-specific styles
 
-const UserStoryCard = ({ story, teamMembers = [], onAssign, onUnassign, onMoveNext, onMovePrev, onDelete }) => {
+/**
+ * TeamCard Component
+ * Displays a summary card for a single project team, including key roles, stats, 
+ * and associated projects. It is clickable to navigate to the team's detail page.
+ *
+ * @param {object} team - The team data object.
+ * @param {function} [onClick] - Optional custom click handler. If not provided,
+ * it navigates to the team detail page.
+ */
+const TeamCard = ({ team, onClick }) => {
+    const navigate = useNavigate(); // Initialize navigate function from react-router-dom
+
+    // Destructure properties from the team object
     const {
         id,
-        title,
-        description,
-        storyPoints,
-        priority,
-        status,
-        assignedUserName,  // Fixed: was assignedToName
-        assignedToUserId   // Fixed: was assignedToId
-    } = story;
+        name,
+        memberCount,
+        scrumMaster,
+        productOwner,
+        currentProgress,
+        performanceRating,
+        projectNames
+    } = team;
 
-    const [showAssignDropdown, setShowAssignDropdown] = useState(false);
+    // Convert progress and rating to numbers, defaulting to 0 if null/undefined
+    const progress = currentProgress ? Number(currentProgress) : 0;
+    const rating = performanceRating ? Number(performanceRating) : 0;
 
-    const getPriorityConfig = (priority) => {
-        const configs = {
-            LOW: { label: 'Low', color: '#64748b', bg: '#f1f5f9' },
-            MEDIUM: { label: 'Medium', color: '#f59e0b', bg: '#fef3c7' },
-            HIGH: { label: 'High', color: '#ef4444', bg: '#fee2e2' },
-            CRITICAL: { label: 'Critical', color: '#dc2626', bg: '#fecaca' }
-        };
-        return configs[priority] || configs.MEDIUM;
-    };
-
-    const priorityConfig = getPriorityConfig(priority);
-    const isDone = status === 'DONE';
-
-    const handleAssignClick = (e) => {
-        e.stopPropagation();
-        console.log('Assign click - teamMembers:', teamMembers, 'isDone:', isDone);
-        setShowAssignDropdown(!showAssignDropdown);
-    };
-
-    const handleSelectMember = (e, memberId) => {
-        e.stopPropagation();
-        console.log('Selected member ID:', memberId, 'onAssign function:', !!onAssign);
-        if (onAssign) {
-            onAssign(memberId);
+    /**
+     * Handles the click event on the card.
+     * Prioritizes the custom `onClick` prop if provided, otherwise navigates 
+     * to the team details route.
+     */
+    const handleClick = () => {
+        if (onClick) {
+            onClick();
         } else {
-            console.error('onAssign function is not provided!');
+            // Default navigation to the team's detail page using its ID
+            navigate(`/teacher/teams/${id}`);
         }
-        setShowAssignDropdown(false);
-    };
-
-    const handleUnassignClick = (e) => {
-        e.stopPropagation();
-        if (onUnassign) {
-            onUnassign();
-        }
-        setShowAssignDropdown(false);
     };
 
     return (
+        // motion.div enables framer-motion animations
         <motion.div
-            className={`user-story-card ${isDone ? 'done' : ''}`}
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -10 }}
-            layout
+            className="team-card"
+            whileHover={{ y: -4 }} // Simple lift animation on hover
+            onClick={handleClick}  // Attach the click handler to the entire card
         >
-            {/* Header */}
-            <div className="story-header">
-                <span className="story-points">{storyPoints || '?'}</span>
-                <span
-                    className="story-priority"
-                    style={{ background: priorityConfig.bg, color: priorityConfig.color }}
-                >
-                    {priorityConfig.label}
-                </span>
-                {isDone && (
-                    <span className="story-locked" title="Completed - Cannot be moved back">
-                        <Lock size={12} />
-                    </span>
-                )}
-                {!isDone && onDelete && (
-                    <button
-                        className="delete-story-btn"
-                        onClick={(e) => { e.stopPropagation(); if (confirm('Delete this user story?')) onDelete(); }}
-                        title="Delete story"
-                    >
-                        <Trash2 size={14} />
-                    </button>
-                )}
-            </div>
-
-            {/* Content */}
-            <div className="story-content">
-                <h4 className="story-title">{title}</h4>
-                {description && (
-                    <p className="story-description">{description}</p>
-                )}
-            </div>
-
-            {/* Footer */}
-            <div className="story-footer">
-                <div className="assignee-section">
-                    {assignedUserName ? (
-                        <div className="story-assignee assigned" onClick={handleAssignClick}>
-                            <User size={14} />
-                            <span>{assignedUserName}</span>
-                            {!isDone && onUnassign && (
-                                <button
-                                    className="unassign-btn"
-                                    onClick={handleUnassignClick}
-                                    title="Unassign"
-                                >
-                                    <UserMinus size={12} />
-                                </button>
-                            )}
-                        </div>
-                    ) : (
-                        <div
-                            className="story-assignee unassigned"
-                            onClick={!isDone ? handleAssignClick : undefined}
-                        >
-                            <User size={14} />
-                            <span>Unassigned</span>
-                            {!isDone && onAssign && teamMembers.length > 0 && (
-                                <button className="assign-btn" title="Assign">
-                                    <UserPlus size={12} />
-                                </button>
-                            )}
-                        </div>
-                    )}
-
-                    {/* Assignment Dropdown */}
-                    {showAssignDropdown && teamMembers.length > 0 && !isDone && (
-                        <div className="assign-dropdown" onClick={(e) => e.stopPropagation()}>
-                            <div className="assign-dropdown-header">Assign to:</div>
-                            {teamMembers.map(member => (
-                                <button
-                                    key={member.userId || member.id}
-                                    className="assign-option"
-                                    onClick={(e) => handleSelectMember(e, member.userId || member.id)}
-                                >
-                                    <User size={14} />
-                                    {member.userName || member.fullName || member.name || `User ${member.userId || member.id}`}
-                                </button>
-                            ))}
-                            {assignedToUserId && (
-                                <button
-                                    className="assign-option unassign"
-                                    onClick={handleUnassignClick}
-                                >
-                                    <UserMinus size={14} />
-                                    Remove assignment
-                                </button>
-                            )}
-                        </div>
-                    )}
+            
+            {/* 1. Header Section: Team Name and Member Count */}
+            <div className="team-header">
+                {/* Team Icon */}
+                <div className="team-icon">
+                    <Users size={20} />
                 </div>
+                {/* Name and Member Count Display */}
+                <div className="team-info">
+                    <h3 className="team-name">{name}</h3>
+                    <span className="member-count">{memberCount || 0} members</span>
+                </div>
+                {/* Navigation Indicator Arrow */}
+                <ChevronRight size={20} className="team-arrow" />
+            </div>
 
-                <div className="story-actions">
-                    {onMovePrev && (
-                        <button
-                            className="move-btn prev"
-                            onClick={(e) => { e.stopPropagation(); onMovePrev(); }}
-                            title="Move to previous column"
-                        >
-                            <ChevronLeft size={16} />
-                        </button>
-                    )}
-                    {onMoveNext && (
-                        <button
-                            className="move-btn next"
-                            onClick={(e) => { e.stopPropagation(); onMoveNext(); }}
-                            title="Move to next column"
-                        >
-                            <ChevronRight size={16} />
-                        </button>
-                    )}
+            {/* 2. Roles Section: Scrum Master and Product Owner */}
+            <div className="team-roles">
+                {/* Scrum Master Role */}
+                <div className="role">
+                    <Crown size={14} className="role-icon scrum-master" />
+                    <div className="role-info">
+                        <span className="role-label">Scrum Master</span>
+                        <span className="role-name">{scrumMaster || 'Not assigned'}</span>
+                    </div>
+                </div>
+                {/* Product Owner Role */}
+                <div className="role">
+                    <Star size={14} className="role-icon product-owner" />
+                    <div className="role-info">
+                        <span className="role-label">Product Owner</span>
+                        <span className="role-name">{productOwner || 'Not assigned'}</span>
+                    </div>
                 </div>
             </div>
+
+            {/* 3. Stats Section: Progress and Rating */}
+            <div className="team-stats">
+                {/* Progress Stat */}
+                <div className="stat">
+                    <TrendingUp size={14} />
+                    <span className="stat-value">{progress.toFixed(0)}%</span> {/* Display as whole percentage */}
+                    <span className="stat-label">Progress</span>
+                </div>
+                {/* Performance Rating Stat */}
+                <div className="stat">
+                    <BarChart3 size={14} />
+                    <span className="stat-value">{rating.toFixed(1)}</span> {/* Display rating with one decimal */}
+                    <span className="stat-label">Rating</span>
+                </div>
+            </div>
+
+            {/* 4. Projects Section: Tags */}
+            {projectNames && projectNames.length > 0 && ( // Only render if project names exist
+                <div className="team-projects">
+                    {/* Map and display the first two project names as tags */}
+                    {projectNames.slice(0, 2).map((projectName, index) => (
+                        <span key={index} className="project-tag">{projectName}</span>
+                    ))}
+                    {/* Display a counter for remaining projects if there are more than two */}
+                    {projectNames.length > 2 && (
+                        <span className="more-projects">+{projectNames.length - 2}</span>
+                    )}
+                </div>
+            )}
         </motion.div>
     );
 };
 
-export default UserStoryCard;
+export default TeamCard;
