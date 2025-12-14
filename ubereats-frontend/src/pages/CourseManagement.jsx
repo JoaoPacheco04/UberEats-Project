@@ -331,13 +331,15 @@ const CourseManagement = () => {
                         >
                             <div className="section-header">
                                 <h2>Projects</h2>
-                                <button
-                                    className="create-btn"
-                                    onClick={() => setShowCreateModal(true)}
-                                >
-                                    <Plus size={20} />
-                                    New Project
-                                </button>
+                                {currentUser?.role === 'TEACHER' && (
+                                    <button
+                                        className="create-btn"
+                                        onClick={() => setShowCreateModal(true)}
+                                    >
+                                        <Plus size={20} />
+                                        New Project
+                                    </button>
+                                )}
                             </div>
 
                             {projects.length === 0 ? (
@@ -345,13 +347,15 @@ const CourseManagement = () => {
                                     <FolderKanban size={64} strokeWidth={1} />
                                     <h3>No projects yet</h3>
                                     <p>Create your first project to get started with sprints and user stories.</p>
-                                    <button
-                                        className="create-btn primary"
-                                        onClick={() => setShowCreateModal(true)}
-                                    >
-                                        <Plus size={20} />
-                                        Create First Project
-                                    </button>
+                                    {currentUser?.role === 'TEACHER' && (
+                                        <button
+                                            className="create-btn primary"
+                                            onClick={() => setShowCreateModal(true)}
+                                        >
+                                            <Plus size={20} />
+                                            Create First Project
+                                        </button>
+                                    )}
                                 </div>
                             ) : (
                                 <div className="projects-grid">

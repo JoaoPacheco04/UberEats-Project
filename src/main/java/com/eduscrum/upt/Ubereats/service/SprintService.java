@@ -336,7 +336,7 @@ public class SprintService {
      * @return The completed sprint as a response DTO
      * @throws BusinessLogicException if sprint cannot be completed
      */
-    public SprintResponseDTO completeSprint(Long id, LocalDate completionDate) {
+    public SprintResponseDTO completeSprint(Long id, LocalDate completionDate, Integer teamMood) {
         Sprint sprint = getSprintEntity(id);
 
         if (!sprint.canBeCompleted()) {
@@ -349,6 +349,10 @@ public class SprintService {
             sprint.setCompletedAt(completionDate);
         } else {
             sprint.setCompletedAt(LocalDate.now());
+        }
+
+        if (teamMood != null) {
+            sprint.setTeamMood(teamMood);
         }
 
         Sprint updatedSprint = sprintRepository.save(sprint);
@@ -567,6 +571,8 @@ public class SprintService {
             dto.setProjectId(sprint.getProject().getId());
             dto.setProjectName(sprint.getProject().getName());
         }
+
+        dto.setTeamMood(sprint.getTeamMood());
 
         return dto;
     }

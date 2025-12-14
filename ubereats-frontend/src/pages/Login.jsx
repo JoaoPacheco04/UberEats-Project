@@ -46,7 +46,7 @@ const Login = () => {
 
                 {/* Optional Overlaid Text on Image if needed, perfectly matching reference */}
                 <div className="absolute inset-0 flex flex-col justify-center items-center text-white z-10 p-12 text-center">
-                    <img src={applogo} alt="Logo White" className="w-24 h-24 mb-6 brightness-0 invert drop-shadow-lg" />
+                    <img src={applogo} alt="Logo White" className="w-24 h-24 mb-6 drop-shadow-lg" />
                     <h1 className="text-4xl font-serif tracking-wider mb-2">UNIVERSIDADE</h1>
                     <h1 className="text-4xl font-serif tracking-wider mb-6">PORTUCALENSE</h1>
                     <p className="text-lg font-light tracking-widest uppercase border-t border-b border-white/50 py-2">

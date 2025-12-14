@@ -130,8 +130,9 @@ public class SprintController {
     @PatchMapping("/{id}/complete")
     public ResponseEntity<SprintResponseDTO> completeSprint(
             @PathVariable Long id,
-            @RequestParam(required = false) LocalDate completionDate) {
-        SprintResponseDTO response = sprintService.completeSprint(id, completionDate);
+            @RequestParam(required = false) LocalDate completionDate,
+            @RequestParam(required = false) Integer teamMood) {
+        SprintResponseDTO response = sprintService.completeSprint(id, completionDate, teamMood);
         return ResponseEntity.ok(response);
     }
 

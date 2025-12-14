@@ -47,6 +47,9 @@ public class Sprint {
     @Column(name = "completed_at")
     private LocalDate completedAt;
 
+    @Column(name = "team_mood")
+    private Integer teamMood;
+
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, length = 20)
     private SprintStatus status = SprintStatus.PLANNED;
@@ -140,6 +143,14 @@ public class Sprint {
 
     public void setCompletedAt(LocalDate completedAt) {
         this.completedAt = completedAt;
+    }
+
+    public Integer getTeamMood() {
+        return teamMood;
+    }
+
+    public void setTeamMood(Integer teamMood) {
+        this.teamMood = teamMood;
     }
 
     public SprintStatus getStatus() {

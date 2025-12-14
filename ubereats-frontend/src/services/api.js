@@ -100,8 +100,12 @@ export const getSprintById = (sprintId) => api.get(`/sprints/${sprintId}`);
 export const createSprint = (sprintData) => api.post('/sprints', sprintData);
 export const updateSprint = (sprintId, sprintData) => api.put(`/sprints/${sprintId}`, sprintData);
 export const startSprint = (sprintId) => api.put(`/sprints/${sprintId}/start`);
-export const completeSprint = (sprintId, completionDate) =>
-    api.patch(`/sprints/${sprintId}/complete${completionDate ? `?completionDate=${completionDate}` : ''}`);
+export const completeSprint = (sprintId, completionDate, teamMood) => {
+    let url = `/sprints/${sprintId}/complete?`;
+    if (completionDate) url += `completionDate=${completionDate}&`;
+    if (teamMood) url += `teamMood=${teamMood}`;
+    return api.patch(url);
+};
 export const cancelSprint = (sprintId) => api.put(`/sprints/${sprintId}/cancel`);
 export const deleteSprint = (sprintId) => api.delete(`/sprints/${sprintId}`);
 
@@ -167,5 +171,7 @@ export const getCurrentUser = () => {
         return null;
     }
 };
+
+
 
 export default api;

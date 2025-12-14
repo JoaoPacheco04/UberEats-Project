@@ -368,9 +368,22 @@ class SprintServiceTest {
         SprintResponseDTO created = sprintService.createSprint(request);
         sprintService.startSprint(created.getId());
 
-        SprintResponseDTO completed = sprintService.completeSprint(created.getId(), LocalDate.now());
+        SprintResponseDTO completed = sprintService.completeSprint(created.getId(), LocalDate.now(), null);
 
         assertEquals(SprintStatus.COMPLETED, completed.getStatus());
+    }
+
+    @Test
+    void completeSprint_WithTeamMood_Success() {
+        SprintRequestDTO request = createSprintRequest(1, "Sprint with Mood",
+                LocalDate.now().minusDays(14), LocalDate.now());
+        SprintResponseDTO created = sprintService.createSprint(request);
+        sprintService.startSprint(created.getId());
+
+        SprintResponseDTO completed = sprintService.completeSprint(created.getId(), LocalDate.now(), 5);
+
+        assertEquals(SprintStatus.COMPLETED, completed.getStatus());
+        assertEquals(5, completed.getTeamMood());
     }
 
     @Test
@@ -378,7 +391,7 @@ class SprintServiceTest {
         SprintResponseDTO created = createTestSprint(1, "Planned Sprint");
 
         assertThrows(BusinessLogicException.class, () -> {
-            sprintService.completeSprint(created.getId(), LocalDate.now());
+            sprintService.completeSprint(created.getId(), LocalDate.now(), null);
         });
     }
 
@@ -470,7 +483,7 @@ class SprintServiceTest {
                 LocalDate.now().minusDays(14), LocalDate.now());
         SprintResponseDTO created = sprintService.createSprint(request);
         sprintService.startSprint(created.getId());
-        sprintService.completeSprint(created.getId(), LocalDate.now());
+        sprintService.completeSprint(created.getId(), LocalDate.now(), null);
 
         boolean allOnTime = sprintService.checkIfAllSprintsInProjectCompletedOnTime(project.getId());
 
