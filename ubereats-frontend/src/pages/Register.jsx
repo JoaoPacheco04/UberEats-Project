@@ -1,9 +1,15 @@
 import React, { useState } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
-import { register } from '../services/api';
-import { GraduationCap, User, Mail, Lock, BookOpen } from 'lucide-react';
+import { useNavigate, Link } from 'react-router-dom'; // Hooks para navegação e links
+import { register } from '../services/api'; // Função de registro da API
+import { GraduationCap, User, Mail, Lock, BookOpen } from 'lucide-react'; // Ícones do Lucide
 
+/**
+ * Componente Register - Página de registro para novos usuários
+ * Permite que estudantes e professores criem contas no sistema
+ * Inclui validação de senha e seleção de papel (role)
+ */
 const Register = () => {
+    // Estado único para todos os campos do formulário
     const [formData, setFormData] = useState({
         firstName: '',
         lastName: '',
@@ -11,35 +17,48 @@ const Register = () => {
         email: '',
         password: '',
         confirmPassword: '',
-        role: 'STUDENT',
+        role: 'STUDENT', // Valor padrão: estudante
     });
-    const [error, setError] = useState('');
-    const [isLoading, setIsLoading] = useState(false);
-    const navigate = useNavigate();
+    const [error, setError] = useState(''); // Estado para mensagens de erro
+    const [isLoading, setIsLoading] = useState(false); // Estado para indicar carregamento
+    const navigate = useNavigate(); // Hook para navegação programática
 
+    /**
+     * Manipula mudanças em qualquer campo do formulário
+     * Atualiza o estado e limpa mensagens de erro quando o usuário começa a digitar
+     * @param {Event} e - Evento de mudança do input
+     */
     const handleChange = (e) => {
         const { name, value } = e.target;
         setFormData(prev => ({ ...prev, [name]: value }));
+        // Limpa erro quando usuário começa a digitar novamente
         if (error) setError('');
     };
 
+    /**
+     * Manipula o envio do formulário de registro
+     * Realiza validações no lado do cliente antes de chamar a API
+     * @param {Event} e - Evento de submit do formulário
+     */
     const handleSubmit = async (e) => {
-        e.preventDefault();
-        setError('');
+        e.preventDefault(); // Previne comportamento padrão
+        setError(''); // Limpa erros anteriores
 
-        // Validation
+        // Validação 1: Confirmação de senha
         if (formData.password !== formData.confirmPassword) {
             setError('Passwords do not match');
             return;
         }
 
+        // Validação 2: Comprimento mínimo da senha
         if (formData.password.length < 6) {
             setError('Password must be at least 6 characters');
             return;
         }
 
-        setIsLoading(true);
+        setIsLoading(true); // Ativa estado de carregamento
         try {
+            // Prepara payload para API (remove campo de confirmação de senha)
             const payload = {
                 firstName: formData.firstName,
                 lastName: formData.lastName,
@@ -49,19 +68,26 @@ const Register = () => {
                 role: formData.role,
             };
 
-            await register(payload);
-            navigate('/login', { state: { message: 'Registration successful! Please login.' } });
+            await register(payload); // Chama API de registro
+            
+            // Redireciona para login com mensagem de sucesso
+            navigate('/login', { 
+                state: { message: 'Registration successful! Please login.' } 
+            });
         } catch (err) {
+            // Captura e exibe erro da API
             setError(err.message || 'Registration failed. Please try again.');
         } finally {
-            setIsLoading(false);
+            setIsLoading(false); // Desativa estado de carregamento
         }
     };
 
     return (
+        // Container principal com gradiente de fundo
         <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-blue-50 flex items-center justify-center p-4">
+            {/* Container central com largura máxima */}
             <div className="w-full max-w-md">
-                {/* Header */}
+                {/* Cabeçalho com ícone e títulos */}
                 <div className="text-center mb-8">
                     <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-r from-violet-600 to-indigo-600 mb-4 shadow-lg shadow-violet-500/30">
                         <GraduationCap size={32} className="text-white" />
@@ -70,16 +96,18 @@ const Register = () => {
                     <p className="text-slate-500 mt-2">Join the EduScrum platform</p>
                 </div>
 
-                {/* Form Card */}
+                {/* Card do formulário com sombras e bordas */}
                 <div className="bg-white rounded-2xl shadow-xl shadow-slate-200/50 p-8 border border-slate-100">
+                    {/* Mensagem de erro (se houver) */}
                     {error && (
                         <div className="bg-rose-50 border-l-4 border-rose-500 text-rose-700 p-4 mb-6 rounded-r-lg">
                             <p className="text-sm font-medium">{error}</p>
                         </div>
                     )}
 
+                    {/* Formulário de registro */}
                     <form onSubmit={handleSubmit} className="space-y-5">
-                        {/* Name Row */}
+                        {/* Linha de nome (primeiro e último nome) */}
                         <div className="grid grid-cols-2 gap-4">
                             <div>
                                 <label className="block text-xs font-semibold text-slate-600 uppercase tracking-wider mb-2">
@@ -111,7 +139,7 @@ const Register = () => {
                             </div>
                         </div>
 
-                        {/* Username */}
+                        {/* Campo de username com ícone */}
                         <div>
                             <label className="block text-xs font-semibold text-slate-600 uppercase tracking-wider mb-2">
                                 <User size={14} className="inline mr-1" />
@@ -128,7 +156,7 @@ const Register = () => {
                             />
                         </div>
 
-                        {/* Email */}
+                        {/* Campo de email com ícone */}
                         <div>
                             <label className="block text-xs font-semibold text-slate-600 uppercase tracking-wider mb-2">
                                 <Mail size={14} className="inline mr-1" />
@@ -145,7 +173,7 @@ const Register = () => {
                             />
                         </div>
 
-                        {/* Role Selector */}
+                        {/* Seletor de papel (role) com ícone */}
                         <div>
                             <label className="block text-xs font-semibold text-slate-600 uppercase tracking-wider mb-2">
                                 <BookOpen size={14} className="inline mr-1" />
@@ -162,7 +190,7 @@ const Register = () => {
                             </select>
                         </div>
 
-                        {/* Password */}
+                        {/* Campo de senha com ícone */}
                         <div>
                             <label className="block text-xs font-semibold text-slate-600 uppercase tracking-wider mb-2">
                                 <Lock size={14} className="inline mr-1" />
@@ -174,13 +202,13 @@ const Register = () => {
                                 value={formData.password}
                                 onChange={handleChange}
                                 required
-                                minLength={6}
+                                minLength={6} // Validação HTML5
                                 className="w-full bg-slate-50 text-slate-800 rounded-xl py-3 px-4 border border-slate-200 focus:outline-none focus:ring-2 focus:ring-violet-500 focus:border-transparent transition-all"
                                 placeholder="••••••••"
                             />
                         </div>
 
-                        {/* Confirm Password */}
+                        {/* Campo de confirmação de senha com ícone */}
                         <div>
                             <label className="block text-xs font-semibold text-slate-600 uppercase tracking-wider mb-2">
                                 <Lock size={14} className="inline mr-1" />
@@ -197,7 +225,7 @@ const Register = () => {
                             />
                         </div>
 
-                        {/* Submit Button */}
+                        {/* Botão de submit com estados de loading e disabled */}
                         <button
                             type="submit"
                             disabled={isLoading}
@@ -207,7 +235,7 @@ const Register = () => {
                         </button>
                     </form>
 
-                    {/* Login Link */}
+                    {/* Link para página de login */}
                     <p className="mt-6 text-center text-slate-500">
                         Already have an account?{' '}
                         <Link to="/login" className="text-violet-600 font-semibold hover:text-violet-700 transition-colors">
