@@ -21,6 +21,7 @@ import {
     Loader2,
     Star,
     BarChart3,
+    Settings,
 } from 'lucide-react';
 import {
     BarChart,
@@ -42,6 +43,7 @@ import {
     enrollStudent,
     getCurrentUser
 } from '../services/api';
+import EditProfileModal from '../components/EditProfileModal';
 import './StudentDashboard.css';
 
 const StudentDashboard = () => {
@@ -58,6 +60,7 @@ const StudentDashboard = () => {
 
     // Modal state
     const [showEnrollModal, setShowEnrollModal] = useState(false);
+    const [showEditProfileModal, setShowEditProfileModal] = useState(false);
     const [enrolling, setEnrolling] = useState(false);
 
     const user = getCurrentUser();
@@ -207,12 +210,20 @@ const StudentDashboard = () => {
                                         <span className="stat-value">{teams.length}</span>
                                     </div>
                                 </div>
+                            </div>
+
+                            {/* Action Buttons */}
+                            <div className="header-actions">
+                                <button
+                                    onClick={() => setShowEditProfileModal(true)}
+                                    className="edit-profile-btn"
+                                >
+                                    <Settings size={20} />
+                                    <span>Edit Profile</span>
+                                </button>
                                 <button onClick={handleLogout} className="logout-btn">
-                                    <LogOut size={24} />
-                                    <div>
-                                        <span className="logout-label">Sign Out</span>
-                                        <span className="logout-text">Logout</span>
-                                    </div>
+                                    <LogOut size={20} />
+                                    <span>Logout</span>
                                 </button>
                             </div>
                         </div>
@@ -560,6 +571,18 @@ const StudentDashboard = () => {
                     </div>
                 )
             }
+
+            {/* Edit Profile Modal */}
+            <EditProfileModal
+                isOpen={showEditProfileModal}
+                onClose={() => setShowEditProfileModal(false)}
+                currentUser={user}
+                onUpdateSuccess={() => {
+                    setShowEditProfileModal(false);
+                    // Refresh page to show updated name
+                    window.location.reload();
+                }}
+            />
 
         </div >
     );

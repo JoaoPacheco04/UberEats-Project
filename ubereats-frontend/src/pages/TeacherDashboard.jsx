@@ -14,10 +14,12 @@ import {
     TrendingUp,
     LogOut,
     Sparkles,
-    BarChart3
+    BarChart3,
+    Settings
 } from 'lucide-react';
 import CourseCard from '../components/CourseCard';
 import CreateResourceModal from '../components/CreateResourceModal';
+import EditProfileModal from '../components/EditProfileModal';
 import { getTeacherCourses, createCourse, createProject, getCourseEnrollments, getStudentDashboard, getTeamByProject, getTeamPoints, getProjectsByCourse, getCurrentUser } from '../services/api';
 
 /**
@@ -30,6 +32,7 @@ const TeacherDashboard = () => {
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState(null);
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const [showEditProfileModal, setShowEditProfileModal] = useState(false);
 
     // Rankings state
     const [studentRankings, setStudentRankings] = useState([]);
@@ -260,73 +263,84 @@ const TeacherDashboard = () => {
                             <Sparkles className="absolute top-4 right-8 text-white/20" size={40} />
                         </div>
 
-                        <div className="relative flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-                            <div>
-                                <div className="flex items-center gap-3 mb-3">
-                                    <div className="flex items-center justify-center w-12 h-12 rounded-xl bg-white/40 backdrop-blur-sm">
-                                        <GraduationCap size={24} className="text-slate-700" />
+                        <div className="relative flex flex-col gap-6">
+                            {/* Top row: Welcome text and stats */}
+                            <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+                                <div>
+                                    <div className="flex items-center gap-3 mb-3">
+                                        <div className="flex items-center justify-center w-12 h-12 rounded-xl bg-white/40 backdrop-blur-sm">
+                                            <GraduationCap size={24} className="text-slate-700" />
+                                        </div>
+                                        <span className="px-3 py-1 rounded-full bg-white/40 text-slate-700 text-sm font-medium backdrop-blur-sm">
+                                            Teacher Dashboard
+                                        </span>
                                     </div>
-                                    <span className="px-3 py-1 rounded-full bg-white/40 text-slate-700 text-sm font-medium backdrop-blur-sm">
-                                        Teacher Dashboard
-                                    </span>
+                                    <h1 className="text-3xl md:text-4xl font-bold text-slate-800 mb-2">
+                                        Welcome, {getUserName()}!
+                                    </h1>
+                                    <p className="text-slate-600 text-lg">
+                                        Manage your courses and track student progress
+                                    </p>
                                 </div>
-                                <h1 className="text-3xl md:text-4xl font-bold text-slate-800 mb-2">
-                                    Welcome, {getUserName()}!
-                                </h1>
-                                <p className="text-slate-600 text-lg">
-                                    Manage your courses and track student progress
-                                </p>
+
+                                {/* Quick Stats */}
+                                <div className="flex flex-wrap gap-3">
+                                    <div className="flex items-center gap-3 px-4 py-3 rounded-xl bg-white/50 backdrop-blur-sm border border-white/30">
+                                        <BookOpen className="text-slate-700" size={24} />
+                                        <div>
+                                            <p className="text-slate-500 text-xs">Active Courses</p>
+                                            <p className="text-2xl font-bold text-slate-800">{activeCourses}</p>
+                                        </div>
+                                    </div>
+                                    <div className="flex items-center gap-3 px-4 py-3 rounded-xl bg-white/50 backdrop-blur-sm border border-white/30">
+                                        <FolderOpen className="text-slate-700" size={24} />
+                                        <div>
+                                            <p className="text-slate-500 text-xs">Total Projects</p>
+                                            <p className="text-2xl font-bold text-slate-800">{totalProjects}</p>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
 
-                            {/* Quick Stats & Actions */}
-                            <div className="flex flex-wrap gap-3">
-                                <div className="flex items-center gap-3 px-4 py-3 rounded-xl bg-white/50 backdrop-blur-sm border border-white/30">
-                                    <BookOpen className="text-slate-700" size={24} />
-                                    <div>
-                                        <p className="text-slate-500 text-xs">Active Courses</p>
-                                        <p className="text-2xl font-bold text-slate-800">{activeCourses}</p>
-                                    </div>
+                            {/* Bottom row: Action buttons */}
+                            <div className="flex flex-wrap items-center justify-between gap-3">
+                                {/* Left side: Feature buttons */}
+                                <div className="flex flex-wrap gap-3">
+                                    <button
+                                        onClick={() => navigate('/teacher/analytics')}
+                                        className="flex items-center gap-2 px-4 py-3 rounded-xl bg-indigo-500/20 hover:bg-indigo-500/30 backdrop-blur-sm transition-all border border-indigo-400/30"
+                                    >
+                                        <BarChart3 className="text-indigo-600" size={20} />
+                                        <span className="font-semibold text-indigo-600">Analytics</span>
+                                    </button>
+                                    <button
+                                        onClick={() => navigate('/teacher/badges')}
+                                        className="flex items-center gap-2 px-4 py-3 rounded-xl bg-amber-500/20 hover:bg-amber-500/30 backdrop-blur-sm transition-all border border-amber-400/30"
+                                    >
+                                        <Award className="text-amber-600" size={20} />
+                                        <span className="font-semibold text-amber-600">Badges</span>
+                                    </button>
                                 </div>
-                                <div className="flex items-center gap-3 px-4 py-3 rounded-xl bg-white/50 backdrop-blur-sm border border-white/30">
-                                    <FolderOpen className="text-slate-700" size={24} />
-                                    <div>
-                                        <p className="text-slate-500 text-xs">Total Projects</p>
-                                        <p className="text-2xl font-bold text-slate-800">{totalProjects}</p>
-                                    </div>
+
+                                {/* Right side: Profile and Logout */}
+                                <div className="flex gap-3">
+                                    <button
+                                        onClick={() => setShowEditProfileModal(true)}
+                                        className="flex items-center gap-2 px-4 py-3 rounded-xl bg-slate-500/20 hover:bg-slate-500/30 backdrop-blur-sm transition-all border border-slate-400/30"
+                                    >
+                                        <Settings className="text-slate-600" size={20} />
+                                        <span className="font-semibold text-slate-600">Edit Profile</span>
+                                    </button>
+                                    <button
+                                        onClick={handleLogout}
+                                        className="flex items-center gap-2 px-4 py-3 rounded-xl bg-rose-500/20 hover:bg-rose-500/30 backdrop-blur-sm transition-all border border-rose-400/30"
+                                    >
+                                        <LogOut className="text-rose-500" size={20} />
+                                        <span className="font-semibold text-rose-500">Logout</span>
+                                    </button>
                                 </div>
-                                <button
-                                    onClick={() => navigate('/teacher/analytics')}
-                                    className="flex items-center gap-2 px-4 py-3 rounded-xl bg-indigo-500/20 hover:bg-indigo-500/30 backdrop-blur-sm transition-all border border-indigo-400/30"
-                                >
-                                    <BarChart3 className="text-indigo-400" size={24} />
-                                    <div className="text-left">
-                                        <p className="text-indigo-100/80 text-xs">View</p>
-                                        <p className="text-base font-bold text-indigo-400">Analytics</p>
-                                    </div>
-                                </button>
-                                <button
-                                    onClick={() => navigate('/teacher/badges')}
-                                    className="flex items-center gap-2 px-4 py-3 rounded-xl bg-amber-500/20 hover:bg-amber-500/30 backdrop-blur-sm transition-all border border-amber-400/30"
-                                >
-                                    <Award className="text-amber-400" size={24} />
-                                    <div className="text-left">
-                                        <p className="text-amber-100/80 text-xs">Manage</p>
-                                        <p className="text-base font-bold text-amber-400">Badges</p>
-                                    </div>
-                                </button>
                             </div>
                         </div>
-                        {/* Logout Button */}
-                        <button
-                            onClick={handleLogout}
-                            className="flex items-center gap-2 px-4 py-3 rounded-xl bg-rose-500/20 hover:bg-rose-500/30 backdrop-blur-sm transition-all border border-rose-400/30"
-                        >
-                            <LogOut className="text-rose-400" size={24} />
-                            <div className="text-left">
-                                <p className="text-rose-100/80 text-xs">Sign Out</p>
-                                <p className="text-base font-bold text-rose-400">Logout</p>
-                            </div>
-                        </button>
                     </div>
                 </motion.header>
 
@@ -578,6 +592,17 @@ const TeacherDashboard = () => {
                     onSubmitCourse={handleCreateCourse}
                     onSubmitProject={handleCreateProject}
                     courses={courses}
+                />
+
+                {/* Edit Profile Modal */}
+                <EditProfileModal
+                    isOpen={showEditProfileModal}
+                    onClose={() => setShowEditProfileModal(false)}
+                    currentUser={getCurrentUser()}
+                    onUpdateSuccess={() => {
+                        setShowEditProfileModal(false);
+                        window.location.reload();
+                    }}
                 />
 
 

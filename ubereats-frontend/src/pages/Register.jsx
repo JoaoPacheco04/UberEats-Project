@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { register } from '../services/api';
-import { GraduationCap, User, Mail, Lock, BookOpen, Hash } from 'lucide-react';
+import { GraduationCap, User, Mail, Lock, BookOpen } from 'lucide-react';
 
 const Register = () => {
     const [formData, setFormData] = useState({
@@ -12,7 +12,6 @@ const Register = () => {
         password: '',
         confirmPassword: '',
         role: 'STUDENT',
-        studentNumber: '',
     });
     const [error, setError] = useState('');
     const [isLoading, setIsLoading] = useState(false);
@@ -39,11 +38,6 @@ const Register = () => {
             return;
         }
 
-        if (formData.role === 'STUDENT' && !formData.studentNumber.trim()) {
-            setError('Student number is required for students');
-            return;
-        }
-
         setIsLoading(true);
         try {
             const payload = {
@@ -54,10 +48,6 @@ const Register = () => {
                 password: formData.password,
                 role: formData.role,
             };
-
-            if (formData.role === 'STUDENT') {
-                payload.studentNumber = formData.studentNumber;
-            }
 
             await register(payload);
             navigate('/login', { state: { message: 'Registration successful! Please login.' } });
@@ -171,25 +161,6 @@ const Register = () => {
                                 <option value="TEACHER">Teacher</option>
                             </select>
                         </div>
-
-                        {/* Student Number - Conditional */}
-                        {formData.role === 'STUDENT' && (
-                            <div>
-                                <label className="block text-xs font-semibold text-slate-600 uppercase tracking-wider mb-2">
-                                    <Hash size={14} className="inline mr-1" />
-                                    Student Number
-                                </label>
-                                <input
-                                    type="text"
-                                    name="studentNumber"
-                                    value={formData.studentNumber}
-                                    onChange={handleChange}
-                                    required
-                                    className="w-full bg-slate-50 text-slate-800 rounded-xl py-3 px-4 border border-slate-200 focus:outline-none focus:ring-2 focus:ring-violet-500 focus:border-transparent transition-all"
-                                    placeholder="e.g., 2024001234"
-                                />
-                            </div>
-                        )}
 
                         {/* Password */}
                         <div>

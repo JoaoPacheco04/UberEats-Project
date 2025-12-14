@@ -70,16 +70,22 @@ public class SecurityConfig {
 
                                                 // 3. Teacher-only access for management tasks
                                                 .requestMatchers(HttpMethod.POST, "/api/courses/**", "/api/projects/**",
-                                                                "/api/sprints/**",
                                                                 "/api/teams/**")
                                                 .hasAuthority("ROLE_TEACHER")
                                                 .requestMatchers(HttpMethod.PUT, "/api/courses/**", "/api/projects/**",
-                                                                "/api/sprints/**",
                                                                 "/api/teams/**")
                                                 .hasAuthority("ROLE_TEACHER")
                                                 .requestMatchers(HttpMethod.DELETE, "/api/courses/**",
-                                                                "/api/projects/**", "/api/sprints/**",
+                                                                "/api/projects/**",
                                                                 "/api/teams/**")
+                                                .hasAuthority("ROLE_TEACHER")
+
+                                                // 3.5 Sprint management - allow both teachers and students
+                                                .requestMatchers(HttpMethod.POST, "/api/sprints/**")
+                                                .hasAnyAuthority("ROLE_TEACHER", "ROLE_STUDENT")
+                                                .requestMatchers(HttpMethod.PUT, "/api/sprints/**")
+                                                .hasAnyAuthority("ROLE_TEACHER", "ROLE_STUDENT")
+                                                .requestMatchers(HttpMethod.DELETE, "/api/sprints/**")
                                                 .hasAuthority("ROLE_TEACHER")
 
                                                 .requestMatchers(HttpMethod.DELETE, "/api/user-stories/**")

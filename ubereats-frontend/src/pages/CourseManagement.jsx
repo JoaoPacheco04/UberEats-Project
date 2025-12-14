@@ -400,6 +400,7 @@ const CourseManagement = () => {
                                             key={student.id}
                                             student={student}
                                             onAwardBadge={handleAwardBadge}
+                                            showAwardButton={currentUser?.role === 'TEACHER'}
                                         />
                                     ))}
                                 </div>

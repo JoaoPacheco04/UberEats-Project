@@ -89,4 +89,12 @@ public interface UserRepository extends JpaRepository<User, Long> {
      */
     @org.springframework.data.jpa.repository.Query("SELECT s FROM User s JOIN s.enrollments e WHERE e.course.id = :courseId")
     List<User> findStudentsByCourseId(@org.springframework.data.repository.query.Param("courseId") Long courseId);
+
+    /**
+     * Finds the maximum student number for auto-generation.
+     *
+     * @return Optional containing the max student number
+     */
+    @org.springframework.data.jpa.repository.Query("SELECT MAX(u.studentNumber) FROM User u WHERE u.role = 'STUDENT' AND u.studentNumber IS NOT NULL")
+    Optional<String> findMaxStudentNumber();
 }

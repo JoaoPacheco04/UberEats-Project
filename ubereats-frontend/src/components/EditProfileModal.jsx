@@ -1,21 +1,70 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, User, Mail, Lock, AlertCircle, Check, Loader2, Save } from 'lucide-react';
-import { updateUser } from '../services/api';
+import { X, User, Mail, Lock, AlertCircle, Check, Loader2, Save, Hash, Shield } from 'lucide-react';
+import { getUserById, updateUserProfile } from '../services/api';
 import './EditProfileModal.css';
 
 const EditProfileModal = ({ isOpen, onClose, currentUser, onUpdateSuccess }) => {
     const [formData, setFormData] = useState({
-        firstName: currentUser?.firstName || '',
-        lastName: currentUser?.lastName || '',
-        email: currentUser?.email || '',
+        firstName: '',
+        lastName: '',
+        email: '',
         password: '',
         confirmPassword: ''
     });
 
+    // Read-only profile data
+    const [profileInfo, setProfileInfo] = useState({
+        username: '',
+        role: '',
+        studentNumber: ''
+    });
+
     const [loading, setLoading] = useState(false);
+    const [fetching, setFetching] = useState(true);
     const [error, setError] = useState(null);
     const [success, setSuccess] = useState(false);
+
+    // Fetch full profile data when modal opens
+    useEffect(() => {
+        if (isOpen && currentUser?.id) {
+            fetchProfileData();
+        }
+    }, [isOpen, currentUser?.id]);
+
+    const fetchProfileData = async () => {
+        try {
+            setFetching(true);
+            const response = await getUserById(currentUser.id);
+            const userData = response.data;
+
+            setFormData({
+                firstName: userData.firstName || '',
+                lastName: userData.lastName || '',
+                email: userData.email || '',
+                password: '',
+                confirmPassword: ''
+            });
+
+            setProfileInfo({
+                username: userData.username || '',
+                role: userData.role || '',
+                studentNumber: userData.studentNumber || ''
+            });
+        } catch (err) {
+            console.error('Failed to fetch profile:', err);
+            // Fallback to currentUser data
+            setFormData({
+                firstName: currentUser?.firstName || '',
+                lastName: currentUser?.lastName || '',
+                email: currentUser?.email || '',
+                password: '',
+                confirmPassword: ''
+            });
+        } finally {
+            setFetching(false);
+        }
+    };
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -61,20 +110,27 @@ const EditProfileModal = ({ isOpen, onClose, currentUser, onUpdateSuccess }) => 
                 ...(formData.password ? { password: formData.password } : {})
             };
 
-            const response = await updateUser(currentUser.id, updatePayload);
+            const response = await updateUserProfile(currentUser.id, updatePayload);
 
-            // Update local storage with new user data (excluding sensitive fields if needed)
-            const updatedUser = { ...currentUser, ...response.data };
+            // Update local storage with new user data
+            const storedUser = JSON.parse(localStorage.getItem('user') || '{}');
+            const updatedUser = {
+                ...storedUser,
+                firstName: response.data.firstName,
+                lastName: response.data.lastName,
+                email: response.data.email,
+                fullName: response.data.fullName
+            };
             localStorage.setItem('user', JSON.stringify(updatedUser));
 
             setSuccess(true);
             setTimeout(() => {
-                onUpdateSuccess(updatedUser);
+                onUpdateSuccess?.(updatedUser);
                 onClose();
             }, 1500);
         } catch (err) {
             console.error('Update profile error:', err);
-            setError(err.message || 'Failed to update profile. Please try again.');
+            setError(err.response?.data?.message || 'Failed to update profile. Please try again.');
         } finally {
             setLoading(false);
         }
@@ -106,7 +162,12 @@ const EditProfileModal = ({ isOpen, onClose, currentUser, onUpdateSuccess }) => 
                         </div>
                     </div>
 
-                    {success ? (
+                    {fetching ? (
+                        <div className="loading-container">
+                            <Loader2 className="spinner" size={32} />
+                            <p>Loading profile...</p>
+                        </div>
+                    ) : success ? (
                         <div className="success-message">
                             <div className="success-icon">
                                 <Check size={48} />
@@ -122,6 +183,30 @@ const EditProfileModal = ({ isOpen, onClose, currentUser, onUpdateSuccess }) => 
                                     <span>{error}</span>
                                 </div>
                             )}
+
+                            {/* Read-only Account Info Section */}
+                            <div className="account-info-section">
+                                <h3>Account Information</h3>
+                                <div className="account-info-grid">
+                                    <div className="info-item">
+                                        <User size={16} />
+                                        <span className="info-label">Username:</span>
+                                        <span className="info-value">{profileInfo.username}</span>
+                                    </div>
+                                    <div className="info-item">
+                                        <Shield size={16} />
+                                        <span className="info-label">Role:</span>
+                                        <span className="info-value role-tag">{profileInfo.role}</span>
+                                    </div>
+                                    {profileInfo.studentNumber && (
+                                        <div className="info-item student-number-item">
+                                            <Hash size={16} />
+                                            <span className="info-label">Student Number:</span>
+                                            <span className="info-value student-number">{profileInfo.studentNumber}</span>
+                                        </div>
+                                    )}
+                                </div>
+                            </div>
 
                             <div className="form-row">
                                 <div className="form-group">

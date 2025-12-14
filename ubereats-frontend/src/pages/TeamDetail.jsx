@@ -18,7 +18,8 @@ import {
     getTeamById,
     getTeamMembers,
     getTeamAchievements,
-    getTeamPoints
+    getTeamPoints,
+    getCurrentUser
 } from '../services/api';
 import AwardBadgeModal from '../components/AwardBadgeModal';
 import './TeamDetail.css';
@@ -34,6 +35,9 @@ const TeamDetail = () => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [awardModalOpen, setAwardModalOpen] = useState(false);
+
+    // Get current user for role-based rendering
+    const currentUser = getCurrentUser();
 
     useEffect(() => {
         fetchData();
@@ -135,6 +139,7 @@ const TeamDetail = () => {
                 <button
                     className="award-team-btn"
                     onClick={() => setAwardModalOpen(true)}
+                    style={{ display: currentUser?.role === 'TEACHER' ? 'flex' : 'none' }}
                 >
                     <Gift size={20} />
                     Award Badge to Team

@@ -162,6 +162,10 @@ export const getProjectAnalytics = (projectId) => api.get(`/analytics/project/${
 export const exportCourseGrades = (courseId) =>
     api.get(`/export/course/${courseId}`, { responseType: 'blob' });
 
+// 17. User Profile Services
+export const getUserById = (userId) => api.get(`/users/${userId}`);
+export const updateUserProfile = (userId, profileData) => api.put(`/users/${userId}/profile`, profileData);
+
 // Helper to get current user from localStorage
 export const getCurrentUser = () => {
     try {

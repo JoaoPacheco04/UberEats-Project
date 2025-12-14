@@ -61,14 +61,21 @@ public class UserService {
     public User registerUser(String username, String email, String password, String firstName,
             String lastName, UserRole role, String studentNumber) {
 
-        // Validate input parameters
-        validateRegistrationInput(username, email, password, firstName, lastName, role, studentNumber);
+        // Validate input parameters (studentNumber no longer required - will be
+        // auto-generated)
+        validateRegistrationInput(username, email, password, firstName, lastName, role);
 
-        // Check for existing users
-        validateUserUniqueness(username, email, studentNumber, role);
+        // Check for existing users (no student number check needed - auto-generated)
+        validateUserUniqueness(username, email);
+
+        // Auto-generate student number for students
+        String finalStudentNumber = null;
+        if (role == UserRole.STUDENT) {
+            finalStudentNumber = generateStudentNumber();
+        }
 
         // Create and save new user
-        User user = createUserEntity(username, email, password, firstName, lastName, role, studentNumber);
+        User user = createUserEntity(username, email, password, firstName, lastName, role, finalStudentNumber);
         return userRepository.save(user);
     }
 
@@ -85,8 +92,7 @@ public class UserService {
      * @throws IllegalArgumentException if any validation fails
      */
     private void validateRegistrationInput(String username, String email, String password,
-            String firstName, String lastName, UserRole role,
-            String studentNumber) {
+            String firstName, String lastName, UserRole role) {
         if (username == null || username.trim().isEmpty()) {
             throw new IllegalArgumentException("Username cannot be empty");
         }
@@ -111,11 +117,6 @@ public class UserService {
             throw new IllegalArgumentException("Role cannot be null");
         }
 
-        // Validate student number for students
-        if (role == UserRole.STUDENT && (studentNumber == null || studentNumber.trim().isEmpty())) {
-            throw new IllegalArgumentException("Student number is required for students");
-        }
-
         // Validate email format (basic validation)
         if (!email.contains("@") || !email.contains(".")) {
             throw new IllegalArgumentException("Invalid email format");
@@ -128,6 +129,38 @@ public class UserService {
     }
 
     /**
+     * Generates a unique student number.
+     * Format: YYNNNNN (2-digit year + 5-digit sequential number)
+     * Example: 2400001, 2400002, etc.
+     *
+     * @return The generated student number
+     */
+    private String generateStudentNumber() {
+        int year = java.time.LocalDate.now().getYear() % 100; // Get last 2 digits of year
+        String yearPrefix = String.format("%02d", year);
+
+        // Find the max existing student number
+        java.util.Optional<String> maxNumber = userRepository.findMaxStudentNumber();
+
+        int nextSequence = 1;
+        if (maxNumber.isPresent()) {
+            String max = maxNumber.get();
+            // Extract the sequence part (last 5 digits)
+            if (max.length() >= 5) {
+                try {
+                    int currentSequence = Integer.parseInt(max.substring(max.length() - 5));
+                    nextSequence = currentSequence + 1;
+                } catch (NumberFormatException e) {
+                    // If parsing fails, start from 1
+                    nextSequence = 1;
+                }
+            }
+        }
+
+        return yearPrefix + String.format("%05d", nextSequence);
+    }
+
+    /**
      * Checks if username, email, or student number already exist.
      *
      * @param username      The username to check
@@ -136,7 +169,7 @@ public class UserService {
      * @param role          The role of the user
      * @throws IllegalArgumentException if any value already exists
      */
-    private void validateUserUniqueness(String username, String email, String studentNumber, UserRole role) {
+    private void validateUserUniqueness(String username, String email) {
         if (userRepository.existsByUsername(username)) {
             throw new IllegalArgumentException("Username '" + username + "' is already taken");
         }
@@ -144,11 +177,58 @@ public class UserService {
         if (userRepository.existsByEmail(email)) {
             throw new IllegalArgumentException("Email '" + email + "' is already registered");
         }
+    }
 
-        // Validate student number uniqueness for students
-        if (role == UserRole.STUDENT && userRepository.existsByStudentNumber(studentNumber)) {
-            throw new IllegalArgumentException("Student number '" + studentNumber + "' is already registered");
+    /**
+     * Updates a user's profile information.
+     * Note: studentNumber, username, and role cannot be changed.
+     *
+     * @param userId    The ID of the user to update
+     * @param firstName The new first name
+     * @param lastName  The new last name
+     * @param email     The new email (must be unique)
+     * @param password  The new password (optional, null to keep existing)
+     * @return The updated User entity
+     * @throws IllegalArgumentException if user not found or validation fails
+     */
+    public User updateUserProfile(Long userId, String firstName, String lastName,
+            String email, String password) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new IllegalArgumentException("User not found with id: " + userId));
+
+        // Validate required fields
+        if (firstName == null || firstName.trim().isEmpty()) {
+            throw new IllegalArgumentException("First name cannot be empty");
         }
+        if (lastName == null || lastName.trim().isEmpty()) {
+            throw new IllegalArgumentException("Last name cannot be empty");
+        }
+        if (email == null || email.trim().isEmpty()) {
+            throw new IllegalArgumentException("Email cannot be empty");
+        }
+        if (!email.contains("@") || !email.contains(".")) {
+            throw new IllegalArgumentException("Invalid email format");
+        }
+
+        // Check email uniqueness if changed
+        if (!email.equals(user.getEmail()) && userRepository.existsByEmail(email)) {
+            throw new IllegalArgumentException("Email '" + email + "' is already registered");
+        }
+
+        // Update allowed fields
+        user.setFirstName(firstName.trim());
+        user.setLastName(lastName.trim());
+        user.setEmail(email.trim());
+
+        // Update password only if provided
+        if (password != null && !password.trim().isEmpty()) {
+            if (password.length() < 6) {
+                throw new IllegalArgumentException("Password must be at least 6 characters long");
+            }
+            user.setPassword(passwordEncoder.encode(password));
+        }
+
+        return userRepository.save(user);
     }
 
     /**

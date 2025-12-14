@@ -12,7 +12,7 @@ import {
 import { getUserAchievements, getStudentDashboard } from '../services/api';
 import './StudentDetailCard.css';
 
-const StudentDetailCard = ({ student, onAwardBadge }) => {
+const StudentDetailCard = ({ student, onAwardBadge, showAwardButton = true }) => {
     const { id, studentId, studentName, studentEmail, enrolledAt } = student;
     const userId = studentId || id;
 
@@ -86,13 +86,15 @@ const StudentDetailCard = ({ student, onAwardBadge }) => {
                 </div>
 
                 <div className="student-actions">
-                    <button
-                        className="award-btn"
-                        onClick={(e) => { e.stopPropagation(); onAwardBadge?.(student); }}
-                        title="Award Badge"
-                    >
-                        <Gift size={16} />
-                    </button>
+                    {showAwardButton && (
+                        <button
+                            className="award-btn"
+                            onClick={(e) => { e.stopPropagation(); onAwardBadge?.(student); }}
+                            title="Award Badge"
+                        >
+                            <Gift size={16} />
+                        </button>
+                    )}
                     <button className="expand-btn">
                         {expanded ? <ChevronUp size={20} /> : <ChevronDown size={20} />}
                     </button>

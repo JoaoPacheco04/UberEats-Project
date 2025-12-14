@@ -238,55 +238,6 @@
     font-weight: 700;
 }
 
-.logout-btn {
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
-    padding: 0.75rem 1rem;
-    border-radius: 12px;
-    background: rgba(244, 63, 94, 0.2);
-    /* rose-500/20 */
-    border: 1px solid rgba(251, 113, 133, 0.3);
-    /* rose-400/30 */
-    color: #fb7185;
-    /* rose-400 */
-    cursor: pointer;
-    transition: all 0.2s;
-    min-width: 160px;
-    font-weight: 600;
-    backdrop-filter: blur(4px);
-    /* blur-sm */
-    text-align: left;
-    /* ensure text aligns left like teacher dashboard */
-}
-
-.logout-btn:hover {
-    background: rgba(244, 63, 94, 0.3);
-    /* rose-500/30 */
-}
-
-.logout-btn .logout-label {
-    display: block;
-    font-size: 0.75rem;
-    /* text-xs */
-    color: rgba(255, 228, 230, 0.8);
-    /* rose-100/80 */
-    font-weight: 400;
-    line-height: 1;
-    margin-bottom: 2px;
-}
-
-.logout-btn .logout-text {
-    display: block;
-    font-size: 1rem;
-    /* text-base */
-    font-weight: 700;
-    /* font-bold */
-    color: #fb7185;
-    /* rose-400 */
-    line-height: 1.2;
-}
-
 /* Error Banner */
 .error-banner {
     display: flex;
@@ -997,4 +948,63 @@
 
 .score-comparison-summary .below-average svg {
     color: #f59e0b;
+}
+
+/* Header Actions Container */
+.header-actions {
+    display: flex;
+    gap: 0.75rem;
+    margin-top: 1rem;
+}
+
+/* Edit Profile Button */
+.edit-profile-btn {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.625rem 1rem;
+    border-radius: 10px;
+    background: rgba(99, 102, 241, 0.25);
+    border: 1px solid rgba(129, 140, 248, 0.4);
+    color: #4f46e5;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-weight: 600;
+    font-size: 0.9rem;
+    backdrop-filter: blur(4px);
+}
+
+.edit-profile-btn:hover {
+    background: rgba(99, 102, 241, 0.35);
+    transform: translateY(-2px);
+}
+
+.edit-profile-btn svg {
+    flex-shrink: 0;
+}
+
+/* Updated Logout Button */
+.logout-btn {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.625rem 1rem;
+    border-radius: 10px;
+    background: rgba(244, 63, 94, 0.25);
+    border: 1px solid rgba(251, 113, 133, 0.4);
+    color: #e11d48;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-weight: 600;
+    font-size: 0.9rem;
+    backdrop-filter: blur(4px);
+}
+
+.logout-btn:hover {
+    background: rgba(244, 63, 94, 0.35);
+    transform: translateY(-2px);
+}
+
+.logout-btn svg {
+    flex-shrink: 0;
 }

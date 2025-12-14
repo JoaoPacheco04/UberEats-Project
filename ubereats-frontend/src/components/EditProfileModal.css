@@ -1,6 +1,7 @@
 .edit-profile-modal {
     width: 100%;
-    max-width: 600px; /* Slightly wider than standard modals */
+    max-width: 600px;
+    /* Slightly wider than standard modals */
     background: white;
     padding: 0;
     overflow: hidden;
@@ -88,7 +89,8 @@
 
 .input-wrapper input {
     width: 100%;
-    padding: 10px 12px 10px 40px; /* Extra padding left for icon */
+    padding: 10px 12px 10px 40px;
+    /* Extra padding left for icon */
     border: 1px solid #e2e8f0;
     border-radius: 8px;
     font-size: 0.95rem;
@@ -235,4 +237,106 @@
 .modal-close-btn:hover {
     background: #f1f5f9;
     color: #64748b;
+}
+
+/* Loading Container */
+.loading-container {
+    padding: 48px;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+}
+
+.loading-container .spinner {
+    animation: spin 1s linear infinite;
+    color: #6366f1;
+}
+
+.loading-container p {
+    color: #64748b;
+}
+
+/* Account Info Section */
+.account-info-section {
+    background: linear-gradient(135deg, #f0f9ff 0%, #f5f3ff 100%);
+    border: 1px solid #e0e7ff;
+    border-radius: 12px;
+    padding: 16px 20px;
+    margin-bottom: 8px;
+}
+
+.account-info-section h3 {
+    margin: 0 0 12px 0;
+    font-size: 0.85rem;
+    color: #64748b;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    font-weight: 600;
+}
+
+.account-info-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px 24px;
+}
+
+.info-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.info-item svg {
+    color: #6366f1;
+    flex-shrink: 0;
+}
+
+.info-label {
+    color: #64748b;
+    font-size: 0.9rem;
+}
+
+.info-value {
+    font-weight: 600;
+    color: #1e293b;
+    font-size: 0.9rem;
+}
+
+.info-value.role-tag {
+    background: #e0e7ff;
+    color: #4f46e5;
+    padding: 2px 10px;
+    border-radius: 12px;
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.info-value.student-number {
+    background: #fef3c7;
+    color: #d97706;
+    padding: 4px 12px;
+    border-radius: 8px;
+    font-family: 'Monaco', 'Consolas', monospace;
+    letter-spacing: 1px;
+    font-size: 0.95rem;
+}
+
+.student-number-item {
+    margin-top: 8px;
+    width: 100%;
+    padding-top: 12px;
+    border-top: 1px dashed #d4d4d8;
+}
+
+@keyframes spin {
+    from {
+        transform: rotate(0deg);
+    }
+
+    to {
+        transform: rotate(360deg);
+    }
 }
