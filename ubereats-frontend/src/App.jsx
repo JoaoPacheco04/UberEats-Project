@@ -1,3 +1,5 @@
+//This file defines the main routing configuration for a React application using React Router v6. In short, it controls which page (component) is shown for each URL.
+
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import Login from './pages/Login';

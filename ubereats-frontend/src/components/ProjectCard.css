@@ -1,52 +1,61 @@
 /* ProjectCard.css */
+/* ---------------------------------------------------- */
+/* Contêiner Principal do Cartão de Projeto */
+/* ---------------------------------------------------- */
 .project-card {
     background: white;
-    border-radius: 16px;
-    padding: 1.5rem;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+    border-radius: 16px; /* Cantos bem arredondados */
+    padding: 1.5rem; /* Espaçamento interno padrão */
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08); /* Sombra suave para dar profundidade */
     cursor: pointer;
-    transition: all 0.2s ease;
+    transition: all 0.2s ease; /* Transição suave para efeitos de hover */
     display: flex;
-    flex-direction: column;
-    gap: 1rem;
-    border: 1px solid #f1f5f9;
-    position: relative;
-    overflow: hidden;
+    flex-direction: column; /* Organiza o conteúdo verticalmente */
+    gap: 1rem; /* Espaço entre os principais blocos de conteúdo (Badge, Content, Timeline) */
+    border: 1px solid #f1f5f9; /* Borda sutil */
+    position: relative; /* Necessário para posicionar o pseudo-elemento `::before` */
+    overflow: hidden; /* Garante que o conteúdo e pseudo-elementos fiquem dentro das bordas arredondadas */
 }
 
+/* Pseudo-elemento para a borda superior de destaque */
 .project-card::before {
     content: '';
     position: absolute;
     top: 0;
     left: 0;
     right: 0;
-    height: 4px;
-    background: linear-gradient(90deg, #6366f1, #8b5cf6);
-    opacity: 0;
+    height: 4px; /* Altura da linha de destaque */
+    background: linear-gradient(90deg, #6366f1, #8b5cf6); /* Gradiente de cor */
+    opacity: 0; /* Inicialmente invisível */
     transition: opacity 0.2s;
 }
 
+/* Efeito de hover: a linha de destaque aparece no topo do cartão */
 .project-card:hover::before {
     opacity: 1;
 }
 
-/* Status Badge */
+/* ---------------------------------------------------- */
+/* Badge de Status */
+/* ---------------------------------------------------- */
 .project-status-badge {
     display: inline-flex;
     align-items: center;
     gap: 0.375rem;
     padding: 0.375rem 0.75rem;
-    border-radius: 20px;
+    border-radius: 20px; /* Borda fortemente arredondada para parecer um pílula */
     font-size: 0.75rem;
     font-weight: 600;
     text-transform: uppercase;
     letter-spacing: 0.5px;
-    align-self: flex-start;
+    align-self: flex-start; /* Alinha o badge à esquerda (se o flex-direction for column) */
 }
 
-/* Content */
+/* ---------------------------------------------------- */
+/* Conteúdo do Projeto (Nome e Descrição) */
+/* ---------------------------------------------------- */
 .project-content {
-    flex: 1;
+    flex: 1; /* Permite que o conteúdo use o espaço restante, empurrando o rodapé para baixo */
 }
 
 .project-name {
@@ -61,17 +70,20 @@
     font-size: 0.875rem;
     color: #64748b;
     margin: 0;
+    /* Linhas abaixo forçam a descrição a ter no máximo 2 linhas (truncamento) */
     display: -webkit-box;
-    -webkit-line-clamp: 2;
+    -webkit-line-clamp: 2; /* Limita o texto a 2 linhas */
     -webkit-box-orient: vertical;
     overflow: hidden;
     line-height: 1.5;
 }
 
-/* Timeline */
+/* ---------------------------------------------------- */
+/* Linha do Tempo e Progresso */
+/* ---------------------------------------------------- */
 .project-timeline {
     padding-top: 0.75rem;
-    border-top: 1px solid #f1f5f9;
+    border-top: 1px solid #f1f5f9; /* Separador do corpo principal */
 }
 
 .timeline-dates {
@@ -86,7 +98,7 @@
 .timeline-dates span {
     display: flex;
     align-items: center;
-    gap: 0.375rem;
+    gap: 0.375rem; /* Espaço entre o ícone e o texto da data */
 }
 
 .progress-section {
@@ -99,14 +111,14 @@
     height: 6px;
     background: #e2e8f0;
     border-radius: 3px;
-    overflow: hidden;
+    overflow: hidden; /* Garante que a barra de preenchimento fique dentro das bordas */
 }
 
 .progress-fill {
     height: 100%;
-    background: linear-gradient(90deg, #6366f1, #8b5cf6);
+    background: linear-gradient(90deg, #6366f1, #8b5cf6); /* Gradiente para o preenchimento */
     border-radius: 3px;
-    transition: width 0.3s ease;
+    transition: width 0.3s ease; /* Transição para o efeito de preenchimento suave */
 }
 
 .progress-text {
@@ -114,13 +126,15 @@
     color: #94a3b8;
 }
 
-/* Footer */
+/* ---------------------------------------------------- */
+/* Rodapé do Cartão */
+/* ---------------------------------------------------- */
 .project-footer {
     display: flex;
-    justify-content: space-between;
+    justify-content: space-between; /* Espaço entre 'days-remaining' e 'view-btn' */
     align-items: center;
     padding-top: 0.75rem;
-    border-top: 1px solid #f1f5f9;
+    border-top: 1px solid #f1f5f9; /* Separador da linha do tempo */
 }
 
 .days-remaining {
@@ -131,10 +145,12 @@
     color: #64748b;
 }
 
+/* Modificador para destacar a contagem regressiva em caso de alerta (ex: 3 dias restantes) */
 .days-remaining.warning {
     color: #f59e0b;
 }
 
+/* Botão de Ver Detalhes */
 .view-btn {
     display: flex;
     align-items: center;
@@ -146,25 +162,29 @@
     font-weight: 500;
     cursor: pointer;
     padding: 0.5rem 0;
-    transition: gap 0.2s;
-    margin-left: auto;
+    transition: gap 0.2s; /* Transição para o efeito de "deslizar" do ícone no hover */
+    margin-left: auto; /* Garante que o botão fique na extremidade direita */
 }
 
+/* Efeito de hover: aumenta o espaço do ícone, dando a sensação de movimento */
 .view-btn:hover {
     gap: 0.5rem;
 }
 
-/* Responsive */
+/* ---------------------------------------------------- */
+/* Responsividade */
+/* ---------------------------------------------------- */
 @media (max-width: 480px) {
+    /* Ajustes para telas menores (smartphones) */
     .project-card {
-        padding: 1.25rem;
+        padding: 1.25rem; /* Reduz um pouco o padding */
     }
 
     .project-name {
-        font-size: 1rem;
+        font-size: 1rem; /* Reduz o tamanho da fonte do título */
     }
 
     .timeline-dates {
-        flex-wrap: wrap;
+        flex-wrap: wrap; /* Permite que as datas quebrem para a próxima linha */
     }
 }

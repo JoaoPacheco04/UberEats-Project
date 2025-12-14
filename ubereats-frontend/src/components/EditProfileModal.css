@@ -1,11 +1,20 @@
+/*
+ * Contêiner principal do modal de edição de perfil.
+ * Define o tamanho máximo e a cor de fundo do modal.
+ */
 .edit-profile-modal {
     width: 100%;
-    max-width: 600px; /* Slightly wider than standard modals */
+    max-width: 600px; /* Levemente mais largo que os modais padrão para mais espaço de formulário */
     background: white;
     padding: 0;
-    overflow: hidden;
+    overflow: hidden; /* Garante que o conteúdo que extrapola as bordas seja cortado, útil para bordas arredondadas no contêiner pai. */
 }
 
+/*
+ * Estilização do cabeçalho do modal.
+ * Inclui cor de fundo, preenchimento (padding) e uma borda inferior.
+ * Usa flexbox para alinhar o ícone e o texto.
+ */
 .modal-header {
     background: #f8fafc;
     padding: 24px;
@@ -15,6 +24,11 @@
     gap: 16px;
 }
 
+/*
+ * Estilização da caixa que contém o ícone principal do modal.
+ * Define tamanho, cor de fundo, cor do ícone e cantos arredondados.
+ * Usa flexbox para centralizar o ícone.
+ */
 .modal-icon-box {
     width: 48px;
     height: 48px;
@@ -26,6 +40,9 @@
     justify-content: center;
 }
 
+/*
+ * Estilização do título principal (H2) dentro do cabeçalho.
+ */
 .modal-header h2 {
     margin: 0;
     font-size: 1.25rem;
@@ -33,12 +50,19 @@
     font-weight: 600;
 }
 
+/*
+ * Estilização do parágrafo de descrição sob o título do cabeçalho.
+ */
 .modal-header p {
     margin: 4px 0 0 0;
     color: #64748b;
     font-size: 0.9rem;
 }
 
+/*
+ * Estilização do formulário de edição de perfil.
+ * Aplica preenchimento (padding) e usa flexbox para organizar os campos verticalmente.
+ */
 .edit-profile-form {
     padding: 24px;
     display: flex;
@@ -46,12 +70,20 @@
     gap: 20px;
 }
 
+/*
+ * Contêiner para agrupar campos de formulário na mesma linha.
+ * Usa flexbox para dispor os grupos de formulário horizontalmente.
+ */
 .form-row {
     display: flex;
     gap: 20px;
 }
 
-/* Adjust for mobile */
+/*
+ * Ajuste de Layout Responsivo:
+ * Quando a largura da tela é menor ou igual a 640px (ex: celular),
+ * os campos da linha de formulário empilham-se verticalmente.
+ */
 @media (max-width: 640px) {
     .form-row {
         flex-direction: column;
@@ -59,6 +91,10 @@
     }
 }
 
+/*
+ * Contêiner individual para um campo de formulário (label + input).
+ * O 'flex: 1' garante que ele ocupe o espaço disponível na linha.
+ */
 .form-group {
     flex: 1;
     display: flex;
@@ -66,6 +102,9 @@
     gap: 8px;
 }
 
+/*
+ * Estilização do rótulo (label) do campo de formulário.
+ */
 .form-group label {
     font-size: 0.9rem;
     font-weight: 500;
@@ -73,12 +112,21 @@
     margin-left: 2px;
 }
 
+/*
+ * Contêiner para envolver o campo de input e seu ícone.
+ * Essencial para posicionar o ícone de forma absoluta dentro do input.
+ */
 .input-wrapper {
     position: relative;
     display: flex;
     align-items: center;
 }
 
+/*
+ * Estilização do ícone dentro do input.
+ * Posiciona o ícone absolutamente no canto esquerdo.
+ * 'pointer-events: none' garante que o ícone não interfira na interação com o input.
+ */
 .input-wrapper svg {
     position: absolute;
     left: 12px;
@@ -86,9 +134,13 @@
     pointer-events: none;
 }
 
+/*
+ * Estilização principal do campo de input.
+ * Inclui padding extra à esquerda para acomodar o ícone.
+ */
 .input-wrapper input {
     width: 100%;
-    padding: 10px 12px 10px 40px; /* Extra padding left for icon */
+    padding: 10px 12px 10px 40px; /* Padding extra à esquerda para o ícone */
     border: 1px solid #e2e8f0;
     border-radius: 8px;
     font-size: 0.95rem;
@@ -97,6 +149,10 @@
     background: #f8fafc;
 }
 
+/*
+ * Estilização do campo de input quando está em foco.
+ * Aplica um destaque na borda e um box-shadow sutil.
+ */
 .input-wrapper input:focus {
     outline: none;
     border-color: #6366f1;
@@ -104,20 +160,31 @@
     box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
 }
 
+/*
+ * Contêiner para um divisor de conteúdo com texto centralizado.
+ * Usa flexbox para centralizar o texto entre duas linhas.
+ */
 .divider {
     display: flex;
     align-items: center;
     margin: 10px 0;
 }
 
+/*
+ * Pseudo-elementos que criam as linhas horizontais de cada lado do texto no divisor.
+ */
 .divider::before,
 .divider::after {
     content: '';
-    flex: 1;
+    flex: 1; /* Faz com que as linhas preencham o espaço restante */
     height: 1px;
     background: #e2e8f0;
 }
 
+/*
+ * Estilização do texto dentro do divisor (ex: "OU").
+ * Aplica preenchimento horizontal e formatação de texto.
+ */
 .divider span {
     padding: 0 12px;
     color: #64748b;
@@ -127,6 +194,10 @@
     letter-spacing: 0.5px;
 }
 
+/*
+ * Estilização de uma faixa de erro para exibir mensagens de validação do formulário.
+ * Usa cores de alerta para fundo, borda e texto.
+ */
 .form-error-banner {
     background: #fef2f2;
     border: 1px solid #fecaca;
@@ -139,6 +210,10 @@
     font-size: 0.9rem;
 }
 
+/*
+ * Contêiner para os botões de ação (Salvar, Cancelar).
+ * Alinha os botões à direita e adiciona uma borda superior como separador.
+ */
 .modal-actions {
     margin-top: 10px;
     display: flex;
@@ -148,6 +223,9 @@
     padding-top: 20px;
 }
 
+/*
+ * Estilização do botão de Cancelar (Secundário/Contorno).
+ */
 .cancel-btn {
     padding: 10px 20px;
     border: 1px solid #cbd5e1;
@@ -159,11 +237,17 @@
     transition: all 0.2s;
 }
 
+/*
+ * Efeito de hover para o botão de Cancelar.
+ */
 .cancel-btn:hover {
     background: #f8fafc;
     color: #334155;
 }
 
+/*
+ * Estilização do botão de Salvar (Primário).
+ */
 .save-btn {
     padding: 10px 24px;
     background: #4f46e5;
@@ -178,17 +262,27 @@
     transition: all 0.2s;
 }
 
+/*
+ * Efeito de hover para o botão de Salvar (com leve levantamento).
+ */
 .save-btn:hover {
     background: #4338ca;
     transform: translateY(-1px);
 }
 
+/*
+ * Estilização do botão de Salvar quando desabilitado (disabled).
+ */
 .save-btn:disabled {
     background: #a5b4fc;
     cursor: not-allowed;
     transform: none;
 }
 
+/*
+ * Estilização da área de mensagem de sucesso (exibida após o envio bem-sucedido).
+ * Centraliza o conteúdo.
+ */
 .success-message {
     padding: 48px;
     text-align: center;
@@ -197,6 +291,9 @@
     align-items: center;
 }
 
+/*
+ * Estilização do grande ícone de sucesso (ex: marca de seleção).
+ */
 .success-icon {
     width: 80px;
     height: 80px;
@@ -209,16 +306,26 @@
     margin-bottom: 24px;
 }
 
+/*
+ * Estilização do título da mensagem de sucesso (H3).
+ */
 .success-message h3 {
     font-size: 1.5rem;
     color: #1e293b;
     margin-bottom: 8px;
 }
 
+/*
+ * Estilização do parágrafo de texto da mensagem de sucesso.
+ */
 .success-message p {
     color: #64748b;
 }
 
+/*
+ * Estilização do botão de fechar modal (X) posicionado no canto superior direito.
+ * Usa posicionamento absoluto em relação ao contêiner pai.
+ */
 .modal-close-btn {
     position: absolute;
     top: 24px;
@@ -232,6 +339,9 @@
     transition: all 0.2s;
 }
 
+/*
+ * Efeito de hover para o botão de fechar.
+ */
 .modal-close-btn:hover {
     background: #f1f5f9;
     color: #64748b;

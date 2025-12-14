@@ -1,113 +1,138 @@
+/* Import Inter font from Google Fonts */
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+
+/* Import Tailwind CSS base, components, and utilities */
 @import "tailwindcss";
 
-/* Base Styles */
+/* =========================
+   Base Styles & Variables
+   ========================= */
+
+/* Define global CSS variables */
 :root {
     --font-primary: 'Inter', system-ui, -apple-system, sans-serif;
 }
 
+/* Apply global font and font rendering optimizations */
 body {
-    font-family: var(--font-primary);
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
+    font-family: var(--font-primary);       /* Use Inter as primary font */
+    -webkit-font-smoothing: antialiased;    /* Improve font rendering on WebKit browsers */
+    -moz-osx-font-smoothing: grayscale;     /* Improve font rendering on macOS */
 }
 
-/* Custom Animations */
-@keyframes gradient-shift {
+/* =========================
+   Custom Animations
+   ========================= */
 
-    0%,
-    100% {
+/* Smoothly shifts background gradient position */
+@keyframes gradient-shift {
+    0%, 100% {
         background-position: 0% 50%;
     }
-
     50% {
         background-position: 100% 50%;
     }
 }
 
+/* Creates a subtle vertical floating effect */
 @keyframes float {
-
-    0%,
-    100% {
+    0%, 100% {
         transform: translateY(0);
     }
-
     50% {
         transform: translateY(-10px);
     }
 }
 
+/* Pulsing glow effect using box-shadow */
 @keyframes pulse-glow {
-
-    0%,
-    100% {
+    0%, 100% {
         box-shadow: 0 0 20px rgba(139, 92, 246, 0.3);
     }
-
     50% {
         box-shadow: 0 0 40px rgba(139, 92, 246, 0.5);
     }
 }
 
+/* Shimmer animation for loading or highlight effects */
 @keyframes shimmer {
     0% {
         transform: translateX(-100%);
     }
-
     100% {
         transform: translateX(100%);
     }
 }
 
-/* Utility Classes */
+/* =========================
+   Utility Animation Classes
+   ========================= */
+
+/* Applies animated gradient movement */
 .animate-gradient {
     background-size: 200% 200%;
     animation: gradient-shift 3s ease infinite;
 }
 
+/* Applies floating animation */
 .animate-float {
     animation: float 3s ease-in-out infinite;
 }
 
+/* Applies pulsing glow animation */
 .animate-pulse-glow {
     animation: pulse-glow 2s ease-in-out infinite;
 }
 
+/* Shimmer overlay using a pseudo-element */
 .shimmer::after {
     content: '';
     position: absolute;
     inset: 0;
-    background: linear-gradient(90deg,
-            transparent,
-            rgba(255, 255, 255, 0.3),
-            transparent);
+    background: linear-gradient(
+        90deg,
+        transparent,
+        rgba(255, 255, 255, 0.3),
+        transparent
+    );
     animation: shimmer 2s infinite;
 }
 
-/* Scrollbar Styling */
+/* =========================
+   Custom Scrollbar Styling
+   ========================= */
+
+/* Scrollbar width and height */
 ::-webkit-scrollbar {
     width: 8px;
     height: 8px;
 }
 
+/* Scrollbar track background */
 ::-webkit-scrollbar-track {
     background: #f1f5f9;
     border-radius: 4px;
 }
 
+/* Scrollbar thumb (draggable part) */
 ::-webkit-scrollbar-thumb {
     background: #cbd5e1;
     border-radius: 4px;
 }
 
+/* Scrollbar thumb hover effect */
 ::-webkit-scrollbar-thumb:hover {
     background: #94a3b8;
 }
 
-/* Line Clamp Utility */
+/* =========================
+   Text Utilities
+   ========================= */
+
+/* Limits text to two lines and truncates overflow */
 .line-clamp-2 {
     display: -webkit-box;
-    -webkit-line-clamp: 2;
+    -webkit-line-clamp: 2;      /* Number of visible lines */
     line-clamp: 2;
     -webkit-box-orient: vertical;
     overflow: hidden;

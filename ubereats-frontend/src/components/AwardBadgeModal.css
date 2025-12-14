@@ -1,28 +1,34 @@
-/* AwardBadgeModal.css */
+/* =========================
+   Award Badge Modal Styles
+   ========================= */
+
+/* Modal overlay covering the entire screen */
 .award-modal-overlay {
-    position: fixed;
-    inset: 0;
-    background: rgba(0, 0, 0, 0.5);
-    backdrop-filter: blur(4px);
+    position: fixed;                    /* Stays fixed on screen */
+    inset: 0;                           /* Top, right, bottom, left = 0 */
+    background: rgba(0, 0, 0, 0.5);     /* Semi-transparent dark background */
+    backdrop-filter: blur(4px);         /* Background blur effect */
     display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 1000;
-    padding: 1rem;
+    align-items: center;                /* Vertically center modal */
+    justify-content: center;            /* Horizontally center modal */
+    z-index: 1000;                      /* Ensures modal is on top */
+    padding: 1rem;                      /* Padding for small screens */
 }
 
+/* Main modal container */
 .award-modal-content {
-    position: relative;
+    position: relative;                 /* For positioning close button */
     background: white;
-    border-radius: 20px;
+    border-radius: 20px;                /* Rounded corners */
     padding: 2rem;
     width: 100%;
-    max-width: 500px;
-    max-height: 90vh;
-    overflow-y: auto;
+    max-width: 500px;                   /* Limit modal width */
+    max-height: 90vh;                   /* Prevent overflow on small screens */
+    overflow-y: auto;                   /* Enable scrolling if needed */
     box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
 }
 
+/* Close (X) button */
 .modal-close {
     position: absolute;
     top: 1rem;
@@ -40,16 +46,22 @@
     transition: all 0.15s;
 }
 
+/* Close button hover effect */
 .modal-close:hover {
     background: #e2e8f0;
     color: #1e293b;
 }
+
+/* =========================
+   Modal Header
+   ========================= */
 
 .modal-header {
     text-align: center;
     margin-bottom: 1.5rem;
 }
 
+/* Icon displayed at the top of the modal */
 .modal-icon {
     width: 56px;
     height: 56px;
@@ -62,22 +74,29 @@
     margin: 0 auto 1rem;
 }
 
+/* Modal title */
 .modal-header h2 {
     font-size: 1.5rem;
     color: #1e293b;
     margin: 0 0 0.5rem;
 }
 
+/* Modal subtitle text */
 .modal-header p {
     color: #64748b;
     margin: 0;
 }
 
+/* Highlighted text inside header */
 .modal-header strong {
     color: #7c3aed;
 }
 
-/* Success State */
+/* =========================
+   Success State
+   ========================= */
+
+/* Success message container */
 .success-message {
     display: flex;
     flex-direction: column;
@@ -87,23 +106,30 @@
     color: #059669;
 }
 
+/* Success icon styling */
 .success-message svg {
     margin-bottom: 1rem;
     color: #10b981;
 }
 
+/* Success title */
 .success-message h3 {
     font-size: 1.25rem;
     margin: 0 0 0.5rem;
     color: #047857;
 }
 
+/* Success description text */
 .success-message p {
     color: #64748b;
     margin: 0;
 }
 
-/* Form Elements */
+/* =========================
+   Form Elements
+   ========================= */
+
+/* Error message box */
 .form-error {
     display: flex;
     align-items: center;
@@ -116,10 +142,12 @@
     font-size: 0.875rem;
 }
 
+/* Wrapper for form fields */
 .form-group {
     margin-bottom: 1.25rem;
 }
 
+/* Form labels */
 .form-group label {
     display: block;
     margin-bottom: 0.5rem;
@@ -128,6 +156,7 @@
     color: #374151;
 }
 
+/* Textarea styling */
 .form-group textarea {
     width: 100%;
     padding: 0.75rem 1rem;
@@ -135,15 +164,17 @@
     border-radius: 8px;
     font-size: 0.95rem;
     transition: border-color 0.2s, box-shadow 0.2s;
-    resize: vertical;
+    resize: vertical;                   /* Allow vertical resize only */
 }
 
+/* Textarea focus state */
 .form-group textarea:focus {
     outline: none;
     border-color: #7c3aed;
     box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.1);
 }
 
+/* Loading state when badges are being fetched */
 .loading-badges {
     display: flex;
     align-items: center;
@@ -153,27 +184,33 @@
     font-size: 0.875rem;
 }
 
+/* Spinner animation */
 .spinner {
     animation: spin 1s linear infinite;
 }
 
+/* Spinner rotation animation */
 @keyframes spin {
     from {
         transform: rotate(0deg);
     }
-
     to {
         transform: rotate(360deg);
     }
 }
 
-/* Badge Grid */
+/* =========================
+   Badge Selection Grid
+   ========================= */
+
+/* Grid layout for badge options */
 .badge-grid {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
     gap: 0.75rem;
 }
 
+/* Individual badge option */
 .badge-option {
     display: flex;
     flex-direction: column;
@@ -187,16 +224,19 @@
     transition: all 0.15s;
 }
 
+/* Badge hover effect */
 .badge-option:hover {
     border-color: #c4b5fd;
     background: #f5f3ff;
 }
 
+/* Selected badge state */
 .badge-option.selected {
     border-color: #7c3aed;
     background: #f5f3ff;
 }
 
+/* Badge icon */
 .badge-icon {
     width: 44px;
     height: 44px;
@@ -208,10 +248,12 @@
     border-radius: 12px;
 }
 
+/* Icon color when badge is selected */
 .badge-option.selected .badge-icon {
     background: linear-gradient(135deg, #7c3aed 0%, #a855f7 100%);
 }
 
+/* Badge name text */
 .badge-name {
     font-size: 0.8rem;
     font-weight: 600;
@@ -219,12 +261,14 @@
     text-align: center;
 }
 
+/* Badge points text */
 .badge-points {
     font-size: 0.7rem;
     color: #7c3aed;
     font-weight: 600;
 }
 
+/* Empty state when no badges exist */
 .no-badges {
     text-align: center;
     color: #94a3b8;
@@ -232,7 +276,10 @@
     font-size: 0.875rem;
 }
 
-/* Modal Actions */
+/* =========================
+   Modal Action Buttons
+   ========================= */
+
 .modal-actions {
     display: flex;
     justify-content: flex-end;
@@ -242,6 +289,7 @@
     border-top: 1px solid #e2e8f0;
 }
 
+/* Cancel button */
 .cancel-btn {
     padding: 0.75rem 1.25rem;
     background: #f1f5f9;
@@ -253,10 +301,12 @@
     transition: background 0.15s;
 }
 
+/* Cancel button hover */
 .cancel-btn:hover {
     background: #e2e8f0;
 }
 
+/* Submit / Award button */
 .submit-btn {
     display: flex;
     align-items: center;
@@ -271,22 +321,29 @@
     transition: all 0.15s;
 }
 
+/* Submit button hover effect */
 .submit-btn:hover:not(:disabled) {
     transform: translateY(-1px);
     box-shadow: 0 4px 12px rgba(124, 58, 237, 0.3);
 }
 
+/* Disabled submit button */
 .submit-btn:disabled {
     opacity: 0.6;
     cursor: not-allowed;
 }
 
-/* Responsive */
+/* =========================
+   Responsive Styles
+   ========================= */
+
 @media (max-width: 480px) {
+    /* Reduce padding on small screens */
     .award-modal-content {
         padding: 1.5rem;
     }
 
+    /* Switch badge grid to single column */
     .badge-grid {
         grid-template-columns: 1fr;
     }

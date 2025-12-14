@@ -1,26 +1,35 @@
+/* ============================================
+   CONTAINER PRINCIPAL DA PÁGINA
+   ============================================ */
 .badge-management {
-    min-height: 100vh;
+    min-height: 100vh; /* Garante altura mínima da viewport */
     background: linear-gradient(135deg, #f8fafc 0%, #eff6ff 50%, #e0e7ff 100%);
     color: #1e293b;
-    position: relative;
+    position: relative; /* Necessário para posicionar os pseudo-elementos */
 }
 
-/* Animated background orbs */
+/* ============================================
+   ELEMENTOS DECORATIVOS DE FUNDO (ORBES ANIMADOS)
+   ============================================ */
+
+/* Primeiro orbe (canto superior direito) */
 .badge-management::before {
     content: '';
-    position: fixed;
+    position: fixed; /* Fixo na tela, não rola com o conteúdo */
     top: -200px;
     right: -200px;
     width: 600px;
     height: 600px;
+    /* Gradiente radial para efeito de luz/orbe */
     background: radial-gradient(circle, rgba(251, 191, 36, 0.2) 0%, rgba(254, 240, 138, 0.15) 50%, transparent 70%);
-    border-radius: 50%;
-    filter: blur(60px);
-    pointer-events: none;
-    z-index: 0;
-    animation: floatBadge1 8s ease-in-out infinite;
+    border-radius: 50%; /* Forma circular */
+    filter: blur(60px); /* Desfoque para suavizar */
+    pointer-events: none; /* Não interfere com interações do mouse */
+    z-index: 0; /* Fica atrás do conteúdo */
+    animation: floatBadge1 8s ease-in-out infinite; /* Animação contínua */
 }
 
+/* Segundo orbe (canto inferior esquerdo) */
 .badge-management::after {
     content: '';
     position: fixed;
@@ -33,33 +42,36 @@
     filter: blur(60px);
     pointer-events: none;
     z-index: 0;
-    animation: floatBadge2 10s ease-in-out infinite;
+    animation: floatBadge2 10s ease-in-out infinite; /* Animação diferente da primeira */
 }
 
+/* ============================================
+   ANIMAÇÕES DOS ORBES
+   ============================================ */
+
+/* Animação para o primeiro orbe */
 @keyframes floatBadge1 {
-
-    0%,
-    100% {
-        transform: translate(0, 0) scale(1);
+    0%, 100% {
+        transform: translate(0, 0) scale(1); /* Posição e tamanho inicial */
     }
-
     50% {
-        transform: translate(50px, -30px) scale(1.1);
+        transform: translate(50px, -30px) scale(1.1); /* Movimento e escala */
     }
 }
 
+/* Animação para o segundo orbe */
 @keyframes floatBadge2 {
-
-    0%,
-    100% {
+    0%, 100% {
         transform: translate(0, 0) scale(1);
     }
-
     50% {
-        transform: translate(-30px, 40px) scale(1.15);
+        transform: translate(-30px, 40px) scale(1.15); /* Movimento oposto ao primeiro */
     }
 }
 
+/* ============================================
+   ESTADO DE CARREGAMENTO
+   ============================================ */
 .badge-management-loading {
     display: flex;
     flex-direction: column;
@@ -70,21 +82,23 @@
     color: #94a3b8;
 }
 
+/* Spinner de carregamento */
 .badge-management-loading .spinner {
-    animation: spin 1s linear infinite;
+    animation: spin 1s linear infinite; /* Rotação contínua */
 }
 
 @keyframes spin {
     from {
         transform: rotate(0deg);
     }
-
     to {
-        transform: rotate(360deg);
+        transform: rotate(360deg); /* Rotação completa */
     }
 }
 
-/* Header */
+/* ============================================
+   CABEÇALHO DA PÁGINA
+   ============================================ */
 .badge-header {
     display: flex;
     align-items: center;
@@ -94,10 +108,10 @@
     border-bottom: 1px solid #e2e8f0;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
     position: relative;
-    z-index: 10;
+    z-index: 10; /* Acima dos orbes de fundo */
 }
 
-
+/* Botão de voltar */
 .badge-header .back-btn {
     display: flex;
     align-items: center;
@@ -112,15 +126,14 @@
     transition: all 0.2s;
 }
 
-
 .badge-header .back-btn:hover {
     background: #e2e8f0;
     color: #1e293b;
 }
 
-
+/* Conteúdo do cabeçalho (título e descrição) */
 .header-content {
-    flex: 1;
+    flex: 1; /* Ocupa espaço disponível */
 }
 
 .header-content h1 {
@@ -133,13 +146,12 @@
     color: #1e293b;
 }
 
-
 .header-content p {
     color: #64748b;
     font-size: 0.95rem;
 }
 
-
+/* Botão de criar badge */
 .create-badge-btn {
     display: flex;
     align-items: center;
@@ -157,11 +169,13 @@
 }
 
 .create-badge-btn:hover {
-    transform: translateY(-2px);
+    transform: translateY(-2px); /* Efeito de levantar */
     box-shadow: 0 6px 16px rgba(245, 158, 11, 0.4);
 }
 
-/* Error Banner */
+/* ============================================
+   BANNER DE ERRO
+   ============================================ */
 .error-banner {
     display: flex;
     align-items: center;
@@ -174,16 +188,19 @@
     color: #fca5a5;
 }
 
-/* Badges Grid */
+/* ============================================
+   GRADE DE BADGES
+   ============================================ */
 .badges-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(380px, 1fr)); /* Layout responsivo */
     gap: 1.5rem;
     padding: 2rem 3rem;
 }
 
+/* Estado vazio (quando não há badges) */
 .empty-state {
-    grid-column: 1 / -1;
+    grid-column: 1 / -1; /* Ocupa todas as colunas */
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -221,7 +238,9 @@
     cursor: pointer;
 }
 
-/* Badge Card */
+/* ============================================
+   CARD DE BADGE INDIVIDUAL
+   ============================================ */
 .badge-card {
     position: relative;
     display: flex;
@@ -235,16 +254,16 @@
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
 }
 
-
 .badge-card:hover {
     border-color: rgba(245, 158, 11, 0.3);
-    transform: translateY(-2px);
+    transform: translateY(-2px); /* Efeito de levantar ao passar o mouse */
 }
 
 .badge-card.inactive {
-    opacity: 0.6;
+    opacity: 0.6; /* Badges inativos são mais transparentes */
 }
 
+/* Ícone do badge (versão gradiente/cor sólida) */
 .badge-icon {
     display: flex;
     align-items: center;
@@ -253,9 +272,10 @@
     height: 56px;
     border-radius: 1rem;
     color: white;
-    flex-shrink: 0;
+    flex-shrink: 0; /* Impede que o ícone encolha */
 }
 
+/* Ícone do badge (versão emoji) */
 .badge-icon-emoji {
     display: flex;
     align-items: center;
@@ -270,9 +290,10 @@
     font-size: 1.75rem;
 }
 
+/* Informações do badge */
 .badge-info {
-    flex: 1;
-    min-width: 0;
+    flex: 1; /* Ocupa espaço disponível */
+    min-width: 0; /* Permite que o texto quebre corretamente */
 }
 
 .badge-info h3 {
@@ -282,19 +303,18 @@
     color: #1e293b;
 }
 
-
 .badge-desc {
     color: #64748b;
     font-size: 0.875rem;
     margin-bottom: 0.75rem;
     display: -webkit-box;
-    -webkit-line-clamp: 2;
+    -webkit-line-clamp: 2; /* Limita a 2 linhas */
     line-clamp: 2;
     -webkit-box-orient: vertical;
-    overflow: hidden;
+    overflow: hidden; /* Esconde texto excedente */
 }
 
-
+/* Metadados do badge (pontos e tipo) */
 .badge-meta {
     display: flex;
     align-items: center;
@@ -310,6 +330,7 @@
     font-weight: 600;
 }
 
+/* Badge de tipo (automático/manual) */
 .type-badge {
     padding: 0.25rem 0.625rem;
     background: rgba(100, 116, 139, 0.2);
@@ -330,7 +351,7 @@
     background: rgba(52, 211, 153, 0.15);
 }
 
-/* Type info display in form */
+/* Informação sobre tipo no formulário */
 .type-info {
     display: flex;
     flex-direction: column;
@@ -341,14 +362,14 @@
     border-radius: 0.625rem;
 }
 
-
 .type-info small {
     color: #64748b;
     font-size: 0.8rem;
 }
 
-
-/* Badge Actions */
+/* ============================================
+   AÇÕES DO BADGE (BOTÕES)
+   ============================================ */
 .badge-actions {
     display: flex;
     flex-direction: column;
@@ -369,8 +390,7 @@
     transition: all 0.2s;
 }
 
-
-/* Ensure SVG icons are visible */
+/* Estilização dos ícones SVG dentro dos botões */
 .action-btn svg {
     width: 18px;
     height: 18px;
@@ -382,7 +402,7 @@
     color: #1e293b;
 }
 
-
+/* Botão de toggle (ativar/desativar) */
 .action-btn.toggle {
     color: #a1a1aa;
 }
@@ -395,23 +415,26 @@
     color: #10b981;
 }
 
+/* Botão de deletar */
 .action-btn.delete:hover {
     background: rgba(239, 68, 68, 0.2);
     color: #f87171;
 }
 
-/* Delete Confirmation */
+/* ============================================
+   CONFIRMAÇÃO DE EXCLUSÃO
+   ============================================ */
 .delete-confirm {
-    position: absolute;
-    inset: 0;
+    position: absolute; /* Sobrepoe o card inteiro */
+    inset: 0; /* Preenche todo o espaço do parent */
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
     gap: 1rem;
-    background: rgba(15, 23, 42, 0.95);
+    background: rgba(15, 23, 42, 0.95); /* Fundo escuro semi-transparente */
     border-radius: 1rem;
-    z-index: 10;
+    z-index: 10; /* Acima do conteúdo do card */
 }
 
 .delete-confirm p {
@@ -435,6 +458,7 @@
     transition: all 0.2s;
 }
 
+/* Botão de confirmar exclusão */
 .confirm-btns button:first-child {
     background: rgba(239, 68, 68, 0.2);
     color: #f87171;
@@ -444,6 +468,7 @@
     background: rgba(239, 68, 68, 0.3);
 }
 
+/* Botão de cancelar exclusão */
 .confirm-btns button:last-child {
     background: rgba(100, 116, 139, 0.2);
     color: #94a3b8;
@@ -454,17 +479,19 @@
     color: #f1f5f9;
 }
 
-/* Modal */
+/* ============================================
+   MODAL (POPUP)
+   ============================================ */
 .modal-overlay {
-    position: fixed;
-    inset: 0;
+    position: fixed; /* Cobre toda a tela */
+    inset: 0; /* top, right, bottom, left: 0 */
     background: rgba(0, 0, 0, 0.7);
-    backdrop-filter: blur(4px);
+    backdrop-filter: blur(4px); /* Efeito de desfoque no fundo */
     display: flex;
     align-items: center;
     justify-content: center;
-    z-index: 100;
-    padding: 2rem;
+    z-index: 100; /* Acima de tudo */
+    padding: 2rem; /* Padding em telas pequenas */
 }
 
 .modal-content {
@@ -476,7 +503,7 @@
     box-shadow: 0 25px 50px rgba(0, 0, 0, 0.2);
 }
 
-
+/* Cabeçalho do modal */
 .modal-header {
     display: flex;
     align-items: center;
@@ -485,19 +512,13 @@
     border-bottom: 1px solid #e2e8f0;
 }
 
-
 .modal-header h2 {
     font-size: 1.25rem;
     font-weight: 600;
     color: #1e293b;
 }
 
-
-.modal-header h2 {
-    font-size: 1.25rem;
-    font-weight: 600;
-}
-
+/* Botão de fechar modal */
 .close-btn {
     display: flex;
     align-items: center;
@@ -512,18 +533,19 @@
     transition: all 0.2s;
 }
 
-
 .close-btn:hover {
     background: #e2e8f0;
     color: #1e293b;
 }
 
-
-/* Form */
+/* ============================================
+   FORMULÁRIO
+   ============================================ */
 .modal-content form {
     padding: 1.75rem;
 }
 
+/* Mensagem de erro do formulário */
 .form-error {
     display: flex;
     align-items: center;
@@ -537,6 +559,7 @@
     margin-bottom: 1.25rem;
 }
 
+/* Grupo de campo do formulário */
 .form-group {
     margin-bottom: 1.25rem;
 }
@@ -548,7 +571,6 @@
     font-weight: 500;
     color: #1e293b;
 }
-
 
 .form-group input,
 .form-group select,
@@ -563,27 +585,30 @@
     transition: all 0.2s;
 }
 
-
+/* Estado de foco dos campos */
 .form-group input:focus,
 .form-group select:focus,
 .form-group textarea:focus {
     outline: none;
     border-color: #f59e0b;
-    box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.15);
+    box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.15); /* Efeito de glow */
 }
 
 .form-group textarea {
-    resize: vertical;
+    resize: vertical; /* Permite redimensionamento apenas vertical */
     min-height: 88px;
 }
 
+/* Layout de campos lado a lado */
 .form-row {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 1rem;
 }
 
-/* Icon Selector */
+/* ============================================
+   SELETOR DE ÍCONES
+   ============================================ */
 .icon-selector {
     display: flex;
     gap: 0.75rem;
@@ -618,7 +643,9 @@
     font-size: 1.5rem;
 }
 
-/* Color Input */
+/* ============================================
+   INPUT DE COR
+   ============================================ */
 .color-input {
     width: 100%;
     height: 48px;
@@ -627,14 +654,18 @@
     cursor: pointer;
 }
 
-/* Improve form placeholder visibility */
+/* ============================================
+   MELHORIAS DE VISIBILIDADE DOS PLACEHOLDERS
+   ============================================ */
 .form-group input::placeholder,
 .form-group textarea::placeholder {
     color: #94a3b8;
-    opacity: 1;
+    opacity: 1; /* Garante que não fique muito transparente no Firefox */
 }
 
-/* Form Actions */
+/* ============================================
+   AÇÕES DO FORMULÁRIO (BOTÕES)
+   ============================================ */
 .form-actions {
     display: flex;
     gap: 1rem;
@@ -644,7 +675,7 @@
 }
 
 .cancel-btn {
-    flex: 1;
+    flex: 1; /* Ocupa 1 parte do espaço disponível */
     padding: 0.875rem;
     background: rgba(100, 116, 139, 0.15);
     border: 1px solid rgba(148, 163, 184, 0.15);
@@ -661,7 +692,7 @@
 }
 
 .submit-btn {
-    flex: 2;
+    flex: 2; /* Ocupa 2 partes do espaço (o dobro do cancel) */
     display: flex;
     align-items: center;
     justify-content: center;
@@ -690,7 +721,9 @@
     animation: spin 1s linear infinite;
 }
 
-/* Responsive */
+/* ============================================
+   RESPONSIVIDADE (MOBILE)
+   ============================================ */
 @media (max-width: 768px) {
     .badge-header {
         flex-direction: column;
@@ -700,21 +733,21 @@
     }
 
     .badges-grid {
-        grid-template-columns: 1fr;
+        grid-template-columns: 1fr; /* Uma coluna em mobile */
         padding: 1.5rem;
     }
 
     .badge-card {
-        flex-direction: column;
+        flex-direction: column; /* Ícone acima do conteúdo */
     }
 
     .badge-actions {
-        flex-direction: row;
+        flex-direction: row; /* Botões lado a lado em mobile */
         width: 100%;
         justify-content: flex-end;
     }
 
     .form-row {
-        grid-template-columns: 1fr;
+        grid-template-columns: 1fr; /* Campos empilhados em mobile */
     }
 }

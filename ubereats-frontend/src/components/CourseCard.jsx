@@ -1,12 +1,35 @@
+// React import
 import React from 'react';
+
+// Framer Motion for animations
 import { motion } from 'framer-motion';
-import { Users, FolderOpen, TrendingUp, BookOpen, ChevronRight } from 'lucide-react';
+
+// Icons used in the card UI
+import {
+    Users,
+    FolderOpen,
+    TrendingUp,
+    BookOpen,
+    ChevronRight
+} from 'lucide-react';
 
 /**
- * CourseCard - Professional academic card for displaying course information
- * Features performance bar, student count, projects, and clean design
+ * CourseCard
+ * -------------------------
+ * Displays a professional academic-style card for a course.
+ * Shows:
+ * - Course details (name, code, semester, year)
+ * - Performance score with progress bar
+ * - Student and project statistics
+ * - Active / inactive status
+ * - Manage button
  */
 const CourseCard = ({ course, index, onManage }) => {
+
+    /* =========================
+       Destructure course data
+       ========================= */
+
     const {
         id,
         name,
@@ -18,10 +41,19 @@ const CourseCard = ({ course, index, onManage }) => {
         averageTeamScore,
     } = course;
 
-    // Handle both 'isActive' and 'active' field names from backend
-    const isActive = course.isActive !== undefined ? course.isActive : course.active;
+    /* =========================
+       Handle backend field naming
+       ========================= */
 
-    // Determine performance bar color based on score
+    // Supports both "isActive" and "active" from backend responses
+    const isActive =
+        course.isActive !== undefined ? course.isActive : course.active;
+
+    /* =========================
+       Performance score styling
+       ========================= */
+
+    // Returns colors and labels based on performance score
     const getScoreConfig = (score) => {
         if (score >= 80) {
             return {
@@ -47,66 +79,84 @@ const CourseCard = ({ course, index, onManage }) => {
         }
     };
 
+    // Get style config for the current score
     const scoreConfig = getScoreConfig(averageTeamScore || 0);
+
+    // Format score display (1 decimal place)
     const displayScore = averageTeamScore?.toFixed(1) || '0.0';
 
-    // Format semester display
+    /* =========================
+       Semester formatting
+       ========================= */
+
+    // Converts backend enum to readable text
     const formatSemester = (sem) => {
         if (!sem) return '';
         const semesterMap = {
-            'FIRST': '1st Semester',
-            'SECOND': '2nd Semester',
-            'ANNUAL': 'Annual',
+            FIRST: '1st Semester',
+            SECOND: '2nd Semester',
+            ANNUAL: 'Annual',
         };
         return semesterMap[sem] || sem;
     };
 
+    /* =========================
+       Render
+       ========================= */
+
     return (
         <motion.div
+            /* Entrance animation */
             initial={{ opacity: 0, y: 20, scale: 0.95 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             transition={{
                 duration: 0.4,
                 delay: index * 0.1,
-                ease: [0.25, 0.46, 0.45, 0.94]
+                ease: [0.25, 0.46, 0.45, 0.94],
             }}
+
+            /* Lift card slightly on hover */
             whileHover={{
                 y: -4,
-                transition: { duration: 0.2 }
+                transition: { duration: 0.2 },
             }}
             className="relative group"
         >
-            {/* Card Container */}
-            <div className={`
-        relative overflow-hidden rounded-2xl bg-white
-        border border-slate-200/50
-        shadow-lg shadow-slate-200/50
-        hover:shadow-xl hover:shadow-slate-300/50
-        transition-all duration-300
-        ${!isActive ? 'opacity-60' : ''}
-      `}>
-
-                {/* Top Accent Bar */}
+            {/* Card container */}
+            <div
+                className={`
+                    relative overflow-hidden rounded-2xl bg-white
+                    border border-slate-200/50
+                    shadow-lg shadow-slate-200/50
+                    hover:shadow-xl hover:shadow-slate-300/50
+                    transition-all duration-300
+                    ${!isActive ? 'opacity-60' : ''}
+                `}
+            >
+                {/* Top accent bar based on performance */}
                 <div className={`h-1.5 ${scoreConfig.color} w-full`} />
 
-                {/* Card Content */}
+                {/* Card body */}
                 <div className="p-5">
 
-                    {/* Header Section */}
+                    {/* =========================
+                       Header Section
+                       ========================= */}
                     <div className="flex items-start justify-between mb-4">
                         <div className="flex-1">
-                            {/* Course Code Badge */}
+
+                            {/* Course code badge */}
                             <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-slate-100 text-slate-600 text-xs font-semibold mb-2">
                                 <BookOpen size={12} className="text-violet-500" />
                                 {code}
                             </div>
 
-                            {/* Course Name */}
+                            {/* Course name */}
                             <h3 className="text-lg font-bold text-slate-800 leading-tight mb-1 line-clamp-2">
                                 {name}
                             </h3>
 
-                            {/* Semester & Year */}
+                            {/* Semester and academic year */}
                             <div className="flex items-center gap-2 flex-wrap">
                                 {semester && (
                                     <span className="inline-flex items-center px-2 py-0.5 rounded-md bg-violet-100 text-violet-700 text-xs font-medium">
@@ -114,95 +164,147 @@ const CourseCard = ({ course, index, onManage }) => {
                                     </span>
                                 )}
                                 {academicYear && (
-                                    <span className="text-xs text-slate-500">{academicYear}</span>
+                                    <span className="text-xs text-slate-500">
+                                        {academicYear}
+                                    </span>
                                 )}
                             </div>
                         </div>
 
-                        {/* Active/Inactive Status */}
-                        <div className={`
-              flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium
-              ${isActive
-                                ? 'bg-emerald-100 text-emerald-700'
-                                : 'bg-slate-100 text-slate-500'}
-            `}>
-                            <span className={`w-1.5 h-1.5 rounded-full ${isActive ? 'bg-emerald-500' : 'bg-slate-400'}`} />
+                        {/* Active / Inactive indicator */}
+                        <div
+                            className={`
+                                flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium
+                                ${
+                                    isActive
+                                        ? 'bg-emerald-100 text-emerald-700'
+                                        : 'bg-slate-100 text-slate-500'
+                                }
+                            `}
+                        >
+                            <span
+                                className={`w-1.5 h-1.5 rounded-full ${
+                                    isActive
+                                        ? 'bg-emerald-500'
+                                        : 'bg-slate-400'
+                                }`}
+                            />
                             {isActive ? 'Active' : 'Inactive'}
                         </div>
                     </div>
 
-                    {/* Performance Score Section */}
+                    {/* =========================
+                       Performance Score
+                       ========================= */}
                     <div className="mb-5">
                         <div className="flex items-center justify-between mb-2">
                             <div className="flex items-center gap-2">
-                                <TrendingUp size={16} className={scoreConfig.textColor} />
-                                <span className="text-sm font-semibold text-slate-700">Performance Score</span>
+                                <TrendingUp
+                                    size={16}
+                                    className={scoreConfig.textColor}
+                                />
+                                <span className="text-sm font-semibold text-slate-700">
+                                    Performance Score
+                                </span>
                             </div>
-                            <div className={`flex items-center gap-1 text-sm font-bold ${scoreConfig.textColor}`}>
+
+                            {/* Numeric score */}
+                            <div
+                                className={`flex items-center gap-1 text-sm font-bold ${scoreConfig.textColor}`}
+                            >
                                 <span>{displayScore}</span>
-                                <span className="text-slate-400 font-normal">/ 100</span>
+                                <span className="text-slate-400 font-normal">
+                                    / 100
+                                </span>
                             </div>
                         </div>
 
-                        {/* Progress Bar */}
-                        <div className={`relative h-3 rounded-full ${scoreConfig.bgColor} overflow-hidden`}>
+                        {/* Progress bar */}
+                        <div
+                            className={`relative h-3 rounded-full ${scoreConfig.bgColor} overflow-hidden`}
+                        >
                             <motion.div
                                 initial={{ width: 0 }}
-                                animate={{ width: `${averageTeamScore || 0}%` }}
-                                transition={{ duration: 1, delay: index * 0.1 + 0.3, ease: "easeOut" }}
+                                animate={{
+                                    width: `${averageTeamScore || 0}%`,
+                                }}
+                                transition={{
+                                    duration: 1,
+                                    delay: index * 0.1 + 0.3,
+                                    ease: 'easeOut',
+                                }}
                                 className={`absolute inset-y-0 left-0 ${scoreConfig.color} rounded-full`}
                             />
                         </div>
 
-                        <p className={`text-xs mt-1.5 ${scoreConfig.textColor} font-medium`}>
+                        {/* Performance label */}
+                        <p
+                            className={`text-xs mt-1.5 ${scoreConfig.textColor} font-medium`}
+                        >
                             {scoreConfig.label}
                         </p>
                     </div>
 
-                    {/* Stats Grid */}
+                    {/* =========================
+                       Stats Grid
+                       ========================= */}
                     <div className="grid grid-cols-2 gap-3 mb-5">
-                        {/* Students Stat */}
+
+                        {/* Student count */}
                         <div className="flex items-center gap-3 p-3 rounded-xl bg-gradient-to-br from-blue-50 to-indigo-50 border border-blue-100/50">
                             <div className="flex items-center justify-center w-10 h-10 rounded-lg bg-blue-500 text-white shadow-lg shadow-blue-500/30">
                                 <Users size={18} />
                             </div>
                             <div>
-                                <p className="text-xs text-slate-500 font-medium">Students</p>
-                                <p className="text-xl font-bold text-slate-800">{studentCount || 0}</p>
+                                <p className="text-xs text-slate-500 font-medium">
+                                    Students
+                                </p>
+                                <p className="text-xl font-bold text-slate-800">
+                                    {studentCount || 0}
+                                </p>
                             </div>
                         </div>
 
-                        {/* Projects Stat */}
+                        {/* Project count */}
                         <div className="flex items-center gap-3 p-3 rounded-xl bg-gradient-to-br from-purple-50 to-pink-50 border border-purple-100/50">
                             <div className="flex items-center justify-center w-10 h-10 rounded-lg bg-purple-500 text-white shadow-lg shadow-purple-500/30">
                                 <FolderOpen size={18} />
                             </div>
                             <div>
-                                <p className="text-xs text-slate-500 font-medium">Projects</p>
-                                <p className="text-xl font-bold text-slate-800">{projectCount || 0}</p>
+                                <p className="text-xs text-slate-500 font-medium">
+                                    Projects
+                                </p>
+                                <p className="text-xl font-bold text-slate-800">
+                                    {projectCount || 0}
+                                </p>
                             </div>
                         </div>
                     </div>
 
-                    {/* Manage Button */}
+                    {/* =========================
+                       Manage Button
+                       ========================= */}
                     <motion.button
                         onClick={() => onManage?.(id)}
                         whileHover={{ scale: 1.02 }}
                         whileTap={{ scale: 0.98 }}
                         className={`
-              w-full py-3 px-4 rounded-xl
-              bg-gradient-to-r from-violet-600 to-indigo-600
-              hover:from-violet-700 hover:to-indigo-700
-              text-white font-semibold text-sm
-              shadow-lg shadow-violet-500/30
-              hover:shadow-xl hover:shadow-violet-500/40
-              transition-all duration-200
-              flex items-center justify-center gap-2
-              group/btn
-            `}
+                            w-full py-3 px-4 rounded-xl
+                            bg-gradient-to-r from-violet-600 to-indigo-600
+                            hover:from-violet-700 hover:to-indigo-700
+                            text-white font-semibold text-sm
+                            shadow-lg shadow-violet-500/30
+                            hover:shadow-xl hover:shadow-violet-500/40
+                            transition-all duration-200
+                            flex items-center justify-center gap-2
+                            group/btn
+                        `}
                     >
                         <span>Manage Course</span>
-                        <ChevronRight size={16} className="group-hover/btn:translate-x-1 transition-transform" />
+                        <ChevronRight
+                            size={16}
+                            className="group-hover/btn:translate-x-1 transition-transform"
+                        />
                     </motion.button>
                 </div>
             </div>
