@@ -7,13 +7,15 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 /**
  * Service that loads user-specific data for Spring Security.
  * Implements UserDetailsService to integrate with Spring Security
  * authentication.
  *
  * @author UberEats
- * @version 0.9.1
+ * @version 0.9.2
  */
 @Service
 public class CustomUserDetailsService implements UserDetailsService {
@@ -30,16 +32,24 @@ public class CustomUserDetailsService implements UserDetailsService {
     }
 
     /**
-     * Loads user by email (used as username in authentication).
+     * Loads user by email OR username (supports both for authentication).
      *
-     * @param email The email to search for
+     * @param emailOrUsername The email or username to search for
      * @return UserDetails for the found user
      * @throws UsernameNotFoundException if user not found
      */
     @Override
-    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        User user = userService.findByEmail(email)
-                .orElseThrow(() -> new UsernameNotFoundException("User not found with email: " + email));
+    public UserDetails loadUserByUsername(String emailOrUsername) throws UsernameNotFoundException {
+        // Try to find by email first
+        Optional<User> userOpt = userService.findByEmail(emailOrUsername);
+
+        // If not found by email, try by username
+        if (userOpt.isEmpty()) {
+            userOpt = userService.findByUsername(emailOrUsername);
+        }
+
+        User user = userOpt.orElseThrow(
+                () -> new UsernameNotFoundException("User not found with email or username: " + emailOrUsername));
 
         // Convert User entity to Spring Security UserDetails
         return CustomUserDetails.build(user);

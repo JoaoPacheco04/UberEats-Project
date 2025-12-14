@@ -28,7 +28,7 @@ const Login = () => {
                 navigate('/dashboard');
             }
         } catch (err) {
-            setError('Invalid email or password');
+            setError('Invalid email/username or password');
             console.error(err);
         }
     };
@@ -82,13 +82,11 @@ const Login = () => {
                         )}
 
                         <div className="space-y-2">
-                            {/* No visible label as per design, using placeholder as visual cue or minimal label if needed 
-                                 Design has inputs that look like white rounded rectangles with uppercase text inside
-                             */}
+                            {/* Email or Username input */}
                             <div className="relative">
-                                <label className="block text-xs font-bold text-gray-600 uppercase tracking-wider mb-1 ml-1">Username</label>
+                                <label className="block text-xs font-bold text-gray-600 uppercase tracking-wider mb-1 ml-1">Email or Username</label>
                                 <input
-                                    type="email"
+                                    type="text"
                                     placeholder=""
                                     value={email}
                                     onChange={(e) => setEmail(e.target.value)}

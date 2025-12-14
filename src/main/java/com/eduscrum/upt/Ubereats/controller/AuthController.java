@@ -53,7 +53,8 @@ public class AuthController {
     /**
      * Authenticates a user and returns a JWT token.
      *
-     * @param loginRequest The request containing login credentials
+     * @param loginRequest The request containing login credentials (email or
+     *                     username)
      * @return ResponseEntity containing the login response with JWT token
      */
     @PostMapping("/login")
@@ -68,8 +69,12 @@ public class AuthController {
             String jwt = tokenProvider.generateToken(authentication);
 
             CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
+
+            // Try to find user by email first, then by username
             User user = userService.findByEmail(userDetails.getUsername())
-                    .orElseThrow(() -> new RuntimeException("User data not found after successful authentication."));
+                    .orElseGet(() -> userService.findByUsername(userDetails.getUsername())
+                            .orElseThrow(() -> new RuntimeException(
+                                    "User data not found after successful authentication.")));
 
             LoginResponse loginResponse = new LoginResponse(
                     jwt,
@@ -83,7 +88,7 @@ public class AuthController {
 
         } catch (BadCredentialsException e) {
             Map<String, String> response = new HashMap<>();
-            response.put("message", "Invalid email or password.");
+            response.put("message", "Invalid email/username or password.");
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
         } catch (Exception e) {
             Map<String, String> response = new HashMap<>();
