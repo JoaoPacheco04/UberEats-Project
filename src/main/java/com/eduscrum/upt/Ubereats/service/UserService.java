@@ -327,4 +327,5 @@ public class UserService {
 
         return individualScore + teamScore + storyScore;
     }
+
 }

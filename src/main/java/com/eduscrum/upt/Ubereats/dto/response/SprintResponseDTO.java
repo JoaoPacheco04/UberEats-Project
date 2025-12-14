@@ -35,6 +35,8 @@ public class SprintResponseDTO {
     private Long projectId;
     private String projectName;
 
+    private Integer teamMood;
+
     /** Default constructor. */
     public SprintResponseDTO() {
     }
@@ -44,7 +46,7 @@ public class SprintResponseDTO {
             LocalDateTime createdAt, LocalDateTime updatedAt, Long durationDays,
             Long daysRemaining, BigDecimal timeProgressPercentage, boolean overdue,
             boolean active, boolean completed, String statusDescription,
-            String displayName, Long projectId, String projectName) {
+            String displayName, Long projectId, String projectName, Integer teamMood) {
         this.id = id;
         this.sprintNumber = sprintNumber;
         this.name = name;
@@ -64,6 +66,7 @@ public class SprintResponseDTO {
         this.displayName = displayName;
         this.projectId = projectId;
         this.projectName = projectName;
+        this.teamMood = teamMood;
     }
 
     /** @return The sprint ID */
@@ -217,5 +220,13 @@ public class SprintResponseDTO {
 
     public void setProjectName(String projectName) {
         this.projectName = projectName;
+    }
+
+    public Integer getTeamMood() {
+        return teamMood;
+    }
+
+    public void setTeamMood(Integer teamMood) {
+        this.teamMood = teamMood;
     }
 }

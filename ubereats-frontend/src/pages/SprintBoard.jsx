@@ -164,13 +164,22 @@ const SprintBoard = () => {
         }
     };
 
-    const handleCompleteSprint = async () => {
+    const [showCompleteModal, setShowCompleteModal] = useState(false);
+    const [teamMood, setTeamMood] = useState(3); // Default 3/5
+
+    const handleCompleteSprintClick = () => {
+        setShowCompleteModal(true);
+    };
+
+    const handleConfirmCompleteSprint = async () => {
         setSprintActionLoading(true);
         try {
-            await completeSprint(sprintId);
+            await completeSprint(sprintId, null, teamMood);
+            setShowCompleteModal(false);
             fetchData();
         } catch (err) {
             console.error('Error completing sprint:', err);
+            alert('Failed to complete sprint: ' + (err.response?.data?.message || err.message));
         } finally {
             setSprintActionLoading(false);
         }
@@ -298,35 +307,53 @@ const SprintBoard = () => {
                             {sprint?.status}
                         </span>
                     </div>
-                    <h1>
-                        <Target size={28} />
-                        {sprint?.name || sprint?.displayName || `Sprint ${sprint?.sprintNumber}`}
-                    </h1>
+
+                    <div className="flex items-center gap-4">
+                        <h1>
+                            <Target size={28} />
+                            {sprint?.name || sprint?.displayName || `Sprint ${sprint?.sprintNumber}`}
+                        </h1>
+                        {sprint?.teamMood && (
+                            <div className="flex items-center gap-2 px-3 py-1 bg-indigo-50 rounded-full border border-indigo-100" title="Team Mood">
+                                <span className="text-xl">
+                                    {sprint.teamMood === 1 && '😫'}
+                                    {sprint.teamMood === 2 && '😕'}
+                                    {sprint.teamMood === 3 && '😐'}
+                                    {sprint.teamMood === 4 && '🙂'}
+                                    {sprint.teamMood === 5 && '🤩'}
+                                </span>
+                                <span className="text-sm font-medium text-indigo-700">
+                                    Mood: {sprint.teamMood}/5
+                                </span>
+                            </div>
+                        )}
+                    </div>
                     {sprint?.goal && (
                         <p className="sprint-goal">{sprint.goal}</p>
                     )}
                 </div>
-
-                {/* Progress Section */}
-                <div className="sprint-progress">
-                    <div className="progress-header">
-                        <span>Sprint Progress</span>
-                        <span className="progress-value">{Math.round(progress)}%</span>
-                    </div>
-                    <div className="progress-bar">
-                        <div
-                            className="progress-fill"
-                            style={{ width: `${progress}%` }}
-                        />
-                    </div>
-                    <div className="progress-stats">
-                        <span>{stats?.completedStoryPoints || 0} / {stats?.totalStoryPoints || 0} story points</span>
-                    </div>
-                </div>
             </header>
 
+            {/* Progress Section */}
+            <div className="sprint-progress">
+                <div className="progress-header">
+                    <span>Sprint Progress</span>
+                    <span className="progress-value">{Math.round(progress)}%</span>
+                </div>
+                <div className="progress-bar">
+                    <div
+                        className="progress-fill"
+                        style={{ width: `${progress}%` }}
+                    />
+                </div>
+                <div className="progress-stats">
+                    <span>{stats?.completedStoryPoints || 0} / {stats?.totalStoryPoints || 0} story points</span>
+                </div>
+            </div>
+
+
             {/* Board Toolbar */}
-            <div className="board-toolbar">
+            < div className="board-toolbar" >
                 <div className="toolbar-info">
                     <Users size={16} />
                     <span>{team ? '1 team' : 'No team'}</span>
@@ -347,11 +374,11 @@ const SprintBoard = () => {
                     {sprint?.status === 'IN_PROGRESS' && (
                         <button
                             className="sprint-action-btn complete"
-                            onClick={handleCompleteSprint}
+                            onClick={handleCompleteSprintClick}
                             disabled={sprintActionLoading}
                         >
                             <CheckCircle2 size={16} />
-                            {sprintActionLoading ? 'Completing...' : 'Complete Sprint'}
+                            Complete Sprint
                         </button>
                     )}
                     {(sprint?.status === 'PLANNED' || sprint?.status === 'IN_PROGRESS') && (
@@ -372,60 +399,141 @@ const SprintBoard = () => {
                     )}
                 </div>
 
-                {currentUser?.role === 'STUDENT' && sprint?.status !== 'COMPLETED' && sprint?.status !== 'CANCELLED' && (
-                    <button
-                        className="create-story-btn"
-                        onClick={() => setShowCreateModal(true)}
-                        disabled={!team}
-                        title={!team ? 'No team available' : 'Add User Story'}
-                    >
-                        <Plus size={20} />
-                        Add User Story
-                    </button>
-                )}
-            </div>
+                {
+                    currentUser?.role === 'STUDENT' && sprint?.status !== 'COMPLETED' && sprint?.status !== 'CANCELLED' && (
+                        <button
+                            className="create-story-btn"
+                            onClick={() => setShowCreateModal(true)}
+                            disabled={!team}
+                            title={!team ? 'No team available' : 'Add User Story'}
+                        >
+                            <Plus size={20} />
+                            Add User Story
+                        </button>
+                    )
+                }
+            </div >
 
             {/* Kanban Board */}
-            <main className="kanban-board">
-                {columns.map(column => (
-                    <div key={column.id} className="kanban-column">
-                        <div className="column-header" style={{ '--column-color': column.color }}>
-                            <column.icon size={18} />
-                            <span>{column.label}</span>
-                            <span className="column-count">{getStoriesByStatus(column.id).length}</span>
+            < main className="kanban-board" >
+                {
+                    columns.map(column => (
+                        <div key={column.id} className="kanban-column">
+                            <div className="column-header" style={{ '--column-color': column.color }}>
+                                <column.icon size={18} />
+                                <span>{column.label}</span>
+                                <span className="column-count">{getStoriesByStatus(column.id).length}</span>
+                            </div>
+
+                            <div className="column-content">
+                                <AnimatePresence>
+                                    {getStoriesByStatus(column.id).map(story => {
+                                        const isSprintFrozen = sprint?.status === 'COMPLETED' || sprint?.status === 'CANCELLED';
+                                        return (
+                                            <UserStoryCard
+                                                key={story.id}
+                                                story={story}
+                                                teamMembers={isSprintFrozen ? [] : teamMembers}
+                                                onAssign={isSprintFrozen ? null : (userId) => handleAssign(story.id, userId)}
+                                                onUnassign={isSprintFrozen ? null : () => handleUnassign(story.id)}
+                                                onMoveNext={isSprintFrozen || column.id === 'DONE' ? null : () => handleMoveNext(story.id)}
+                                                onMovePrev={isSprintFrozen || column.id === 'TODO' || column.id === 'DONE' ? null : () => handleMovePrev(story.id)}
+                                                onDelete={isSprintFrozen || story.status === 'DONE' ? null : () => handleDelete(story.id)}
+                                            />
+                                        );
+                                    })}
+                                </AnimatePresence>
+
+                                {getStoriesByStatus(column.id).length === 0 && (
+                                    <div className="column-empty">
+                                        No stories
+                                    </div>
+                                )}
+                            </div>
                         </div>
+                    ))
+                }
+            </main >
 
-                        <div className="column-content">
-                            <AnimatePresence>
-                                {getStoriesByStatus(column.id).map(story => {
-                                    const isSprintFrozen = sprint?.status === 'COMPLETED' || sprint?.status === 'CANCELLED';
-                                    return (
-                                        <UserStoryCard
-                                            key={story.id}
-                                            story={story}
-                                            teamMembers={isSprintFrozen ? [] : teamMembers}
-                                            onAssign={isSprintFrozen ? null : (userId) => handleAssign(story.id, userId)}
-                                            onUnassign={isSprintFrozen ? null : () => handleUnassign(story.id)}
-                                            onMoveNext={isSprintFrozen || column.id === 'DONE' ? null : () => handleMoveNext(story.id)}
-                                            onMovePrev={isSprintFrozen || column.id === 'TODO' || column.id === 'DONE' ? null : () => handleMovePrev(story.id)}
-                                            onDelete={isSprintFrozen || story.status === 'DONE' ? null : () => handleDelete(story.id)}
-                                        />
-                                    );
-                                })}
-                            </AnimatePresence>
+            {/* Complete Sprint Modal */}
+            < AnimatePresence >
+                {showCompleteModal && (
+                    <motion.div
+                        className="modal-overlay"
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        onClick={() => setShowCompleteModal(false)}
+                    >
+                        <motion.div
+                            className="modal-content"
+                            initial={{ scale: 0.9, opacity: 0 }}
+                            animate={{ scale: 1, opacity: 1 }}
+                            exit={{ scale: 0.9, opacity: 0 }}
+                            onClick={e => e.stopPropagation()}
+                        >
+                            <h2>Complete Sprint</h2>
+                            <p className="mb-4 text-gray-600">
+                                Are you sure you want to complete this sprint?
+                                <br />
+                                Please rate the <strong>Team Mood</strong> for this sprint.
+                            </p>
 
-                            {getStoriesByStatus(column.id).length === 0 && (
-                                <div className="column-empty">
-                                    No stories
+                            <div className="form-group">
+                                <label>Team Mood (1-5)</label>
+                                <div className="flex gap-2 justify-center my-4">
+                                    {[1, 2, 3, 4, 5].map((mood) => (
+                                        <button
+                                            key={mood}
+                                            type="button"
+                                            onClick={() => setTeamMood(mood)}
+                                            className={`p-3 rounded-full transition-all ${teamMood === mood
+                                                ? 'bg-indigo-600 text-white scale-110 shadow-lg ring-2 ring-indigo-300'
+                                                : 'bg-gray-100 text-gray-500 hover:bg-gray-200'
+                                                }`}
+                                        >
+                                            {mood === 1 && '😫'}
+                                            {mood === 2 && '😕'}
+                                            {mood === 3 && '😐'}
+                                            {mood === 4 && '🙂'}
+                                            {mood === 5 && '🤩'}
+                                        </button>
+                                    ))}
                                 </div>
-                            )}
-                        </div>
-                    </div>
-                ))}
-            </main>
+                                <p className="text-center text-sm text-gray-500">
+                                    {teamMood === 1 && 'Very Stressed'}
+                                    {teamMood === 2 && 'Stressed'}
+                                    {teamMood === 3 && 'Neutral'}
+                                    {teamMood === 4 && 'Good'}
+                                    {teamMood === 5 && 'Excellent!'}
+                                </p>
+                            </div>
+
+                            <div className="modal-actions">
+                                <button
+                                    type="button"
+                                    className="cancel-btn"
+                                    onClick={() => setShowCompleteModal(false)}
+                                    disabled={sprintActionLoading}
+                                >
+                                    Cancel
+                                </button>
+                                <button
+                                    type="button"
+                                    className="submit-btn"
+                                    onClick={handleConfirmCompleteSprint}
+                                    disabled={sprintActionLoading}
+                                >
+                                    {sprintActionLoading ? 'Completing...' : 'Confirm Completion'}
+                                </button>
+                            </div>
+                        </motion.div>
+                    </motion.div>
+                )}
+            </AnimatePresence >
 
             {/* Create Story Modal */}
-            <AnimatePresence>
+            < AnimatePresence >
                 {showCreateModal && (
                     <motion.div
                         className="modal-overlay"
@@ -524,8 +632,8 @@ const SprintBoard = () => {
                         </motion.div>
                     </motion.div>
                 )}
-            </AnimatePresence>
-        </div>
+            </AnimatePresence >
+        </div >
     );
 };
 

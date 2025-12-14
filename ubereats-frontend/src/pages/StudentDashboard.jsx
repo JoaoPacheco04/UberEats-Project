@@ -20,7 +20,7 @@ import {
     AlertCircle,
     Loader2,
     Star,
-    BarChart3
+    BarChart3,
 } from 'lucide-react';
 import {
     BarChart,
@@ -219,13 +219,15 @@ const StudentDashboard = () => {
                     </div>
                 </motion.header>
 
-                {error && (
-                    <div className="error-banner">
-                        <AlertCircle size={20} />
-                        <span>{error}</span>
-                        <button onClick={fetchAllData}>Retry</button>
-                    </div>
-                )}
+                {
+                    error && (
+                        <div className="error-banner">
+                            <AlertCircle size={20} />
+                            <span>{error}</span>
+                            <button onClick={fetchAllData}>Retry</button>
+                        </div>
+                    )
+                }
 
                 {/* Main Content Grid */}
                 <div className="dashboard-grid">
@@ -501,62 +503,65 @@ const StudentDashboard = () => {
                         </div>
                     </div>
                 </div>
-            </div>
+            </div >
 
             {/* Enroll Modal */}
-            {showEnrollModal && (
-                <div className="modal-overlay" onClick={() => setShowEnrollModal(false)}>
-                    <motion.div
-                        className="modal-content enroll-modal"
-                        initial={{ scale: 0.9, opacity: 0 }}
-                        animate={{ scale: 1, opacity: 1 }}
-                        onClick={e => e.stopPropagation()}
-                    >
-                        <h2>Enroll in a Course</h2>
-                        <p className="modal-subtitle">Select a course to join</p>
+            {
+                showEnrollModal && (
+                    <div className="modal-overlay" onClick={() => setShowEnrollModal(false)}>
+                        <motion.div
+                            className="modal-content enroll-modal"
+                            initial={{ scale: 0.9, opacity: 0 }}
+                            animate={{ scale: 1, opacity: 1 }}
+                            onClick={e => e.stopPropagation()}
+                        >
+                            <h2>Enroll in a Course</h2>
+                            <p className="modal-subtitle">Select a course to join</p>
 
-                        {availableCourses.length > 0 ? (
-                            <div className="available-courses-list">
-                                {availableCourses.map((course) => (
-                                    <div key={course.id} className="available-course-item">
-                                        <div className="course-info">
-                                            <BookOpen size={20} />
-                                            <div>
-                                                <h4>{course.name}</h4>
-                                                <p>{course.description || 'No description'}</p>
+                            {availableCourses.length > 0 ? (
+                                <div className="available-courses-list">
+                                    {availableCourses.map((course) => (
+                                        <div key={course.id} className="available-course-item">
+                                            <div className="course-info">
+                                                <BookOpen size={20} />
+                                                <div>
+                                                    <h4>{course.name}</h4>
+                                                    <p>{course.description || 'No description'}</p>
+                                                </div>
                                             </div>
+                                            <button
+                                                className="enroll-btn"
+                                                onClick={() => handleEnroll(course.id)}
+                                                disabled={enrolling}
+                                            >
+                                                {enrolling ? <Loader2 className="spinner" size={16} /> : <UserPlus size={16} />}
+                                                Enroll
+                                            </button>
                                         </div>
-                                        <button
-                                            className="enroll-btn"
-                                            onClick={() => handleEnroll(course.id)}
-                                            disabled={enrolling}
-                                        >
-                                            {enrolling ? <Loader2 className="spinner" size={16} /> : <UserPlus size={16} />}
-                                            Enroll
-                                        </button>
-                                    </div>
-                                ))}
-                            </div>
-                        ) : (
-                            <div className="empty-state">
-                                <FolderOpen size={48} />
-                                <h3>No Courses Available</h3>
-                                <p>All courses are either full or you're already enrolled</p>
-                            </div>
-                        )}
+                                    ))}
+                                </div>
+                            ) : (
+                                <div className="empty-state">
+                                    <FolderOpen size={48} />
+                                    <h3>No Courses Available</h3>
+                                    <p>All courses are either full or you're already enrolled</p>
+                                </div>
+                            )}
 
-                        <div className="modal-actions">
-                            <button
-                                className="cancel-btn"
-                                onClick={() => setShowEnrollModal(false)}
-                            >
-                                Close
-                            </button>
-                        </div>
-                    </motion.div>
-                </div>
-            )}
-        </div>
+                            <div className="modal-actions">
+                                <button
+                                    className="cancel-btn"
+                                    onClick={() => setShowEnrollModal(false)}
+                                >
+                                    Close
+                                </button>
+                            </div>
+                        </motion.div>
+                    </div>
+                )
+            }
+
+        </div >
     );
 };
 

@@ -23,7 +23,8 @@ import {
     getTeamMembers,
     createSprint,
     startSprint as startSprintApi,
-    completeSprint as completeSprintApi
+    completeSprint as completeSprintApi,
+    getCurrentUser
 } from '../services/api';
 import SprintCard from '../components/SprintCard';
 import './ProjectDetail.css';
@@ -41,6 +42,7 @@ const ProjectDetail = () => {
     const [createError, setCreateError] = useState(null);
     const [activeTab, setActiveTab] = useState('sprints');
     const [showCreateModal, setShowCreateModal] = useState(false);
+    const currentUser = getCurrentUser();
 
     // Create Sprint Form State - includes sprintNumber
     const [newSprint, setNewSprint] = useState({

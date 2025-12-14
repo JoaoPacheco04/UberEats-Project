@@ -18,7 +18,7 @@ import {
 } from 'lucide-react';
 import CourseCard from '../components/CourseCard';
 import CreateResourceModal from '../components/CreateResourceModal';
-import { getTeacherCourses, createCourse, createProject, getCourseEnrollments, getStudentDashboard, getTeamByProject, getTeamPoints, getProjectsByCourse } from '../services/api';
+import { getTeacherCourses, createCourse, createProject, getCourseEnrollments, getStudentDashboard, getTeamByProject, getTeamPoints, getProjectsByCourse, getCurrentUser } from '../services/api';
 
 /**
  * TeacherDashboard - Professional academic dashboard
@@ -314,19 +314,19 @@ const TeacherDashboard = () => {
                                         <p className="text-base font-bold text-amber-400">Badges</p>
                                     </div>
                                 </button>
-                                {/* Logout Button */}
-                                <button
-                                    onClick={handleLogout}
-                                    className="flex items-center gap-2 px-4 py-3 rounded-xl bg-rose-500/20 hover:bg-rose-500/30 backdrop-blur-sm transition-all border border-rose-400/30"
-                                >
-                                    <LogOut className="text-rose-400" size={24} />
-                                    <div className="text-left">
-                                        <p className="text-rose-100/80 text-xs">Sign Out</p>
-                                        <p className="text-base font-bold text-rose-400">Logout</p>
-                                    </div>
-                                </button>
                             </div>
                         </div>
+                        {/* Logout Button */}
+                        <button
+                            onClick={handleLogout}
+                            className="flex items-center gap-2 px-4 py-3 rounded-xl bg-rose-500/20 hover:bg-rose-500/30 backdrop-blur-sm transition-all border border-rose-400/30"
+                        >
+                            <LogOut className="text-rose-400" size={24} />
+                            <div className="text-left">
+                                <p className="text-rose-100/80 text-xs">Sign Out</p>
+                                <p className="text-base font-bold text-rose-400">Logout</p>
+                            </div>
+                        </button>
                     </div>
                 </motion.header>
 
@@ -552,34 +552,36 @@ const TeacherDashboard = () => {
                         </div>
                     </div>
                 </div>
+
+                {/* Floating Action Button */}
+                <motion.button
+                    initial={{ scale: 0, opacity: 0 }}
+                    animate={{ scale: 1, opacity: 1 }}
+                    transition={{ delay: 0.5, type: "spring", stiffness: 200 }}
+                    whileHover={{ scale: 1.1 }}
+                    whileTap={{ scale: 0.9 }}
+                    onClick={() => setIsModalOpen(true)}
+                    className="fixed bottom-8 right-8 w-16 h-16 rounded-full bg-gradient-to-r from-violet-600 to-indigo-600 text-white shadow-xl shadow-violet-500/40 hover:shadow-2xl hover:shadow-violet-500/50 transition-shadow flex items-center justify-center z-40 group"
+                >
+                    <PlusCircle size={28} className="group-hover:rotate-90 transition-transform duration-300" />
+
+                    {/* Tooltip */}
+                    <span className="absolute right-full mr-3 px-3 py-1.5 rounded-lg bg-slate-800 text-white text-sm font-medium whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
+                        New Course / Project
+                    </span>
+                </motion.button>
+
+                {/* Create Resource Modal */}
+                <CreateResourceModal
+                    isOpen={isModalOpen}
+                    onClose={() => setIsModalOpen(false)}
+                    onSubmitCourse={handleCreateCourse}
+                    onSubmitProject={handleCreateProject}
+                    courses={courses}
+                />
+
+
             </div>
-
-            {/* Floating Action Button */}
-            <motion.button
-                initial={{ scale: 0, opacity: 0 }}
-                animate={{ scale: 1, opacity: 1 }}
-                transition={{ delay: 0.5, type: "spring", stiffness: 200 }}
-                whileHover={{ scale: 1.1 }}
-                whileTap={{ scale: 0.9 }}
-                onClick={() => setIsModalOpen(true)}
-                className="fixed bottom-8 right-8 w-16 h-16 rounded-full bg-gradient-to-r from-violet-600 to-indigo-600 text-white shadow-xl shadow-violet-500/40 hover:shadow-2xl hover:shadow-violet-500/50 transition-shadow flex items-center justify-center z-40 group"
-            >
-                <PlusCircle size={28} className="group-hover:rotate-90 transition-transform duration-300" />
-
-                {/* Tooltip */}
-                <span className="absolute right-full mr-3 px-3 py-1.5 rounded-lg bg-slate-800 text-white text-sm font-medium whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
-                    New Course / Project
-                </span>
-            </motion.button>
-
-            {/* Create Resource Modal */}
-            <CreateResourceModal
-                isOpen={isModalOpen}
-                onClose={() => setIsModalOpen(false)}
-                onSubmitCourse={handleCreateCourse}
-                onSubmitProject={handleCreateProject}
-                courses={courses}
-            />
         </div>
     );
 };

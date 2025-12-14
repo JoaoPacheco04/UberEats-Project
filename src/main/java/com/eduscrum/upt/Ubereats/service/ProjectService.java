@@ -82,6 +82,12 @@ public class ProjectService {
                 .collect(Collectors.toList());
     }
 
+    /**
+     * Retrieves all non-archived projects for a specific course.
+     *
+     * @param courseId The ID of the course
+     * @return List of project response DTOs
+     */
     public List<ProjectResponse> getProjectsByCourse(Long courseId) {
         // Return only non-archived projects for the given course
         return projectRepository.findByCourseIdAndStatusNot(courseId, ProjectStatus.ARCHIVED).stream()
