@@ -252,7 +252,7 @@ const TeacherDashboard = () => {
                     className="mb-10"
                 >
                     {/* Welcome Banner */}
-                    <div className="relative overflow-hidden rounded-3xl bg-gradient-to-r from-violet-600/90 via-indigo-600/90 to-purple-600/90 backdrop-blur-xl p-8 shadow-2xl shadow-violet-500/20 border border-white/10">
+                    <div className="relative overflow-hidden rounded-3xl backdrop-blur-xl p-8 shadow-2xl border border-white/10" style={{ background: 'linear-gradient(135deg, #91E2F2 0%, #BAB5F5 100%)', boxShadow: '0 25px 50px -12px rgba(145, 226, 242, 0.35)' }}>
                         {/* Decorative Elements */}
                         <div className="absolute inset-0 overflow-hidden">
                             <div className="absolute -top-20 -right-20 w-64 h-64 bg-white/10 rounded-full blur-3xl" />
@@ -263,35 +263,35 @@ const TeacherDashboard = () => {
                         <div className="relative flex flex-col md:flex-row md:items-center md:justify-between gap-4">
                             <div>
                                 <div className="flex items-center gap-3 mb-3">
-                                    <div className="flex items-center justify-center w-12 h-12 rounded-xl bg-white/20 backdrop-blur-sm">
-                                        <GraduationCap size={24} className="text-white" />
+                                    <div className="flex items-center justify-center w-12 h-12 rounded-xl bg-white/40 backdrop-blur-sm">
+                                        <GraduationCap size={24} className="text-slate-700" />
                                     </div>
-                                    <span className="px-3 py-1 rounded-full bg-white/20 text-white/90 text-sm font-medium backdrop-blur-sm">
+                                    <span className="px-3 py-1 rounded-full bg-white/40 text-slate-700 text-sm font-medium backdrop-blur-sm">
                                         Teacher Dashboard
                                     </span>
                                 </div>
-                                <h1 className="text-3xl md:text-4xl font-bold text-white mb-2">
+                                <h1 className="text-3xl md:text-4xl font-bold text-slate-800 mb-2">
                                     Welcome, {getUserName()}!
                                 </h1>
-                                <p className="text-violet-200 text-lg">
+                                <p className="text-slate-600 text-lg">
                                     Manage your courses and track student progress
                                 </p>
                             </div>
 
                             {/* Quick Stats & Actions */}
                             <div className="flex flex-wrap gap-3">
-                                <div className="flex items-center gap-3 px-4 py-3 rounded-xl bg-white/10 backdrop-blur-sm border border-white/10">
-                                    <BookOpen className="text-white" size={24} />
+                                <div className="flex items-center gap-3 px-4 py-3 rounded-xl bg-white/50 backdrop-blur-sm border border-white/30">
+                                    <BookOpen className="text-slate-700" size={24} />
                                     <div>
-                                        <p className="text-white/70 text-xs">Active Courses</p>
-                                        <p className="text-2xl font-bold text-white">{activeCourses}</p>
+                                        <p className="text-slate-500 text-xs">Active Courses</p>
+                                        <p className="text-2xl font-bold text-slate-800">{activeCourses}</p>
                                     </div>
                                 </div>
-                                <div className="flex items-center gap-3 px-4 py-3 rounded-xl bg-white/10 backdrop-blur-sm border border-white/10">
-                                    <FolderOpen className="text-white" size={24} />
+                                <div className="flex items-center gap-3 px-4 py-3 rounded-xl bg-white/50 backdrop-blur-sm border border-white/30">
+                                    <FolderOpen className="text-slate-700" size={24} />
                                     <div>
-                                        <p className="text-white/70 text-xs">Total Projects</p>
-                                        <p className="text-2xl font-bold text-white">{totalProjects}</p>
+                                        <p className="text-slate-500 text-xs">Total Projects</p>
+                                        <p className="text-2xl font-bold text-slate-800">{totalProjects}</p>
                                     </div>
                                 </div>
                                 <button
