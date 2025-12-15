@@ -19,7 +19,8 @@ import java.util.Objects;
  * JPA entity representing progress analytics/metrics in the EduScrum platform.
  * Tracks sprint/team progress including velocity, tasks, and team mood.
  *
- * @author UberEats
+ * @author Ana
+ * @author Yeswanth Kumar
  * @version 1.2.0
  */
 @Entity

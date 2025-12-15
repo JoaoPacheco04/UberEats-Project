@@ -21,6 +21,8 @@ import java.util.stream.Collectors;
  * Service class for managing projects in the EduScrum platform.
  * Handles project creation, updates, completion, and archival.
  *
+ * @author Yeswanth Kumar
+ * @author Joao Pacheco
  * @version 1.2.0 (2025-12-10)
  */
 @Service

@@ -7,7 +7,8 @@ import jakarta.validation.constraints.NotNull;
  * Data Transfer Object for creating a new team.
  * Includes team name and optional project ID.
  *
- * @author UberEats
+ * @author Joao
+ * @author Ana
  * @version 0.8.0
  */
 public class CreateTeamRequest {

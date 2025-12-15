@@ -19,6 +19,8 @@ import java.util.stream.Collectors;
  * Service class for managing badges in the EduScrum platform.
  * Handles badge creation, updates, retrieval, and automatic badge logic.
  *
+ * @author Joao Pacheco
+ * @author Bruna
  * @version 0.6.1 (2025-11-12)
  */
 @Service

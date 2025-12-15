@@ -22,6 +22,8 @@ import java.util.stream.Collectors;
  * Handles sprint creation, updates, status transitions, and velocity
  * calculations.
  *
+ * @author Francisco
+ * @author Yeswanth Kumar
  * @version 0.2.1 (2025-10-22)
  */
 @Service

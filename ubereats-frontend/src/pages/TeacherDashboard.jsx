@@ -1,3 +1,11 @@
+/**
+ * Teacher Dashboard Page Component
+ * Main dashboard for teachers showing courses, projects, and management options.
+ * 
+ * @author Joao
+ * @author Yeswanth
+ * @version 1.2.0
+ */
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';

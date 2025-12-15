@@ -1,3 +1,11 @@
+/**
+ * Student Detail Card Component
+ * Displays student information including achievements and scores.
+ * 
+ * @author Bruna
+ * @author Yeswanth
+ * @version 1.0.0
+ */
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion'; // Importing motion for potential future animations
 import {

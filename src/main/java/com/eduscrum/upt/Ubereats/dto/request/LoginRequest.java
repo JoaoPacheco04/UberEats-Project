@@ -4,7 +4,8 @@ package com.eduscrum.upt.Ubereats.dto.request;
  * Data Transfer Object for receiving login credentials from frontend.
  * Contains only the fields needed for user authentication.
  *
- * @author UberEats
+ * @author Joao
+ * @author Ana
  * @version 0.9.1
  */
 public class LoginRequest {

@@ -1,3 +1,11 @@
+/**
+ * Student Dashboard Page Component
+ * Main dashboard for students showing enrollments, achievements, and team info.
+ * 
+ * @author Ana
+ * @author Bruna
+ * @version 1.0.0
+ */
 // Import necessary modules from React and external libraries
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
@@ -10,19 +18,15 @@ import {
     Award,
     Trophy,
     TrendingUp,
-    LogOut,
-    Sparkles,
-    Target,
-    Calendar,
-    Clock,
     ChevronRight,
-    Plus,
-    UserPlus,
-    FolderOpen,
     AlertCircle,
+    Plus,
+    Target,
+    LogOut,
+    UserPlus,
+    Calendar,
     Loader2,
-    Star,
-    BarChart3,
+    Sparkles,
     Settings,
 } from 'lucide-react';
 import {
@@ -42,8 +46,8 @@ import {
     getStudentDashboard,
     getUserAchievements,
     getUserTeams,
-    getStudentEnrollments,
     getAvailableCourses,
+    getEnrollmentsByStudent,
     enrollStudent,
     getCurrentUser
 } from '../services/api';
@@ -87,7 +91,6 @@ const StudentDashboard = () => {
     const fetchAllData = async () => {
         try {
             setLoading(true);
-            setError(null);
 
             // Use Promise.all to fetch data in parallel,
             // providing fallback data ({ data: [] } or { data: {} }) for robust error handling
@@ -95,7 +98,7 @@ const StudentDashboard = () => {
                 getStudentDashboard(user.id).catch(() => ({ data: {} })),
                 getUserAchievements(user.id).catch(() => ({ data: [] })),
                 getUserTeams(user.id).catch(() => ({ data: [] })),
-                getStudentEnrollments(user.id).catch(() => ({ data: [] })),
+                getEnrollmentsByStudent(user.id).catch(() => ({ data: [] })),
                 getAvailableCourses().catch(() => ({ data: [] }))
             ]);
 
@@ -109,9 +112,10 @@ const StudentDashboard = () => {
             const enrolledCourseIds = (enrollRes.data || []).map(e => e.courseId);
             const available = (coursesRes.data || []).filter(c => !enrolledCourseIds.includes(c.id));
             setAvailableCourses(available);
+
         } catch (err) {
             console.error('Error fetching dashboard data:', err);
-            setError('Failed to load dashboard. Please try again.');
+            setError('Failed to load dashboard data');
         } finally {
             setLoading(false);
         }
@@ -121,7 +125,7 @@ const StudentDashboard = () => {
     const handleEnroll = async (courseId) => {
         try {
             setEnrolling(true);
-            await enrollStudent({ courseId, studentId: user.id });
+            await enrollStudent(courseId, user.id);
             // Re-fetch all data to update the 'My Courses' and 'Available Courses' sections
             await fetchAllData();
             setShowEnrollModal(false); // Close the modal on success
@@ -158,7 +162,6 @@ const StudentDashboard = () => {
         return (
             <div className="student-dashboard-loading">
                 <Loader2 className="spinner" size={48} />
-                <p>Loading your dashboard...</p>
             </div>
         );
     }
@@ -172,19 +175,18 @@ const StudentDashboard = () => {
                 <motion.div
                     animate={{ x: [0, 50, 0], y: [0, -30, 0], scale: [1, 1.1, 1] }}
                     transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
-                    className="bg-orb orb-1"
+                    className="bg-orb bg-orb-1"
                 />
                 <motion.div
-                    animate={{ x: [0, -30, 0], y: [0, 50, 0], scale: [1, 1.15, 1] }}
-                    transition={{ duration: 10, repeat: Infinity, ease: "easeInOut", delay: 1 }}
-                    className="bg-orb orb-2"
+                    animate={{ x: [0, -40, 0], y: [0, 40, 0], scale: [1, 0.9, 1] }}
+                    transition={{ duration: 10, repeat: Infinity, ease: "easeInOut" }}
+                    className="bg-orb bg-orb-2"
                 />
                 <motion.div
-                    animate={{ x: [0, 40, 0], y: [0, -40, 0], scale: [1, 1.2, 1] }}
-                    transition={{ duration: 12, repeat: Infinity, ease: "easeInOut", delay: 2 }}
-                    className="bg-orb orb-3"
+                    animate={{ x: [0, 30, 0], y: [0, 30, 0], scale: [1, 1.05, 1] }}
+                    transition={{ duration: 12, repeat: Infinity, ease: "easeInOut" }}
+                    className="bg-orb bg-orb-3"
                 />
-                <div className="dots-pattern" />
             </div>
 
             <div className="dashboard-container">
@@ -204,55 +206,54 @@ const StudentDashboard = () => {
 
                         <div className="header-content">
                             <div className="header-info">
-                                <div className="header-badge-row">
-                                    <div className="header-icon-box">
-                                        <GraduationCap size={24} />
-                                    </div>
-                                    <span className="header-label">Student Dashboard</span>
+                                <div className="header-badge">
+                                    <GraduationCap size={24} />
+                                    <div className="badge-pulse" />
                                 </div>
-                                <h1>Welcome, **{getUserName()}**!</h1>
-                                <p>Track your progress and achievements</p>
+                                <span className="header-label">Student Dashboard</span>
                             </div>
+                            <h1>Welcome, {getUserName()}!</h1>
+                            <p>Track your progress and achievements</p>
+                        </div>
 
-                            {/* Quick Stats: Points, Badges, Teams */}
-                            <div className="header-stats">
-                                <div className="stat-box">
-                                    <Trophy size={24} />
-                                    <div>
-                                        <span className="stat-label">Total Points</span>
-                                        <span className="stat-value">{totalPoints}</span>
-                                    </div>
-                                </div>
-                                <div className="stat-box">
-                                    <Award size={24} />
-                                    <div>
-                                        <span className="stat-label">Badges</span>
-                                        <span className="stat-value">{totalBadges}</span>
-                                    </div>
-                                </div>
-                                <div className="stat-box">
-                                    <Users size={24} />
-                                    <div>
-                                        <span className="stat-label">Teams</span>
-                                        <span className="stat-value">{teams.length}</span>
-                                    </div>
+                        {/* Quick Stats: Points, Badges, Teams */}
+                        <div className="header-stats">
+                            <div className="stat-box">
+                                <Trophy size={24} />
+                                <div className="stat-content">
+                                    <span className="stat-value">{totalPoints}</span>
+                                    <span className="stat-label">Points</span>
                                 </div>
                             </div>
+                            <div className="stat-box">
+                                <Award size={24} />
+                                <div className="stat-content">
+                                    <span className="stat-value">{totalBadges}</span>
+                                    <span className="stat-label">Badges</span>
+                                </div>
+                            </div>
+                            <div className="stat-box">
+                                <Users size={24} />
+                                <div className="stat-content">
+                                    <span className="stat-value">{teams.length}</span>
+                                    <span className="stat-label">Teams</span>
+                                </div>
+                            </div>
+                        </div>
 
-                            {/* Action Buttons: Edit Profile and Logout */}
-                            <div className="header-actions">
-                                <button
-                                    onClick={() => setShowEditProfileModal(true)}
-                                    className="edit-profile-btn"
-                                >
-                                    <Settings size={20} />
-                                    <span>Edit Profile</span>
-                                </button>
-                                <button onClick={handleLogout} className="logout-btn">
-                                    <LogOut size={20} />
-                                    <span>Logout</span>
-                                </button>
-                            </div>
+                        {/* Action Buttons: Edit Profile and Logout */}
+                        <div className="header-actions">
+                            <button
+                                onClick={() => setShowEditProfileModal(true)}
+                                className="action-btn secondary"
+                            >
+                                <Settings size={18} />
+                                Edit Profile
+                            </button>
+                            <button onClick={handleLogout} className="logout-btn">
+                                <LogOut size={18} />
+                                Logout
+                            </button>
                         </div>
                     </div>
                 </motion.header>
@@ -261,9 +262,8 @@ const StudentDashboard = () => {
                 {
                     error && (
                         <div className="error-banner">
-                            <AlertCircle size={20} />
-                            <span>{error}</span>
-                            <button onClick={fetchAllData}>Retry</button>
+                            <AlertCircle size={18} />
+                            {error}
                         </div>
                     )
                 }
@@ -276,7 +276,7 @@ const StudentDashboard = () => {
                         <section className="dashboard-section">
                             <div className="section-header">
                                 <div className="section-title">
-                                    <div className="section-icon courses-icon">
+                                    <div className="section-icon">
                                         <BookOpen size={20} />
                                     </div>
                                     <div>
@@ -289,8 +289,7 @@ const StudentDashboard = () => {
                                     className="action-btn primary"
                                     onClick={() => setShowEnrollModal(true)}
                                 >
-                                    <Plus size={18} />
-                                    Enroll in Course
+                                    <Plus size={16} /> Enroll
                                 </button>
                             </div>
 
@@ -305,19 +304,18 @@ const StudentDashboard = () => {
                                             onClick={() => navigate(`/student/courses/${enrollment.courseId}`)}
                                         >
                                             <div className="course-card-header">
-                                                <BookOpen size={24} />
-                                                <span className="course-status">Enrolled</span>
+                                                <div className="course-icon">
+                                                    <GraduationCap size={24} />
+                                                </div>
+                                                <ChevronRight size={20} className="course-arrow" />
                                             </div>
                                             <h3>{enrollment.courseName}</h3>
-                                            <p className="course-teacher">
-                                                {enrollment.teacherName || 'Teacher'}
-                                            </p>
-                                            <div className="course-footer">
+                                            <div className="course-meta">
+                                                <span className="course-code">{enrollment.courseCode}</span>
                                                 <span className="enrolled-date">
-                                                    <Calendar size={14} />
+                                                    <Calendar size={12} />
                                                     {new Date(enrollment.enrolledAt).toLocaleDateString()}
                                                 </span>
-                                                <ChevronRight size={18} />
                                             </div>
                                         </motion.div>
                                     ))}
@@ -328,13 +326,6 @@ const StudentDashboard = () => {
                                     <BookOpen size={48} />
                                     <h3>No Courses Yet</h3>
                                     <p>Enroll in a course to get started</p>
-                                    <button
-                                        className="action-btn primary"
-                                        onClick={() => setShowEnrollModal(true)}
-                                    >
-                                        <Plus size={18} />
-                                        Browse Courses
-                                    </button>
                                 </div>
                             )}
                         </section>
@@ -348,7 +339,7 @@ const StudentDashboard = () => {
                                     </div>
                                     <div>
                                         <h2>My Teams</h2>
-                                        <p>Teams you're a member of</p>
+                                        <p>Teams you're part of</p>
                                     </div>
                                 </div>
                             </div>
@@ -364,19 +355,17 @@ const StudentDashboard = () => {
                                             onClick={() => navigate(`/student/teams/${team.id}`)}
                                         >
                                             <div className="team-card-header">
-                                                <Users size={24} />
+                                                <div className="team-icon">
+                                                    <Users size={20} />
+                                                </div>
+                                                <ChevronRight size={18} className="team-arrow" />
+                                            </div>
+                                            <h3>{team.name}</h3>
+                                            <div className="team-meta">
+                                                <span className="team-role">{team.role || 'Member'}</span>
                                                 <span className="member-count">
                                                     {team.memberCount || 0} members
                                                 </span>
-                                            </div>
-                                            <h3>{team.name}</h3>
-                                            <p className="team-project">{team.projectName || 'No project'}</p>
-                                            <div className="team-footer">
-                                                <span className="team-role">
-                                                    <Star size={14} />
-                                                    {team.role || 'Member'}
-                                                </span>
-                                                <ChevronRight size={18} />
                                             </div>
                                         </motion.div>
                                     ))}
@@ -386,7 +375,7 @@ const StudentDashboard = () => {
                                 <div className="empty-state">
                                     <Users size={48} />
                                     <h3>No Teams Yet</h3>
-                                    <p>Join a team through your enrolled courses</p>
+                                    <p>Join a team through your course</p>
                                 </div>
                             )}
                         </section>
@@ -394,15 +383,15 @@ const StudentDashboard = () => {
 
                     {/* Right Column - Stats & Achievements */}
                     <div className="side-column">
-                        {/* Score Comparison Chart */}
-                        <div className="stat-card score-comparison-card">
+                        {/* Score Comparison Card */}
+                        <div className="stat-card score-card">
                             <div className="stat-card-header">
-                                <div className="stat-card-icon comparison-icon">
-                                    <BarChart3 size={18} />
+                                <div className="stat-card-icon">
+                                    <Target size={20} />
                                 </div>
                                 <div>
-                                    <h3>Score vs Average</h3>
-                                    <p>Your performance comparison</p>
+                                    <h3>Score Comparison</h3>
+                                    <p>Your performance vs course average</p>
                                 </div>
                             </div>
                             <div className="score-chart-container">
@@ -417,30 +406,29 @@ const StudentDashboard = () => {
                                             },
                                             {
                                                 name: 'Course Avg',
-                                                value: Math.round(courseAverage),
+                                                value: courseAverage,
                                                 fill: '#94a3b8' // Average color
                                             }
                                         ]}
                                         layout="vertical"
-                                        margin={{ top: 10, right: 30, left: 10, bottom: 10 }}
+                                        margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
                                     >
-                                        <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" horizontal={false} />
-                                        <XAxis type="number" stroke="#64748b" fontSize={12} />
+                                        <CartesianGrid strokeDasharray="3 3" horizontal={true} vertical={false} />
+                                        <XAxis type="number" domain={[0, 'dataMax + 20']} />
                                         <YAxis
-                                            dataKey="name"
                                             type="category"
-                                            stroke="#64748b"
-                                            fontSize={12}
+                                            dataKey="name"
                                             width={80}
+                                            tick={{ fontSize: 12 }}
                                         />
                                         <Tooltip
+                                            formatter={(value) => [`${value} pts`, 'Score']}
                                             contentStyle={{
                                                 backgroundColor: 'rgba(255,255,255,0.95)',
                                                 border: 'none',
-                                                borderRadius: '12px',
-                                                boxShadow: '0 4px 20px rgba(0,0,0,0.1)'
+                                                borderRadius: '8px',
+                                                boxShadow: '0 4px 12px rgba(0,0,0,0.1)'
                                             }}
-                                            formatter={(value) => [`${value} pts`, 'Score']}
                                         />
                                         <Bar
                                             dataKey="value"
@@ -466,8 +454,7 @@ const StudentDashboard = () => {
                                         </span>
                                     ) : (
                                         <span className="below-average">
-                                            <Target size={16} />
-                                            Keep going! Complete more stories to improve.
+                                            Keep working to reach the average
                                         </span>
                                     )}
                                 </div>
@@ -478,11 +465,11 @@ const StudentDashboard = () => {
                         <div className="stat-card achievements-card">
                             <div className="stat-card-header">
                                 <div className="stat-card-icon achievements-icon">
-                                    <Award size={18} />
+                                    <Award size={20} />
                                 </div>
                                 <div>
                                     <h3>Recent Achievements</h3>
-                                    <p>Your badge collection</p>
+                                    <p>Badges you've earned</p>
                                 </div>
                             </div>
 
@@ -494,30 +481,24 @@ const StudentDashboard = () => {
                                         <motion.div
                                             key={achievement.id}
                                             className="achievement-item"
-                                            initial={{ opacity: 0, x: -20 }}
+                                            initial={{ opacity: 0, x: -10 }}
                                             animate={{ opacity: 1, x: 0 }}
                                             transition={{ delay: index * 0.1 }}
                                         >
                                             <div className="achievement-icon">
-                                                <Award size={20} />
+                                                <Trophy size={16} />
                                             </div>
                                             <div className="achievement-info">
                                                 <span className="achievement-name">{achievement.badgeName}</span>
-                                                <span className="achievement-date">
-                                                    <Clock size={12} />
-                                                    {new Date(achievement.awardedAt).toLocaleDateString()}
-                                                </span>
-                                            </div>
-                                            <div className="achievement-points">
-                                                +{achievement.points}
+                                                <span className="achievement-points">+{achievement.points} pts</span>
                                             </div>
                                         </motion.div>
                                     ))}
                                 </div>
                             ) : (
-                                <div className="empty-state small">
-                                    <Award size={32} />
-                                    <p>No achievements yet</p>
+                                <div className="empty-achievements">
+                                    <Trophy size={32} />
+                                    <p>Complete tasks to earn badges!</p>
                                 </div>
                             )}
                         </div>
@@ -526,11 +507,11 @@ const StudentDashboard = () => {
                         <div className="stat-card progression-card">
                             <div className="stat-card-header">
                                 <div className="stat-card-icon progression-icon">
-                                    <Target size={18} />
+                                    <TrendingUp size={20} />
                                 </div>
                                 <div>
-                                    <h3>Progression</h3>
-                                    <p>Your journey so far</p>
+                                    <h3>Your Progression</h3>
+                                    <p>Overall activity summary</p>
                                 </div>
                             </div>
                             <div className="progression-stats">
@@ -544,7 +525,7 @@ const StudentDashboard = () => {
                                     <span className="prog-label">Teams</span>
                                 </div>
                                 <div className="progression-stat">
-                                    <span className="prog-value">{totalBadges}</span>
+                                    <span className="prog-value">{achievements.length}</span>
                                     <span className="prog-label">Badges</span>
                                 </div>
                             </div>
@@ -567,18 +548,15 @@ const StudentDashboard = () => {
                             <p className="modal-subtitle">Select a course to join</p>
 
                             {availableCourses.length > 0 ? (
-                                <div className="available-courses-list">
-                                    {availableCourses.map((course) => (
+                                <div className="available-courses">
+                                    {availableCourses.map(course => (
                                         <div key={course.id} className="available-course-item">
                                             <div className="course-info">
-                                                <BookOpen size={20} />
-                                                <div>
-                                                    <h4>{course.name}</h4>
-                                                    <p>{course.description || 'No description'}</p>
-                                                </div>
+                                                <h4>{course.name}</h4>
+                                                <span className="course-code">{course.code}</span>
                                             </div>
                                             <button
-                                                className="enroll-btn"
+                                                className="enroll-course-btn"
                                                 onClick={() => handleEnroll(course.id)}
                                                 disabled={enrolling}
                                             >
@@ -590,21 +568,17 @@ const StudentDashboard = () => {
                                     ))}
                                 </div>
                             ) : (
-                                <div className="empty-state">
-                                    <FolderOpen size={48} />
-                                    <h3>No Courses Available</h3>
-                                    <p>All courses are either full or you're already enrolled</p>
+                                <div className="no-courses-available">
+                                    <p>No courses available for enrollment</p>
                                 </div>
                             )}
 
-                            <div className="modal-actions">
-                                <button
-                                    className="cancel-btn"
-                                    onClick={() => setShowEnrollModal(false)}
-                                >
-                                    Close
-                                </button>
-                            </div>
+                            <button
+                                className="modal-close-btn"
+                                onClick={() => setShowEnrollModal(false)}
+                            >
+                                Close
+                            </button>
                         </motion.div>
                     </div>
                 )
@@ -614,14 +588,13 @@ const StudentDashboard = () => {
             <EditProfileModal
                 isOpen={showEditProfileModal}
                 onClose={() => setShowEditProfileModal(false)}
-                currentUser={user}
+                userId={user?.id}
                 onUpdateSuccess={() => {
                     setShowEditProfileModal(false);
                     // Refresh the page to ensure the updated name is displayed globally
                     window.location.reload();
                 }}
             />
-
         </div >
     );
 };

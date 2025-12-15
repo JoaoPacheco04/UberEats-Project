@@ -1,3 +1,11 @@
+/**
+ * Course Management Page Component
+ * Manages course details, projects, teams, and enrollments.
+ * 
+ * @author Yeswanth
+ * @author Ana
+ * @version 1.0.0
+ */
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion'; // For animation transitions

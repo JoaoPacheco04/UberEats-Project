@@ -4,6 +4,8 @@ package com.eduscrum.upt.Ubereats.dto.request;
  * DTO for user profile update requests.
  * Note: studentNumber, username, and role cannot be changed via profile update.
  *
+ * @author Joao Pacheco
+ * @author Francisco
  * @version 1.0.0
  */
 public class UpdateProfileRequest {

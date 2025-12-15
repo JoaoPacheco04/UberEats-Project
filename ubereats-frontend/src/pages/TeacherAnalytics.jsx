@@ -1,3 +1,11 @@
+/**
+ * Teacher Analytics Page Component
+ * Displays analytics dashboards with velocity trends, story points, and team performance.
+ * 
+ * @author Ana
+ * @author Yeswanth
+ * @version 1.0.0
+ */
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion'; // For animations

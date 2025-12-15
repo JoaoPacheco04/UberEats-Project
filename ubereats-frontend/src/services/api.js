@@ -1,3 +1,12 @@
+/**
+ * API Service Module
+ * Provides axios-based HTTP client for backend communication.
+ * Includes authentication interceptors and all API endpoint functions.
+ * 
+ * @author Francisco
+ * @author Joao
+ * @version 1.2.0
+ */
 import axios from 'axios';
 
 // 1. Base URL setup 

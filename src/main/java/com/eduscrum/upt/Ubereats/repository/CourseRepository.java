@@ -15,7 +15,8 @@ import java.util.Optional;
  * Repository interface for Course entity.
  * Provides methods to perform CRUD operations and custom queries.
  *
- * @author UberEats
+ * @author Bruna
+ * @author Yeswanth Kumar
  * @version 1.1.0
  */
 @Repository

@@ -1,3 +1,11 @@
+/**
+ * Project Card Component
+ * Displays project information with status, timeline, and progress.
+ * 
+ * @author Joao
+ * @author Ana
+ * @version 1.0.0
+ */
 import React from 'react';
 // Import motion from framer-motion for smooth animations (like the hover effect)
 import { motion } from 'framer-motion';

@@ -12,7 +12,8 @@ import java.util.stream.Collectors;
  * Data Transfer Object for team response data.
  * Contains team details, member counts, and performance metrics.
  *
- * @author UberEats
+ * @author Joao
+ * @author Ana
  * @version 0.9.1
  */
 public class TeamResponse {

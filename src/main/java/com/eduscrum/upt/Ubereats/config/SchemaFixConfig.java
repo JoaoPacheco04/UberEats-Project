@@ -9,7 +9,8 @@ import org.springframework.jdbc.core.JdbcTemplate;
  * Configuration class for database schema fixes.
  * Runs at startup to apply necessary schema modifications.
  *
- * @author UberEats
+ * @author Joao
+ * @author Ana
  * @version 0.5.0
  */
 @Configuration

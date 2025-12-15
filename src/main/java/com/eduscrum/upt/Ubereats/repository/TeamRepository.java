@@ -13,7 +13,8 @@ import java.util.Optional;
  * Repository interface for Team entity.
  * Provides CRUD operations and team-specific queries.
  *
- * @author UberEats
+ * @author Joao Pacheco
+ * @author Francisco
  * @version 0.5.0
  */
 @Repository

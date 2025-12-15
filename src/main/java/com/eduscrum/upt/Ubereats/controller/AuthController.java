@@ -23,7 +23,8 @@ import java.util.Map;
  * REST controller for authentication operations.
  * Provides endpoints for login, registration, and current user retrieval.
  *
- * @author UberEats
+ * @author Joao
+ * @author Ana
  * @version 0.9.1
  */
 @RestController

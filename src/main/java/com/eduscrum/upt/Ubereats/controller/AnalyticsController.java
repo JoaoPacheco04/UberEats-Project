@@ -15,7 +15,8 @@ import java.util.List;
  * REST controller for managing analytics in the EduScrum platform.
  * Provides endpoints for analytics creation and retrieval.
  *
- * @author UberEats
+ * @author Joao
+ * @author Ana
  * @version 0.8.0
  */
 @RestController

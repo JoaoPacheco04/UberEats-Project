@@ -14,7 +14,8 @@ import java.util.Optional;
  * Repository interface for TeamMember entity.
  * Provides CRUD operations and team membership queries.
  *
- * @author UberEats
+ * @author Joao
+ * @author Ana
  * @version 0.2.1
  */
 @Repository

@@ -9,7 +9,8 @@ import java.math.BigDecimal;
  * Data Transfer Object for sprint response data.
  * Contains sprint details, progress info, and related project data.
  *
- * @author UberEats
+ * @author Joao
+ * @author Ana
  * @version 0.6.1
  */
 public class SprintResponseDTO {

@@ -1,3 +1,11 @@
+/**
+ * Badge Management Page Component
+ * Allows teachers to create, edit, and manage badges for the gamification system.
+ * 
+ * @author Yeswanth
+ * @author Francisco
+ * @version 1.0.0
+ */
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';

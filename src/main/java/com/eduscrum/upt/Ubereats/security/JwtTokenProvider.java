@@ -13,7 +13,8 @@ import java.util.Date;
  * Provider for JWT token operations.
  * Handles token generation, validation, and email extraction.
  *
- * @author UberEats
+ * @author Joao
+ * @author Ana
  * @version 0.9.1
  */
 @Component

@@ -1,13 +1,16 @@
-import React, { useState } from 'react';
-import { useNavigate, Link } from 'react-router-dom'; // Hooks para navegação e links
-import { register } from '../services/api'; // Função de registro da API
-import { GraduationCap, User, Mail, Lock, BookOpen } from 'lucide-react'; // Ícones do Lucide
-
 /**
- * Componente Register - Página de registro para novos usuários
- * Permite que estudantes e professores criem contas no sistema
- * Inclui validação de senha e seleção de papel (role)
+ * Register Page Component
+ * Registration page for new users (students and teachers).
+ * Includes password validation and role selection.
+ * 
+ * @author Ana
+ * @author Francisco
+ * @version 1.0.0
  */
+import React, { useState } from 'react';
+import { useNavigate, Link } from 'react-router-dom';
+import { register } from '../services/api';
+import { GraduationCap, User, Mail, Lock, BookOpen } from 'lucide-react';
 const Register = () => {
     // Estado único para todos os campos do formulário
     const [formData, setFormData] = useState({
@@ -69,10 +72,10 @@ const Register = () => {
             };
 
             await register(payload); // Chama API de registro
-            
+
             // Redireciona para login com mensagem de sucesso
-            navigate('/login', { 
-                state: { message: 'Registration successful! Please login.' } 
+            navigate('/login', {
+                state: { message: 'Registration successful! Please login.' }
             });
         } catch (err) {
             // Captura e exibe erro da API

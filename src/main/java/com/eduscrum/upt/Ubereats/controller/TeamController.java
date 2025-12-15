@@ -20,7 +20,8 @@ import java.util.stream.Collectors;
  * REST controller for managing teams and team memberships.
  * Provides endpoints for team CRUD operations and member management.
  *
- * @author UberEats
+ * @author Joao
+ * @author Ana
  * @version 0.8.0
  */
 @RestController

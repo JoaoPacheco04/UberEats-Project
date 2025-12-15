@@ -1,3 +1,11 @@
+/**
+ * Team Detail Page Component
+ * Displays team information, members, and achievements.
+ * 
+ * @author Joao
+ * @author Bruna
+ * @version 1.0.0
+ */
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';

@@ -1,3 +1,11 @@
+/**
+ * Sprint Card Component
+ * Displays sprint information with status, timeline, progress, and action buttons.
+ * 
+ * @author Ana
+ * @author Francisco
+ * @version 1.0.0
+ */
 import React from 'react';
 import { motion } from 'framer-motion';
 import {

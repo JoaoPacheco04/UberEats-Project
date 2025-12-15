@@ -7,6 +7,8 @@ import java.time.LocalDateTime;
 /**
  * DTO for user profile responses.
  *
+ * @author Ana
+ * @author Bruna
  * @version 1.0.0
  */
 public class UserProfileResponse {

@@ -6,7 +6,8 @@ import java.time.LocalDateTime;
  * Data Transfer Object for course enrollment response data.
  * Contains enrollment details, course and student info.
  *
- * @author UberEats
+ * @author Joao
+ * @author Ana
  * @version 1.0.1
  */
 public class CourseEnrollmentResponseDTO {

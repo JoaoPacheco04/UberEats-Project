@@ -7,7 +7,8 @@ import jakarta.validation.constraints.Size;
  * Data Transfer Object for updating an existing Course.
  * Contains optional fields that can be updated with validation.
  *
- * @author UberEats
+ * @author Joao
+ * @author Ana
  * @version 1.2.0
  */
 public class UpdateCourseRequest {

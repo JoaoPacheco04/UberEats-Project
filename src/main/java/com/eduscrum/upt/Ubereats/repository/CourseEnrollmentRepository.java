@@ -11,7 +11,8 @@ import java.util.Optional;
  * Repository interface for CourseEnrollment entity.
  * Provides CRUD operations and enrollment queries.
  *
- * @author UberEats
+ * @author Joao
+ * @author Ana
  * @version 1.0.1
  */
 @Repository

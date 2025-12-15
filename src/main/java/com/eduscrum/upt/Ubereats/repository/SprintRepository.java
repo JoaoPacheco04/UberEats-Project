@@ -16,7 +16,8 @@ import java.util.Optional;
  * Repository interface for Sprint entity.
  * Provides CRUD operations and sprint-specific queries.
  *
- * @author UberEats
+ * @author Yeswanth Kumar
+ * @author Bruna
  * @version 0.1.0
  */
 @Repository

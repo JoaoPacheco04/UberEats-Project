@@ -14,7 +14,8 @@ import java.util.List;
  * Repository interface for UserStory entity.
  * Provides CRUD operations and user story queries.
  *
- * @author UberEats
+ * @author Francisco
+ * @author Ana
  * @version 0.8.0
  */
 @Repository

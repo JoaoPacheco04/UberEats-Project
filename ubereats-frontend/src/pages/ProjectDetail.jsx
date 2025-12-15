@@ -1,3 +1,11 @@
+/**
+ * Project Detail Page Component
+ * Displays project information, sprints, team, and achievements.
+ * 
+ * @author Bruna
+ * @author Joao
+ * @version 1.1.0
+ */
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';

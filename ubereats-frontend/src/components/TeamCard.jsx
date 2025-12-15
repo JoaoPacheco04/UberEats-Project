@@ -1,3 +1,11 @@
+/**
+ * Team Card Component
+ * Displays team information including members, roles, and progress stats.
+ * 
+ * @author Bruna
+ * @author Ana
+ * @version 1.0.0
+ */
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';

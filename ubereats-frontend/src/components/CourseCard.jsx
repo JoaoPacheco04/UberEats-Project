@@ -3,13 +3,16 @@ import { motion } from 'framer-motion'; // Biblioteca para animações
 import { Users, FolderOpen, TrendingUp, BookOpen, ChevronRight } from 'lucide-react'; // Ícones
 
 /**
- * CourseCard - Cartão profissional acadêmico para exibir informações de cursos
- * Inclui barra de performance, contagem de estudantes, projetos e design limpo
+ * CourseCard - Professional academic card for displaying course information
+ * Includes performance bar, student count, projects count, and clean design.
  * 
- * @param {Object} props - Propriedades do componente
- * @param {Object} props.course - Dados do curso
- * @param {number} props.index - Índice do cartão para animação sequencial
- * @param {Function} props.onManage - Callback para gerenciar o curso
+ * @author Yeswanth
+ * @author Bruna
+ * @version 1.0.0
+ * @param {Object} props - Component properties
+ * @param {Object} props.course - Course data
+ * @param {number} props.index - Card index for sequential animation
+ * @param {Function} props.onManage - Callback to manage the course
  */
 const CourseCard = ({ course, index, onManage }) => {
     // Desestruturação dos dados do curso

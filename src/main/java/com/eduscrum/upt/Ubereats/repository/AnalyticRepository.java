@@ -14,7 +14,8 @@ import java.util.Optional;
  * Repository interface for Analytic entity.
  * Provides CRUD operations and analytics queries.
  *
- * @author UberEats
+ * @author Joao
+ * @author Ana
  * @version 0.8.0
  */
 @Repository

@@ -16,7 +16,8 @@ import java.util.Optional;
  * Repository interface for Badge entity.
  * Provides CRUD operations and badge-specific queries.
  *
- * @author UberEats
+ * @author Ana
+ * @author Bruna
  * @version 0.9.1
  */
 @Repository

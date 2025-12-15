@@ -18,7 +18,8 @@ import java.io.IOException;
  * JWT Authentication Filter that intercepts all HTTP requests.
  * Validates JWT tokens and sets up Spring Security context.
  *
- * @author UberEats
+ * @author Joao
+ * @author Ana
  * @version 0.9.1
  */
 @Component

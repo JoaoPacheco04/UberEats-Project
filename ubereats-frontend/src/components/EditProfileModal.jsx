@@ -1,3 +1,11 @@
+/**
+ * Edit Profile Modal Component
+ * Modal for editing user profile information including name, email, and password.
+ * 
+ * @author Ana
+ * @author Joao
+ * @version 1.0.0
+ */
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, User, Mail, Lock, AlertCircle, Check, Loader2, Save, Hash, Shield } from 'lucide-react';

@@ -25,6 +25,8 @@ import java.util.List;
  * Handles team creation, member management, project associations, and role
  * assignments.
  *
+ * @author Bruna
+ * @author Ana
  * @version 0.5.0 (2025-11-05)
  */
 @Service

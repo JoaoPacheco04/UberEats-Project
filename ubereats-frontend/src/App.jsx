@@ -1,3 +1,11 @@
+/**
+ * Main Application Component
+ * Root component that defines routing configuration for the EduScrum platform.
+ * 
+ * @author Joao
+ * @author Ana
+ * @version 1.0.0
+ */
 import React from 'react';
 // Import necessary components from react-router-dom
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';

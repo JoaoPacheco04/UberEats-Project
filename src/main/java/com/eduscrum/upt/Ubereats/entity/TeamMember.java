@@ -12,7 +12,8 @@ import java.util.Objects;
  * JPA entity representing a team member in the EduScrum platform.
  * Links a user to a team with a specific Scrum role.
  *
- * @author UberEats
+ * @author Francisco
+ * @author Bruna
  * @version 1.0.1
  */
 @Entity

@@ -1,14 +1,22 @@
+/**
+ * Award Badge Modal Component
+ * Modal for granting badges to users or teams.
+ * 
+ * @author Yeswanth
+ * @author Joao
+ * @version 1.0.0
+ */
 import React, { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion'; // Biblioteca para animações
+import { motion, AnimatePresence } from 'framer-motion';
 import {
     X,
     Award,
     Gift,
     AlertCircle,
     Loader2
-} from 'lucide-react'; // Ícones do Lucide
-import { getActiveBadgesByRecipientType, createAchievement, getCurrentUser } from '../services/api'; // Funções da API
-import './AwardBadgeModal.css'; // Estilos do componente
+} from 'lucide-react';
+import { getActiveBadgesByRecipientType, createAchievement, getCurrentUser } from '../services/api';
+import './AwardBadgeModal.css';
 
 /**
  * Modal para conceder badges a usuários ou equipes
@@ -20,13 +28,13 @@ import './AwardBadgeModal.css'; // Estilos do componente
  * @param {number} props.projectId - ID do projeto relacionado (opcional)
  * @param {Array} props.existingAchievements - Conquistas já existentes para filtrar badges
  */
-const AwardBadgeModal = ({ 
-    isOpen, 
-    onClose, 
-    recipient, 
-    recipientType = 'user', 
-    projectId, 
-    existingAchievements = [] 
+const AwardBadgeModal = ({
+    isOpen,
+    onClose,
+    recipient,
+    recipientType = 'user',
+    projectId,
+    existingAchievements = []
 }) => {
     // Estado para a lista de badges disponíveis
     const [badges, setBadges] = useState([]);

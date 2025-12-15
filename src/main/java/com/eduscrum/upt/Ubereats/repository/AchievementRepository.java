@@ -13,7 +13,8 @@ import java.util.List;
  * Repository interface for Achievement entity.
  * Provides CRUD operations and achievement-specific queries.
  *
- * @author UberEats
+ * @author Yeswanth Kumar
+ * @author Joao Pacheco
  * @version 0.6.1
  */
 @Repository

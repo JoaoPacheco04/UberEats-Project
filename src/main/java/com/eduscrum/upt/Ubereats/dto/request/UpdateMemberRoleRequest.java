@@ -7,7 +7,8 @@ import jakarta.validation.constraints.NotNull;
  * Data Transfer Object for updating a team member's role.
  * Contains the new Scrum role to assign.
  *
- * @author UberEats
+ * @author Joao
+ * @author Ana
  * @version 0.1.0
  */
 public class UpdateMemberRoleRequest {

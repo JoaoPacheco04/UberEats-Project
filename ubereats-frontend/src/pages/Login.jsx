@@ -1,3 +1,11 @@
+/**
+ * Login Page Component
+ * Provides user authentication with email/username and password.
+ * 
+ * @author Bruna
+ * @author Francisco
+ * @version 1.1.0
+ */
 import React, { useState } from 'react';
 import { login } from '../services/api';
 import { useNavigate, Link } from 'react-router-dom';

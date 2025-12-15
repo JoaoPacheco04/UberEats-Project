@@ -21,6 +21,8 @@ import java.util.stream.Collectors;
  * Service class for managing analytics data in the EduScrum platform.
  * Handles creation and retrieval of sprint/team progress metrics.
  *
+ * @author Yeswanth Kumar
+ * @author Bruna
  * @version 0.5.0 (2025-11-05)
  */
 @Service
