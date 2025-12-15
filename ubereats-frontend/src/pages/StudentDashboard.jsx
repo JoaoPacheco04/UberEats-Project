@@ -588,7 +588,7 @@ const StudentDashboard = () => {
             <EditProfileModal
                 isOpen={showEditProfileModal}
                 onClose={() => setShowEditProfileModal(false)}
-                userId={user?.id}
+                currentUser={user}
                 onUpdateSuccess={() => {
                     setShowEditProfileModal(false);
                     // Refresh the page to ensure the updated name is displayed globally
