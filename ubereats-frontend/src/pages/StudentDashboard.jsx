@@ -47,7 +47,7 @@ import {
     getUserAchievements,
     getUserTeams,
     getAvailableCourses,
-    getEnrollmentsByStudent,
+    getStudentEnrollments,
     enrollStudent,
     getCurrentUser
 } from '../services/api';
@@ -98,7 +98,7 @@ const StudentDashboard = () => {
                 getStudentDashboard(user.id).catch(() => ({ data: {} })),
                 getUserAchievements(user.id).catch(() => ({ data: [] })),
                 getUserTeams(user.id).catch(() => ({ data: [] })),
-                getEnrollmentsByStudent(user.id).catch(() => ({ data: [] })),
+                getStudentEnrollments(user.id).catch(() => ({ data: [] })),
                 getAvailableCourses().catch(() => ({ data: [] }))
             ]);
 
