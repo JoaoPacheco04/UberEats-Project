@@ -634,6 +634,11 @@ const TeacherDashboard = () => {
                 <EditProfileModal
                     isOpen={showEditProfileModal}
                     onClose={() => setShowEditProfileModal(false)}
+                    currentUser={getCurrentUser()}
+                    onUpdateSuccess={() => {
+                        setShowEditProfileModal(false);
+                        window.location.reload();
+                    }}
                 />
             </div>
         </div>
