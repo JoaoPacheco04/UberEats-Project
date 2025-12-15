@@ -7,7 +7,8 @@ import java.util.Map;
  * Data Transfer Object for student dashboard statistics.
  * Contains global score, course average, velocity, and badges.
  *
- * @author UberEats
+ * @author Joao
+ * @author Ana
  * @version 1.2.0
  */
 public class DashboardStatsDTO {

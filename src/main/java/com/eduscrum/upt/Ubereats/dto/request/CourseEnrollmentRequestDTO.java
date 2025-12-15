@@ -6,7 +6,8 @@ import jakarta.validation.constraints.NotNull;
  * Data Transfer Object for enrolling a student in a course.
  * Contains course and student identifiers.
  *
- * @author UberEats
+ * @author Joao
+ * @author Ana
  * @version 0.2.1
  */
 public class CourseEnrollmentRequestDTO {

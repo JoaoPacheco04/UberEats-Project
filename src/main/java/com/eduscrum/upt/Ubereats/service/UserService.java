@@ -21,6 +21,8 @@ import java.util.Optional;
  * Handles user registration, authentication, retrieval, and global score
  * calculation.
  *
+ * @author Bruna Silva
+ * @author Francisco Costa
  * @version 0.6.1 (2025-11-12)
  */
 @Service

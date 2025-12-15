@@ -8,7 +8,8 @@ import java.time.LocalDateTime;
  * Data Transfer Object for user story response data.
  * Contains story details, status info, and related sprint/team data.
  *
- * @author UberEats
+ * @author Joao
+ * @author Ana
  * @version 1.0.1
  */
 public class UserStoryResponseDTO {

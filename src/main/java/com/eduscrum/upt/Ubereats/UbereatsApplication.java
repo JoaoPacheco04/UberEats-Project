@@ -6,7 +6,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 /**
  * Main Spring Boot application entry point for EduScrum platform.
  *
- * @author UberEats
+ * @author Joao
+ * @author Ana
  * @version 0.1.0
  */
 @SpringBootApplication

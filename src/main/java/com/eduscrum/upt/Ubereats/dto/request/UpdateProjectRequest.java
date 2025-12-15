@@ -6,7 +6,8 @@ import java.time.LocalDate;
  * Data Transfer Object for updating an existing Project.
  * Contains optional fields that can be updated.
  *
- * @author UberEats
+ * @author Joao
+ * @author Ana
  * @version 0.2.1
  */
 public class UpdateProjectRequest {

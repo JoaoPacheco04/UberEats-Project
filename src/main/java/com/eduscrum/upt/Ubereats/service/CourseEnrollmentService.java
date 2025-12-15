@@ -17,6 +17,8 @@ import java.util.stream.Collectors;
  * Service class for managing course enrollments in the EduScrum platform.
  * Handles student enrollment, verification, and enrollment retrieval.
  *
+ * @author Joao Pacheco
+ * @author Bruna
  * @version 0.8.0 (2025-11-20)
  */
 @Service

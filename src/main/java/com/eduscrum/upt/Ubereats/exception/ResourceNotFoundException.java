@@ -6,7 +6,8 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 /**
  * Exception thrown when a requested resource is not found.
  *
- * @author UberEats
+ * @author Joao
+ * @author Ana
  * @version 0.4.0
  */
 @ResponseStatus(HttpStatus.NOT_FOUND)

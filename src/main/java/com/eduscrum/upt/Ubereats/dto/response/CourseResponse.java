@@ -10,7 +10,8 @@ import java.time.LocalDateTime;
  * Data Transfer Object for course response data.
  * Contains course details, teacher info, and statistics.
  *
- * @author UberEats
+ * @author Joao
+ * @author Ana
  * @version 1.1.0
  */
 @JsonInclude(JsonInclude.Include.NON_NULL)

@@ -3,7 +3,8 @@ package com.eduscrum.upt.Ubereats.config;
 /**
  * Application-wide constants for EduScrum platform.
  *
- * @author UberEats
+ * @author Joao
+ * @author Ana
  * @version 0.3.0
  */
 public final class AppConstants {

@@ -17,7 +17,8 @@ import java.util.List;
  * REST controller for managing courses in the EduScrum platform.
  * Provides endpoints for course CRUD operations and teacher management.
  *
- * @author UberEats
+ * @author Joao
+ * @author Ana
  * @version 1.1.0
  */
 @RestController

@@ -17,6 +17,8 @@ import java.util.List;
  * Service class for scheduled tasks in the EduScrum platform.
  * Handles automated operations like checking for overdue sprints.
  *
+ * @author Ana
+ * @author Yeswanth Kumar
  * @version 0.1.0 (2025-10-15)
  */
 @Service

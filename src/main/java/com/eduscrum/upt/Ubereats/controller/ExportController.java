@@ -10,7 +10,8 @@ import org.springframework.web.bind.annotation.*;
  * REST controller for data export operations in the EduScrum platform.
  * Provides endpoints for exporting course data as CSV files.
  *
- * @author UberEats
+ * @author Joao
+ * @author Ana
  * @version 0.2.1
  */
 @RestController

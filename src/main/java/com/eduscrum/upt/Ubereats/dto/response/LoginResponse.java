@@ -6,7 +6,8 @@ import com.eduscrum.upt.Ubereats.entity.enums.UserRole;
  * Data Transfer Object for sending login response data to frontend.
  * Contains JWT token, user info, and role.
  *
- * @author UberEats
+ * @author Joao
+ * @author Ana
  * @version 0.1.0
  */
 public class LoginResponse {

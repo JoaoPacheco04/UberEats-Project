@@ -14,7 +14,8 @@ import java.util.List;
  * REST controller for managing course enrollments in the EduScrum platform.
  * Provides endpoints for student enrollment operations.
  *
- * @author UberEats
+ * @author Joao
+ * @author Ana
  * @version 1.2.0
  */
 @RestController

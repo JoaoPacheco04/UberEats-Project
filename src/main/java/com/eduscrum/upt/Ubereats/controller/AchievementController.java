@@ -16,7 +16,8 @@ import java.util.Map;
  * REST controller for managing achievements in the EduScrum platform.
  * Provides endpoints for achievement CRUD operations and point calculations.
  *
- * @author UberEats
+ * @author Joao
+ * @author Ana
  * @version 0.6.1
  */
 @RestController

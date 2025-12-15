@@ -14,6 +14,8 @@ import java.util.Map;
  * REST controller for user profile operations.
  * Provides endpoints for viewing and updating user profiles.
  *
+ * @author Joao Pacheco
+ * @author Yeswanth Kumar
  * @version 1.0.0
  */
 @RestController

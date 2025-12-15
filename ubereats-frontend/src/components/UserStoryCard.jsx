@@ -1,3 +1,11 @@
+/**
+ * User Story Card Component
+ * Displays user story details with assignment, priority, and movement controls.
+ * 
+ * @author Francisco
+ * @author Joao
+ * @version 1.0.0
+ */
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import {
@@ -19,8 +27,8 @@ const UserStoryCard = ({ story, teamMembers = [], onAssign, onUnassign, onMoveNe
         storyPoints,
         priority,
         status,
-        assignedUserName,  // Fixed: was assignedToName
-        assignedToUserId   // Fixed: was assignedToId
+        assignedUserName,
+        assignedToUserId
     } = story;
 
     const [showAssignDropdown, setShowAssignDropdown] = useState(false);

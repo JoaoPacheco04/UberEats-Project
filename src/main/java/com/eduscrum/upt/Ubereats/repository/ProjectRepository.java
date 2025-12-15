@@ -11,7 +11,8 @@ import java.util.List;
  * Repository interface for Project entity.
  * Provides CRUD operations and custom queries.
  *
- * @author UberEats
+ * @author Francisco
+ * @author Ana
  * @version 1.2.0
  */
 @Repository

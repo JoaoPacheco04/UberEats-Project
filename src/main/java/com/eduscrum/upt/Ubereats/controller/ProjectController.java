@@ -15,7 +15,8 @@ import java.util.List;
  * REST controller for managing projects in the EduScrum platform.
  * Provides endpoints for project CRUD operations and completion.
  *
- * @author UberEats
+ * @author Joao
+ * @author Ana
  * @version 0.5.0
  */
 @RestController

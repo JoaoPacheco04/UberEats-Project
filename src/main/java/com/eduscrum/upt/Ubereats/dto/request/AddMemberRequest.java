@@ -7,7 +7,8 @@ import jakarta.validation.constraints.NotNull;
  * Data Transfer Object for adding a member to a team.
  * Includes user ID and role assignment.
  *
- * @author UberEats
+ * @author Joao
+ * @author Ana
  * @version 1.1.0
  */
 public class AddMemberRequest {

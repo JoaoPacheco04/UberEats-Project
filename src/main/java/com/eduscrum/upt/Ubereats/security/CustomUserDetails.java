@@ -14,7 +14,8 @@ import java.util.Collections;
  * Wraps User entity and provides Spring Security compatible authentication
  * details.
  *
- * @author UberEats
+ * @author Joao
+ * @author Ana
  * @version 0.9.1
  */
 public class CustomUserDetails implements UserDetails {

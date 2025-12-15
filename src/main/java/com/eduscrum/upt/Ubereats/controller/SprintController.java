@@ -16,7 +16,8 @@ import java.util.List;
  * REST controller for managing sprints in the EduScrum platform.
  * Provides endpoints for sprint CRUD operations and status transitions.
  *
- * @author UberEats
+ * @author Joao
+ * @author Ana
  * @version 0.6.1
  */
 @RestController

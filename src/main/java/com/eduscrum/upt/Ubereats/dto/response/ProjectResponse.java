@@ -10,7 +10,8 @@ import java.time.LocalDateTime;
  * Data Transfer Object for project response data.
  * Contains project details and associated course info.
  *
- * @author UberEats
+ * @author Joao
+ * @author Ana
  * @version 0.2.1
  */
 @JsonInclude(JsonInclude.Include.NON_NULL)

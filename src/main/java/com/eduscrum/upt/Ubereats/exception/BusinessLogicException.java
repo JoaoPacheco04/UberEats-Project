@@ -6,7 +6,8 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 /**
  * Exception thrown when business logic validation fails.
  *
- * @author UberEats
+ * @author Joao
+ * @author Ana
  * @version 0.4.0
  */
 @ResponseStatus(HttpStatus.BAD_REQUEST)

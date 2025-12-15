@@ -1,30 +1,38 @@
-/* AwardBadgeModal.css */
+/* ============================================
+   OVERLAY DO MODAL (FUNDO ESCURO)
+   ============================================ */
 .award-modal-overlay {
-    position: fixed;
-    inset: 0;
-    background: rgba(0, 0, 0, 0.5);
-    backdrop-filter: blur(4px);
+    position: fixed; /* Cobre toda a tela */
+    inset: 0; /* top, right, bottom, left: 0 */
+    background: rgba(0, 0, 0, 0.5); /* Fundo preto semi-transparente */
+    backdrop-filter: blur(4px); /* Efeito de desfoque no fundo */
     display: flex;
     align-items: center;
     justify-content: center;
-    z-index: 1000;
-    padding: 1rem;
+    z-index: 1000; /* Acima de outros elementos */
+    padding: 1rem; /* Padding para telas pequenas */
 }
 
+/* ============================================
+   CONTEÚDO DO MODAL
+   ============================================ */
 .award-modal-content {
-    position: relative;
+    position: relative; /* Para posicionar o botão de fechar */
     background: white;
-    border-radius: 20px;
+    border-radius: 20px; /* Bordas arredondadas */
     padding: 2rem;
     width: 100%;
-    max-width: 500px;
-    max-height: 90vh;
-    overflow-y: auto;
-    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+    max-width: 500px; /* Largura máxima */
+    max-height: 90vh; /* Altura máxima (90% da viewport) */
+    overflow-y: auto; /* Scroll vertical se necessário */
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25); /* Sombra elevada */
 }
 
+/* ============================================
+   BOTÃO DE FECHAR MODAL
+   ============================================ */
 .modal-close {
-    position: absolute;
+    position: absolute; /* Posicionado no canto superior direito */
     top: 1rem;
     right: 1rem;
     width: 36px;
@@ -34,10 +42,10 @@
     justify-content: center;
     border: none;
     border-radius: 8px;
-    background: #f1f5f9;
-    color: #64748b;
+    background: #f1f5f9; /* Cor de fundo neutra */
+    color: #64748b; /* Cor do ícone */
     cursor: pointer;
-    transition: all 0.15s;
+    transition: all 0.15s; /* Transição suave */
 }
 
 .modal-close:hover {
@@ -45,21 +53,25 @@
     color: #1e293b;
 }
 
+/* ============================================
+   CABEÇALHO DO MODAL
+   ============================================ */
 .modal-header {
     text-align: center;
     margin-bottom: 1.5rem;
 }
 
+/* Ícone decorativo no cabeçalho */
 .modal-icon {
     width: 56px;
     height: 56px;
     display: flex;
     align-items: center;
     justify-content: center;
-    background: linear-gradient(135deg, #7c3aed 0%, #a855f7 100%);
+    background: linear-gradient(135deg, #7c3aed 0%, #a855f7 100%); /* Gradiente roxo */
     color: white;
     border-radius: 16px;
-    margin: 0 auto 1rem;
+    margin: 0 auto 1rem; /* Centralizado com margem inferior */
 }
 
 .modal-header h2 {
@@ -69,33 +81,35 @@
 }
 
 .modal-header p {
-    color: #64748b;
+    color: #64748b; /* Cor secundária para texto */
     margin: 0;
 }
 
 .modal-header strong {
-    color: #7c3aed;
+    color: #7c3aed; /* Destaque em roxo */
 }
 
-/* Success State */
+/* ============================================
+   ESTADO DE SUCESSO (APÓS CONCEDER BADGE)
+   ============================================ */
 .success-message {
     display: flex;
     flex-direction: column;
     align-items: center;
     padding: 2rem;
     text-align: center;
-    color: #059669;
+    color: #059669; /* Verde para sucesso */
 }
 
 .success-message svg {
     margin-bottom: 1rem;
-    color: #10b981;
+    color: #10b981; /* Verde mais claro para o ícone */
 }
 
 .success-message h3 {
     font-size: 1.25rem;
     margin: 0 0 0.5rem;
-    color: #047857;
+    color: #047857; /* Verde escuro */
 }
 
 .success-message p {
@@ -103,19 +117,24 @@
     margin: 0;
 }
 
-/* Form Elements */
+/* ============================================
+   ELEMENTOS DO FORMULÁRIO
+   ============================================ */
+
+/* Mensagem de erro do formulário */
 .form-error {
     display: flex;
     align-items: center;
     gap: 0.5rem;
     padding: 0.75rem 1rem;
-    background: #fee2e2;
-    color: #dc2626;
+    background: #fee2e2; /* Vermelho claro de fundo */
+    color: #dc2626; /* Vermelho para texto */
     border-radius: 8px;
     margin-bottom: 1rem;
     font-size: 0.875rem;
 }
 
+/* Grupo de campo do formulário */
 .form-group {
     margin-bottom: 1.25rem;
 }
@@ -128,6 +147,7 @@
     color: #374151;
 }
 
+/* Área de texto para comentário */
 .form-group textarea {
     width: 100%;
     padding: 0.75rem 1rem;
@@ -135,15 +155,18 @@
     border-radius: 8px;
     font-size: 0.95rem;
     transition: border-color 0.2s, box-shadow 0.2s;
-    resize: vertical;
+    resize: vertical; /* Permite redimensionamento apenas vertical */
 }
 
 .form-group textarea:focus {
     outline: none;
-    border-color: #7c3aed;
-    box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.1);
+    border-color: #7c3aed; /* Borda roxa no foco */
+    box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.1); /* Efeito de glow */
 }
 
+/* ============================================
+   ESTADO DE CARREGAMENTO DOS BADGES
+   ============================================ */
 .loading-badges {
     display: flex;
     align-items: center;
@@ -154,62 +177,65 @@
 }
 
 .spinner {
-    animation: spin 1s linear infinite;
+    animation: spin 1s linear infinite; /* Animação de rotação */
 }
 
 @keyframes spin {
     from {
         transform: rotate(0deg);
     }
-
     to {
         transform: rotate(360deg);
     }
 }
 
-/* Badge Grid */
+/* ============================================
+   GRADE DE BADGES PARA SELEÇÃO
+   ============================================ */
 .badge-grid {
     display: grid;
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(2, 1fr); /* 2 colunas em telas normais */
     gap: 0.75rem;
 }
 
+/* Opção de badge individual */
 .badge-option {
     display: flex;
     flex-direction: column;
     align-items: center;
     gap: 0.5rem;
     padding: 1rem;
-    border: 2px solid #e2e8f0;
+    border: 2px solid #e2e8f0; /* Borda padrão */
     border-radius: 12px;
     background: white;
-    cursor: pointer;
+    cursor: pointer; /* Indica que é clicável */
     transition: all 0.15s;
 }
 
 .badge-option:hover {
-    border-color: #c4b5fd;
-    background: #f5f3ff;
+    border-color: #c4b5fd; /* Borda roxa clara no hover */
+    background: #f5f3ff; /* Fundo roxo muito claro */
 }
 
 .badge-option.selected {
-    border-color: #7c3aed;
-    background: #f5f3ff;
+    border-color: #7c3aed; /* Borda roxa quando selecionado */
+    background: #f5f3ff; /* Fundo roxo claro */
 }
 
+/* Ícone do badge */
 .badge-icon {
     width: 44px;
     height: 44px;
     display: flex;
     align-items: center;
     justify-content: center;
-    background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
+    background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%); /* Gradiente laranja padrão */
     color: white;
     border-radius: 12px;
 }
 
 .badge-option.selected .badge-icon {
-    background: linear-gradient(135deg, #7c3aed 0%, #a855f7 100%);
+    background: linear-gradient(135deg, #7c3aed 0%, #a855f7 100%); /* Gradiente roxo quando selecionado */
 }
 
 .badge-name {
@@ -221,27 +247,31 @@
 
 .badge-points {
     font-size: 0.7rem;
-    color: #7c3aed;
+    color: #7c3aed; /* Cor roxa para pontos */
     font-weight: 600;
 }
 
+/* Estado quando não há badges disponíveis */
 .no-badges {
     text-align: center;
-    color: #94a3b8;
+    color: #94a3b8; /* Cor cinza claro */
     padding: 1rem;
     font-size: 0.875rem;
 }
 
-/* Modal Actions */
+/* ============================================
+   AÇÕES DO MODAL (BOTÕES)
+   ============================================ */
 .modal-actions {
     display: flex;
-    justify-content: flex-end;
+    justify-content: flex-end; /* Alinha à direita */
     gap: 0.75rem;
     margin-top: 1.5rem;
     padding-top: 1.5rem;
-    border-top: 1px solid #e2e8f0;
+    border-top: 1px solid #e2e8f0; /* Linha divisória */
 }
 
+/* Botão de cancelar */
 .cancel-btn {
     padding: 0.75rem 1.25rem;
     background: #f1f5f9;
@@ -257,12 +287,13 @@
     background: #e2e8f0;
 }
 
+/* Botão de enviar/submeter */
 .submit-btn {
     display: flex;
     align-items: center;
     gap: 0.5rem;
     padding: 0.75rem 1.5rem;
-    background: linear-gradient(135deg, #7c3aed 0%, #a855f7 100%);
+    background: linear-gradient(135deg, #7c3aed 0%, #a855f7 100%); /* Gradiente roxo */
     color: white;
     border: none;
     border-radius: 8px;
@@ -272,22 +303,24 @@
 }
 
 .submit-btn:hover:not(:disabled) {
-    transform: translateY(-1px);
-    box-shadow: 0 4px 12px rgba(124, 58, 237, 0.3);
+    transform: translateY(-1px); /* Efeito de levantar */
+    box-shadow: 0 4px 12px rgba(124, 58, 237, 0.3); /* Sombra roxa */
 }
 
 .submit-btn:disabled {
     opacity: 0.6;
-    cursor: not-allowed;
+    cursor: not-allowed; /* Cursor de "não permitido" quando desabilitado */
 }
 
-/* Responsive */
+/* ============================================
+   RESPONSIVIDADE (MOBILE PEQUENO)
+   ============================================ */
 @media (max-width: 480px) {
     .award-modal-content {
-        padding: 1.5rem;
+        padding: 1.5rem; /* Padding menor em telas pequenas */
     }
 
     .badge-grid {
-        grid-template-columns: 1fr;
+        grid-template-columns: 1fr; /* Uma coluna em mobile */
     }
 }

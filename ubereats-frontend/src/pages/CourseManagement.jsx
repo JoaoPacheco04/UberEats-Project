@@ -1,6 +1,14 @@
+/**
+ * Course Management Page Component
+ * Manages course details, projects, teams, and enrollments.
+ * 
+ * @author Yeswanth
+ * @author Ana
+ * @version 1.0.0
+ */
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion'; // For animation transitions
 import {
     ArrowLeft,
     FolderKanban,
@@ -13,7 +21,7 @@ import {
     AlertCircle,
     Loader2,
     Download
-} from 'lucide-react';
+} from 'lucide-react'; // Icon library
 import {
     getCourseById,
     getProjectsByCourse,
@@ -23,13 +31,14 @@ import {
     addMemberToTeam,
     exportCourseGrades,
     getCurrentUser
-} from '../services/api';
-import ProjectCard from '../components/ProjectCard';
+} from '../services/api'; // API service calls
+import ProjectCard from '../components/ProjectCard'; // Custom components
 import TeamCard from '../components/TeamCard';
 import StudentDetailCard from '../components/StudentDetailCard';
 import AwardBadgeModal from '../components/AwardBadgeModal';
 import './CourseManagement.css';
 
+// Defines the allowed Scrum roles for team creation
 const SCRUM_ROLES = [
     { value: 'SCRUM_MASTER', label: 'Scrum Master' },
     { value: 'PRODUCT_OWNER', label: 'Product Owner' },
@@ -37,19 +46,21 @@ const SCRUM_ROLES = [
 ];
 
 const CourseManagement = () => {
+    // Hooks for routing parameters and navigation
     const { courseId } = useParams();
     const navigate = useNavigate();
 
+    // --- Component State Management ---
     const [course, setCourse] = useState(null);
     const [projects, setProjects] = useState([]);
     const [students, setStudents] = useState([]);
     const [teams, setTeams] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
-    const [activeTab, setActiveTab] = useState('projects');
-    const [showCreateModal, setShowCreateModal] = useState(false);
+    const [activeTab, setActiveTab] = useState('projects'); // Controls which tab content is visible
+    const [showCreateModal, setShowCreateModal] = useState(false); // State for the 'Create Project' modal
 
-    // Get current user for role-based navigation
+    // Get current user details for role-based features (e.g., 'TEACHER' permissions)
     const currentUser = getCurrentUser();
 
     // Award Badge Modal State
@@ -71,10 +82,11 @@ const CourseManagement = () => {
     const [teamError, setTeamError] = useState(null);
     const [newTeam, setNewTeam] = useState({
         name: '',
-        projectId: '',
+        projectId: '', // Project the team belongs to
         members: [] // { userId, role }
     });
 
+    // --- Data Fetching Logic (runs on component mount and courseId change) ---
     useEffect(() => {
         fetchData();
     }, [courseId]);
@@ -84,24 +96,25 @@ const CourseManagement = () => {
             setLoading(true);
             setError(null);
 
+            // Fetch course, projects, and enrollments concurrently
             const [courseRes, projectsRes, studentsRes] = await Promise.all([
                 getCourseById(courseId),
-                getProjectsByCourse(courseId).catch(() => ({ data: [] })),
-                getCourseEnrollments(courseId).catch(() => ({ data: [] }))
+                getProjectsByCourse(courseId).catch(() => ({ data: [] })), // Handle potential project error gracefully
+                getCourseEnrollments(courseId).catch(() => ({ data: [] })) // Handle potential enrollment error gracefully
             ]);
 
             setCourse(courseRes.data);
             setProjects(projectsRes.data || []);
             setStudents(studentsRes.data || []);
 
-            // Fetch teams for all projects (one team per project now)
+            // Fetch teams for all fetched projects
             const projectList = projectsRes.data || [];
             if (projectList.length > 0) {
                 const teamPromises = projectList.map(p =>
                     getTeamByProject(p.id).catch(() => ({ data: null }))
                 );
                 const teamResults = await Promise.all(teamPromises);
-                // Filter out null results and collect teams
+                // Filter out null results (projects without a team) and update teams state
                 const allTeams = teamResults
                     .map(r => r.data)
                     .filter(team => team != null);
@@ -117,18 +130,21 @@ const CourseManagement = () => {
         }
     };
 
+    // --- Handler Functions ---
+
     const handleCreateProject = async (e) => {
         e.preventDefault();
         try {
+            // Dynamic import of createProject is unusual, assuming it's required by the setup
             const { createProject } = await import('../services/api');
             const projectData = {
                 ...newProject,
-                courseId: parseInt(courseId)
+                courseId: parseInt(courseId) // Ensure courseId is an integer
             };
             await createProject(projectData);
             setShowCreateModal(false);
-            setNewProject({ name: '', description: '', startDate: '', endDate: '', courseId });
-            fetchData();
+            setNewProject({ name: '', description: '', startDate: '', endDate: '', courseId }); // Reset form
+            fetchData(); // Refresh data to show the new project
         } catch (err) {
             console.error('Error creating project:', err);
             setError('Failed to create project. Please try again.');
@@ -138,13 +154,14 @@ const CourseManagement = () => {
     const handleExportCsv = async () => {
         try {
             const response = await exportCourseGrades(courseId);
+            // Create a Blob from the response data for download
             const blob = new Blob([response.data], { type: 'text/csv' });
             const url = window.URL.createObjectURL(blob);
             const link = document.createElement('a');
             link.href = url;
             link.download = `${course?.code || 'course'}_grades.csv`;
             document.body.appendChild(link);
-            link.click();
+            link.click(); // Trigger the download
             document.body.removeChild(link);
             window.URL.revokeObjectURL(url);
         } catch (err) {
@@ -162,15 +179,17 @@ const CourseManagement = () => {
         setAwardModalOpen(false);
         setSelectedStudent(null);
         if (success) {
-            fetchData();
+            fetchData(); // Refresh data if a badge was awarded
         }
     };
 
     // Team Creation Handlers
     const handleAddTeamMember = (userId) => {
+        // Prevent adding the same user twice
         if (newTeam.members.find(m => m.userId === userId)) return;
         setNewTeam(prev => ({
             ...prev,
+            // Add new member with default role 'DEVELOPER'
             members: [...prev.members, { userId: parseInt(userId), role: 'DEVELOPER' }]
         }));
     };
@@ -185,6 +204,7 @@ const CourseManagement = () => {
     const handleMemberRoleChange = (userId, role) => {
         setNewTeam(prev => ({
             ...prev,
+            // Update the role for the matching member
             members: prev.members.map(m =>
                 m.userId === userId ? { ...m, role } : m
             )
@@ -196,6 +216,7 @@ const CourseManagement = () => {
         setTeamError(null);
         setCreatingTeam(true);
 
+        // Basic validation
         if (!newTeam.projectId) {
             setTeamError('Please select a project');
             setCreatingTeam(false);
@@ -209,7 +230,7 @@ const CourseManagement = () => {
         }
 
         try {
-            // Create team first
+            // 1. Create the team entity
             const teamRes = await createTeam({
                 name: newTeam.name,
                 projectId: parseInt(newTeam.projectId)
@@ -217,7 +238,7 @@ const CourseManagement = () => {
             const teamId = teamRes.data?.id;
 
             if (teamId) {
-                // Add members with roles
+                // 2. Add members with their assigned roles sequentially
                 for (const member of newTeam.members) {
                     await addMemberToTeam(teamId, {
                         userId: member.userId,
@@ -226,6 +247,7 @@ const CourseManagement = () => {
                 }
             }
 
+            // Close modal, reset form, and refresh data
             setShowTeamModal(false);
             setNewTeam({ name: '', projectId: '', members: [] });
             fetchData();
@@ -237,12 +259,13 @@ const CourseManagement = () => {
         }
     };
 
+    // Helper to get student name from their ID, used in the team creation modal
     const getStudentName = (studentId) => {
         const student = students.find(s => s.studentId === studentId || s.id === studentId);
         return student?.studentName || student?.name || 'Unknown';
     };
 
-    // Determine dashboard route based on user role
+    // Helper to determine the correct dashboard route based on user role
     const getDashboardRoute = () => {
         if (currentUser?.role === 'STUDENT') {
             return '/student/dashboard';
@@ -250,11 +273,14 @@ const CourseManagement = () => {
         return '/teacher/dashboard';
     };
 
+    // Configuration for the main tabs
     const tabs = [
         { id: 'projects', label: 'Projects', icon: FolderKanban, count: projects.length },
         { id: 'students', label: 'Students', icon: Users, count: students.length },
         { id: 'teams', label: 'Teams', icon: UsersRound, count: teams.length }
     ];
+
+    // --- Conditional Loading and Error Rendering ---
 
     if (loading) {
         return (
@@ -275,10 +301,12 @@ const CourseManagement = () => {
         );
     }
 
+    // --- Main Component Rendering ---
     return (
         <div className="course-management">
-            {/* Header */}
+            {/* Header Section */}
             <header className="course-header">
+                {/* Back button, navigates based on user role */}
                 <button className="back-btn" onClick={() => navigate(getDashboardRoute())}>
                     <ArrowLeft size={20} />
                     <span>Back to Dashboard</span>
@@ -288,6 +316,7 @@ const CourseManagement = () => {
                     <div className="course-badge">{course?.code}</div>
                     <h1>{course?.name}</h1>
                     <p className="course-meta">
+                        {/* Course metadata */}
                         <span><Calendar size={16} /> {course?.semester} {course?.academicYear}</span>
                         <span><Users size={16} /> {students.length} Students</span>
                         <span><FolderKanban size={16} /> {projects.length} Projects</span>
@@ -295,6 +324,7 @@ const CourseManagement = () => {
                     </p>
                 </div>
 
+                {/* Export button, only visible to TEACHERS */}
                 {currentUser?.role === 'TEACHER' && (
                     <button className="export-btn" onClick={handleExportCsv}>
                         <Download size={18} />
@@ -303,7 +333,7 @@ const CourseManagement = () => {
                 )}
             </header>
 
-            {/* Tabs */}
+            {/* Tabs Navigation */}
             <nav className="course-tabs">
                 {tabs.map(tab => (
                     <button
@@ -318,9 +348,10 @@ const CourseManagement = () => {
                 ))}
             </nav>
 
-            {/* Content */}
+            {/* Main Content Area - Uses AnimatePresence for tab transitions */}
             <main className="course-content">
                 <AnimatePresence mode="wait">
+                    {/* Projects Tab Content */}
                     {activeTab === 'projects' && (
                         <motion.div
                             key="projects"
@@ -331,6 +362,7 @@ const CourseManagement = () => {
                         >
                             <div className="section-header">
                                 <h2>Projects</h2>
+                                {/* Create Project button, only for TEACHERS */}
                                 {currentUser?.role === 'TEACHER' && (
                                     <button
                                         className="create-btn"
@@ -342,6 +374,7 @@ const CourseManagement = () => {
                                 )}
                             </div>
 
+                            {/* Conditional rendering for empty state or project list */}
                             {projects.length === 0 ? (
                                 <div className="empty-state">
                                     <FolderKanban size={64} strokeWidth={1} />
@@ -360,6 +393,7 @@ const CourseManagement = () => {
                             ) : (
                                 <div className="projects-grid">
                                     {projects.map(project => (
+                                        // ProjectCard component
                                         <ProjectCard
                                             key={project.id}
                                             project={project}
@@ -371,6 +405,7 @@ const CourseManagement = () => {
                         </motion.div>
                     )}
 
+                    {/* Students Tab Content */}
                     {activeTab === 'students' && (
                         <motion.div
                             key="students"
@@ -387,6 +422,7 @@ const CourseManagement = () => {
                                 </div>
                             </div>
 
+                            {/* Conditional rendering for empty state or student list */}
                             {students.length === 0 ? (
                                 <div className="empty-state">
                                     <GraduationCap size={64} strokeWidth={1} />
@@ -396,11 +432,12 @@ const CourseManagement = () => {
                             ) : (
                                 <div className="students-list">
                                     {students.map(student => (
+                                        // StudentDetailCard component
                                         <StudentDetailCard
                                             key={student.id}
                                             student={student}
                                             onAwardBadge={handleAwardBadge}
-                                            showAwardButton={currentUser?.role === 'TEACHER'}
+                                            showAwardButton={currentUser?.role === 'TEACHER'} // Only show award button for teachers
                                         />
                                     ))}
                                 </div>
@@ -408,6 +445,7 @@ const CourseManagement = () => {
                         </motion.div>
                     )}
 
+                    {/* Teams Tab Content */}
                     {activeTab === 'teams' && (
                         <motion.div
                             key="teams"
@@ -418,12 +456,14 @@ const CourseManagement = () => {
                         >
                             <div className="section-header">
                                 <h2>Teams</h2>
+                                {/* Create Team button */}
                                 <button className="create-btn" onClick={() => setShowTeamModal(true)}>
                                     <Plus size={18} />
                                     Create Team
                                 </button>
                             </div>
 
+                            {/* Conditional rendering for empty state or team list */}
                             {teams.length === 0 ? (
                                 <div className="empty-state">
                                     <UsersRound size={64} strokeWidth={1} />
@@ -437,6 +477,7 @@ const CourseManagement = () => {
                             ) : (
                                 <div className="teams-grid">
                                     {teams.map(team => (
+                                        // TeamCard component
                                         <TeamCard key={team.id} team={team} />
                                     ))}
                                 </div>
@@ -454,17 +495,18 @@ const CourseManagement = () => {
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                         exit={{ opacity: 0 }}
-                        onClick={() => setShowCreateModal(false)}
+                        onClick={() => setShowCreateModal(false)} // Close modal on overlay click
                     >
                         <motion.div
                             className="modal-content"
                             initial={{ scale: 0.9, opacity: 0 }}
                             animate={{ scale: 1, opacity: 1 }}
                             exit={{ scale: 0.9, opacity: 0 }}
-                            onClick={e => e.stopPropagation()}
+                            onClick={e => e.stopPropagation()} // Prevent closing on content click
                         >
                             <h2>Create New Project</h2>
                             <form onSubmit={handleCreateProject}>
+                                {/* Project Name Input */}
                                 <div className="form-group">
                                     <label>Project Name</label>
                                     <input
@@ -475,6 +517,7 @@ const CourseManagement = () => {
                                         required
                                     />
                                 </div>
+                                {/* Description Textarea */}
                                 <div className="form-group">
                                     <label>Description</label>
                                     <textarea
@@ -484,6 +527,7 @@ const CourseManagement = () => {
                                         rows={3}
                                     />
                                 </div>
+                                {/* Start and End Date Inputs */}
                                 <div className="form-row">
                                     <div className="form-group">
                                         <label>Start Date</label>
@@ -504,6 +548,7 @@ const CourseManagement = () => {
                                         />
                                     </div>
                                 </div>
+                                {/* Modal Actions */}
                                 <div className="modal-actions">
                                     <button type="button" className="cancel-btn" onClick={() => setShowCreateModal(false)}>
                                         Cancel
@@ -518,13 +563,14 @@ const CourseManagement = () => {
                 )}
             </AnimatePresence>
 
-            {/* Award Badge Modal */}
+            {/* Award Badge Modal (reusable component) */}
             <AwardBadgeModal
                 isOpen={awardModalOpen}
                 onClose={handleAwardModalClose}
                 recipient={selectedStudent}
                 recipientType="user"
-                projectId={projects[0]?.id}
+                // Passes the ID of the first project for badge association (simplification)
+                projectId={projects[0]?.id} 
             />
 
             {/* Create Team Modal */}
@@ -546,6 +592,7 @@ const CourseManagement = () => {
                         >
                             <h2>Create New Team</h2>
                             <form onSubmit={handleCreateTeam}>
+                                {/* Display team creation error */}
                                 {teamError && (
                                     <div className="form-error">
                                         <AlertCircle size={16} />
@@ -553,6 +600,7 @@ const CourseManagement = () => {
                                     </div>
                                 )}
 
+                                {/* Team Name Input */}
                                 <div className="form-group">
                                     <label>Team Name</label>
                                     <input
@@ -564,6 +612,7 @@ const CourseManagement = () => {
                                     />
                                 </div>
 
+                                {/* Project Selection */}
                                 <div className="form-group">
                                     <label>Project</label>
                                     <select
@@ -578,18 +627,20 @@ const CourseManagement = () => {
                                     </select>
                                 </div>
 
+                                {/* Add Team Members Selector */}
                                 <div className="form-group">
                                     <label>Add Team Members</label>
                                     <select
                                         onChange={e => {
                                             if (e.target.value) {
                                                 handleAddTeamMember(e.target.value);
-                                                e.target.value = '';
+                                                e.target.value = ''; // Reset select after adding
                                             }
                                         }}
                                     >
                                         <option value="">Select a student to add...</option>
                                         {students
+                                            // Filter out students already added to the team
                                             .filter(s => !newTeam.members.find(m => m.userId === (s.studentId || s.id)))
                                             .map(s => (
                                                 <option key={s.studentId || s.id} value={s.studentId || s.id}>
@@ -600,6 +651,7 @@ const CourseManagement = () => {
                                     </select>
                                 </div>
 
+                                {/* Display Selected Team Members and Roles */}
                                 {newTeam.members.length > 0 && (
                                     <div className="team-members-list">
                                         <label>Team Members ({newTeam.members.length})</label>
@@ -608,6 +660,7 @@ const CourseManagement = () => {
                                                 <span className="member-name">
                                                     {getStudentName(member.userId)}
                                                 </span>
+                                                {/* Role Selection for Member */}
                                                 <select
                                                     value={member.role}
                                                     onChange={e => handleMemberRoleChange(member.userId, e.target.value)}
@@ -619,6 +672,7 @@ const CourseManagement = () => {
                                                         </option>
                                                     ))}
                                                 </select>
+                                                {/* Remove Member Button */}
                                                 <button
                                                     type="button"
                                                     className="remove-member-btn"
@@ -631,6 +685,7 @@ const CourseManagement = () => {
                                     </div>
                                 )}
 
+                                {/* Team Creation Actions */}
                                 <div className="modal-actions">
                                     <button type="button" className="cancel-btn" onClick={() => setShowTeamModal(false)}>
                                         Cancel

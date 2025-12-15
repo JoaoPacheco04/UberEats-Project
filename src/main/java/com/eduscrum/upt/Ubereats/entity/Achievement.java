@@ -10,7 +10,8 @@ import java.util.Objects;
  * JPA entity representing an achievement in the EduScrum platform.
  * Links a badge to a user or team with context (project, sprint).
  *
- * @author UberEats
+ * @author Bruna
+ * @author Francisco
  * @version 1.1.0
  */
 @Entity

@@ -6,7 +6,8 @@ import java.time.LocalDateTime;
  * Data Transfer Object for achievement response data.
  * Contains award details, badge info, and related entities.
  *
- * @author UberEats
+ * @author Joao
+ * @author Ana
  * @version 0.6.1
  */
 public class AchievementResponseDTO {

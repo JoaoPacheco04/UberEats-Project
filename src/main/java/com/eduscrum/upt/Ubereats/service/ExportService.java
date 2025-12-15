@@ -12,6 +12,8 @@ import java.util.List;
  * Service class for exporting data from the EduScrum platform.
  * Handles generation of CSV files for courses and student data.
  *
+ * @author Ana
+ * @author Francisco
  * @version 1.1.0 (2025-12-08)
  */
 @Service

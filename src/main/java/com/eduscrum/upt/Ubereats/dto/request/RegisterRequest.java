@@ -6,7 +6,8 @@ import com.eduscrum.upt.Ubereats.entity.enums.UserRole;
  * Data Transfer Object for receiving user registration data.
  * Contains all fields needed to create a new user account.
  *
- * @author UberEats
+ * @author Joao
+ * @author Ana
  * @version 1.0.1
  */
 public class RegisterRequest {

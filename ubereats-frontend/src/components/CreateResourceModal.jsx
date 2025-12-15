@@ -1,3 +1,11 @@
+/**
+ * Create Resource Modal Component
+ * Modal for creating courses, projects, sprints, and teams.
+ * 
+ * @author Francisco
+ * @author Bruna
+ * @version 1.0.0
+ */
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, BookOpen, FolderOpen, Calendar, FileText, Plus, GraduationCap } from 'lucide-react';
@@ -156,8 +164,8 @@ const CreateResourceModal = ({ isOpen, onClose, onSubmitCourse, onSubmitProject,
                                     type="button"
                                     onClick={() => { setActiveTab('course'); setErrors({}); }}
                                     className={`flex-1 flex items-center justify-center gap-2 py-2.5 px-4 rounded-lg font-semibold text-sm transition-all ${activeTab === 'course'
-                                            ? 'bg-white text-violet-700 shadow-lg'
-                                            : 'text-white/80 hover:text-white'
+                                        ? 'bg-white text-violet-700 shadow-lg'
+                                        : 'text-white/80 hover:text-white'
                                         }`}
                                 >
                                     <BookOpen size={16} />
@@ -167,8 +175,8 @@ const CreateResourceModal = ({ isOpen, onClose, onSubmitCourse, onSubmitProject,
                                     type="button"
                                     onClick={() => { setActiveTab('project'); setErrors({}); }}
                                     className={`flex-1 flex items-center justify-center gap-2 py-2.5 px-4 rounded-lg font-semibold text-sm transition-all ${activeTab === 'project'
-                                            ? 'bg-white text-violet-700 shadow-lg'
-                                            : 'text-white/80 hover:text-white'
+                                        ? 'bg-white text-violet-700 shadow-lg'
+                                        : 'text-white/80 hover:text-white'
                                         }`}
                                 >
                                     <FolderOpen size={16} />

@@ -20,7 +20,8 @@ import java.util.stream.Collectors;
  * JPA entity representing a project in the EduScrum platform.
  * Contains sprints, teams, and achievements. Belongs to a course.
  *
- * @author UberEats
+ * @author Francisco
+ * @author Yeswanth Kumar
  * @version 0.6.1
  */
 @Entity

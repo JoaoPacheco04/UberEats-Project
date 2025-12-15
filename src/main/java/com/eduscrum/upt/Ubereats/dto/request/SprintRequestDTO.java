@@ -9,7 +9,8 @@ import java.time.LocalDate;
  * Data Transfer Object for creating or updating a Sprint.
  * Contains sprint details and validation annotations.
  *
- * @author UberEats
+ * @author Joao
+ * @author Ana
  * @version 1.1.0
  */
 public class SprintRequestDTO {

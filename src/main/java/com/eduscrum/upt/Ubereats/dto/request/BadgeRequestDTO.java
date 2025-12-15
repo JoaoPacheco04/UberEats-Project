@@ -10,7 +10,8 @@ import jakarta.validation.constraints.PositiveOrZero;
  * Data Transfer Object for creating or updating a Badge.
  * Contains badge details and validation annotations.
  *
- * @author UberEats
+ * @author Joao
+ * @author Ana
  * @version 0.1.0
  */
 public class BadgeRequestDTO {

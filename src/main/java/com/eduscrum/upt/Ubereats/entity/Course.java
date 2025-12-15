@@ -16,7 +16,8 @@ import java.util.stream.Collectors;
  * JPA entity representing a course in the EduScrum platform.
  * Contains projects, enrollments, and is taught by a teacher.
  *
- * @author UberEatss
+ * @author Bruna
+ * @author Ana
  * @version 0.2.1
  */
 @Entity
