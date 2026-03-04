@@ -6,7 +6,7 @@
  * @author Yeswanth
  * @version 1.2.0
  */
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import {
@@ -61,39 +61,11 @@ const TeacherDashboard = () => {
         fetchCourses();
     }, []); // Empty dependency array means it runs once on mount
 
-    // Effect 2: Fetches rankings whenever the list of courses changes (i.e., after initial fetch or a new course is created)
-    useEffect(() => {
-        if (courses.length > 0) {
-            fetchRankings();
-        }
-    }, [courses]); // Depends on the 'courses' state
-
-    // --- API Functions ---
-
-    /**
-     * Asynchronously fetches all courses associated with the current teacher.
-     */
-    const fetchCourses = async () => {
-        try {
-            setIsLoading(true);
-            setError(null);
-            const response = await getTeacherCourses();
-            // Assuming response.data is an array of course objects
-            setCourses(response.data || []);
-        } catch (err) {
-            console.error('Failed to fetch courses:', err);
-            setError('Failed to load your courses. Please try again.');
-            setCourses([]);
-        } finally {
-            setIsLoading(false);
-        }
-    };
-
     /**
      * Asynchronously fetches and compiles student and team rankings across all courses.
      * This is a complex, multi-step asynchronous operation that aggregates data.
      */
-    const fetchRankings = async () => {
+    const fetchRankings = useCallback(async () => {
         setRankingsLoading(true);
         try {
             // Maps are used to ensure each student/team is counted only once, even if they appear in multiple enrollments/projects
@@ -140,7 +112,7 @@ const TeacherDashboard = () => {
                                 try {
                                     // Get team's points
                                     const pointsRes = await getTeamPoints(team.id);
-                                    const points = pointsRes.data?.totalPoints || 0;
+                                    const points = pointsRes.data?.points || 0;
                                     teamMap.set(team.id, {
                                         id: team.id,
                                         name: team.name,
@@ -173,12 +145,44 @@ const TeacherDashboard = () => {
             setStudentRankings(studentList);
             setTeamRankings(teamList);
         } catch (err) {
-            console.error('Failed to fetch rankings:', err);
-            // Error state for rankings is generally silent to not block the main dashboard view
+            console.error('Failed to fetch rankings', err);
         } finally {
             setRankingsLoading(false);
         }
+    }, [courses]);
+
+    // Effect 2: Fetches rankings whenever the list of courses changes (i.e., after initial fetch or a new course is created)
+    useEffect(() => {
+        if (courses.length > 0) {
+            fetchRankings();
+        }
+    }, [courses, fetchRankings]); // Depends on the 'courses' state
+
+    // --- API Functions ---
+
+    /**
+     * Asynchronously fetches all courses associated with the current teacher.
+     */
+    const fetchCourses = async () => {
+        try {
+            setIsLoading(true);
+            setError(null);
+            const response = await getTeacherCourses();
+            // Assuming response.data is an array of course objects
+            setCourses(response.data || []);
+        } catch (err) {
+            console.error('Failed to fetch courses:', err);
+            setError('Failed to load your courses. Please try again.');
+            setCourses([]);
+        } finally {
+            setIsLoading(false);
+        }
     };
+
+    /**
+     * Asynchronously fetches and compiles student and team rankings across all courses.
+     * This is a complex, multi-step asynchronous operation that aggregates data.
+     */
 
     /**
      * Handles creation of a new course, then refreshes the course list.

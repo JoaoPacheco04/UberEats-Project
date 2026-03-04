@@ -155,7 +155,7 @@ const StudentDashboard = () => {
     // Safely calculate total points, prioritizing dashboardData.globalScore
     const totalPoints = dashboardData?.globalScore || achievements.reduce((sum, a) => sum + Number(a.points || 0), 0);
     const totalBadges = achievements.length;
-    const courseAverage = dashboardData?.courseAverage || 0; // Average score across all courses/students
+    const courseAverage = dashboardData?.courseAverageScore || 0; // Average score across all courses/students
 
     // --- Loading State Render ---
     if (loading) {
@@ -194,66 +194,83 @@ const StudentDashboard = () => {
                 <motion.header
                     initial={{ opacity: 0, y: -20 }}
                     animate={{ opacity: 1, y: 0 }}
-                    className="dashboard-header"
+                    transition={{ duration: 0.5 }}
+                    className="mb-10"
                 >
-                    <div className="header-banner">
-                        <div className="header-decorations">
-                            {/* Decorative elements (circles, sparkles) */}
-                            <div className="decoration-circle top-right" />
-                            <div className="decoration-circle bottom-left" />
-                            <Sparkles className="sparkle-icon" size={40} />
+                    <div className="relative overflow-hidden rounded-3xl backdrop-blur-xl p-8 shadow-2xl border border-white/10" style={{ background: 'linear-gradient(135deg, #91E2F2 0%, #BAB5F5 100%)', boxShadow: '0 25px 50px -12px rgba(145, 226, 242, 0.35)' }}>
+                        {/* Decorative Elements */}
+                        <div className="absolute inset-0 overflow-hidden">
+                            <div className="absolute -top-20 -right-20 w-64 h-64 bg-white/10 rounded-full blur-3xl" />
+                            <div className="absolute -bottom-20 -left-20 w-48 h-48 bg-white/10 rounded-full blur-3xl" />
+                            <Sparkles className="absolute top-4 right-8 text-white/20" size={40} />
                         </div>
 
-                        <div className="header-content">
-                            <div className="header-info">
-                                <div className="header-badge">
-                                    <GraduationCap size={24} />
-                                    <div className="badge-pulse" />
+                        <div className="relative flex flex-col gap-6">
+                            {/* Top row: Welcome text and stats */}
+                            <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+                                <div>
+                                    <div className="flex items-center gap-3 mb-3">
+                                        <div className="flex items-center justify-center w-12 h-12 rounded-xl bg-white/40 backdrop-blur-sm">
+                                            <GraduationCap size={24} className="text-slate-700" />
+                                        </div>
+                                        <span className="px-3 py-1 rounded-full bg-white/40 text-slate-700 text-sm font-medium backdrop-blur-sm">
+                                            Student Dashboard
+                                        </span>
+                                    </div>
+                                    <h1 className="text-3xl md:text-4xl font-bold text-slate-800 mb-2">
+                                        Welcome, {getUserName()}!
+                                    </h1>
+                                    <p className="text-slate-600 text-lg">
+                                        Track your progress and achievements
+                                    </p>
                                 </div>
-                                <span className="header-label">Student Dashboard</span>
-                            </div>
-                            <h1>Welcome, {getUserName()}!</h1>
-                            <p>Track your progress and achievements</p>
-                        </div>
 
-                        {/* Quick Stats: Points, Badges, Teams */}
-                        <div className="header-stats">
-                            <div className="stat-box">
-                                <Trophy size={24} />
-                                <div className="stat-content">
-                                    <span className="stat-value">{totalPoints}</span>
-                                    <span className="stat-label">Points</span>
+                                {/* Quick Stats Cards */}
+                                <div className="flex flex-wrap gap-3">
+                                    <div className="flex items-center gap-3 px-4 py-3 rounded-xl bg-white/50 backdrop-blur-sm border border-white/30">
+                                        <Trophy className="text-slate-700" size={24} />
+                                        <div>
+                                            <p className="text-slate-500 text-xs">Points</p>
+                                            <p className="text-2xl font-bold text-slate-800">{totalPoints}</p>
+                                        </div>
+                                    </div>
+                                    <div className="flex items-center gap-3 px-4 py-3 rounded-xl bg-white/50 backdrop-blur-sm border border-white/30">
+                                        <Award className="text-slate-700" size={24} />
+                                        <div>
+                                            <p className="text-slate-500 text-xs">Badges</p>
+                                            <p className="text-2xl font-bold text-slate-800">{totalBadges}</p>
+                                        </div>
+                                    </div>
+                                    <div className="flex items-center gap-3 px-4 py-3 rounded-xl bg-white/50 backdrop-blur-sm border border-white/30">
+                                        <Users className="text-slate-700" size={24} />
+                                        <div>
+                                            <p className="text-slate-500 text-xs">Teams</p>
+                                            <p className="text-2xl font-bold text-slate-800">{teams.length}</p>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
-                            <div className="stat-box">
-                                <Award size={24} />
-                                <div className="stat-content">
-                                    <span className="stat-value">{totalBadges}</span>
-                                    <span className="stat-label">Badges</span>
-                                </div>
-                            </div>
-                            <div className="stat-box">
-                                <Users size={24} />
-                                <div className="stat-content">
-                                    <span className="stat-value">{teams.length}</span>
-                                    <span className="stat-label">Teams</span>
-                                </div>
-                            </div>
-                        </div>
 
-                        {/* Action Buttons: Edit Profile and Logout */}
-                        <div className="header-actions">
-                            <button
-                                onClick={() => setShowEditProfileModal(true)}
-                                className="action-btn secondary"
-                            >
-                                <Settings size={18} />
-                                Edit Profile
-                            </button>
-                            <button onClick={handleLogout} className="logout-btn">
-                                <LogOut size={18} />
-                                Logout
-                            </button>
+                            {/* Bottom row: Action buttons */}
+                            <div className="flex flex-wrap items-center justify-end gap-3">
+                                {/* Profile and Logout buttons */}
+                                <div className="flex gap-3">
+                                    <button
+                                        onClick={() => setShowEditProfileModal(true)}
+                                        className="flex items-center gap-2 px-4 py-3 rounded-xl bg-slate-500/20 hover:bg-slate-500/30 backdrop-blur-sm transition-all border border-slate-400/30"
+                                    >
+                                        <Settings className="text-slate-600" size={20} />
+                                        <span className="font-semibold text-slate-600">Edit Profile</span>
+                                    </button>
+                                    <button
+                                        onClick={handleLogout}
+                                        className="flex items-center gap-2 px-4 py-3 rounded-xl bg-rose-500/20 hover:bg-rose-500/30 backdrop-blur-sm transition-all border border-rose-400/30"
+                                    >
+                                        <LogOut className="text-rose-500" size={20} />
+                                        <span className="font-semibold text-rose-500">Logout</span>
+                                    </button>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </motion.header>
@@ -268,130 +285,93 @@ const StudentDashboard = () => {
                     )
                 }
 
-                {/* Main Content Grid Layout */}
-                <div className="dashboard-grid">
-                    {/* Left Column - Courses & Teams */}
-                    <div className="main-column">
-                        {/* My Courses Section */}
-                        <section className="dashboard-section">
-                            <div className="section-header">
-                                <div className="section-title">
-                                    <div className="section-icon">
-                                        <BookOpen size={20} />
+                {/* Main Content - Bento Box Layout */}
+                <div className="flex flex-col gap-6">
+                    {/* Top Row: Quick Stats & Analytics */}
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        {/* Progression Timeline Card (Summary) */}
+                        <div className="bg-white rounded-2xl shadow-xl shadow-sky-500/10 border border-slate-200/60 p-5 flex flex-col justify-between">
+                            <div>
+                                <div className="flex items-center gap-3 mb-4">
+                                    <div className="flex items-center justify-center w-9 h-9 rounded-xl bg-gradient-to-br from-sky-400 to-blue-500 shadow-lg shadow-sky-500/30">
+                                        <TrendingUp size={18} className="text-white" />
                                     </div>
                                     <div>
-                                        <h2>My Courses</h2>
-                                        <p>Courses you're enrolled in</p>
+                                        <h3 className="text-base font-semibold text-slate-800">Your Progression</h3>
+                                        <p className="text-xs text-slate-500">Overall activity summary</p>
                                     </div>
                                 </div>
-                                {/* Button to open the enrollment modal */}
-                                <button
-                                    className="action-btn primary"
-                                    onClick={() => setShowEnrollModal(true)}
-                                >
-                                    <Plus size={16} /> Enroll
-                                </button>
-                            </div>
-
-                            {/* Display enrolled courses or an empty state */}
-                            {enrollments.length > 0 ? (
-                                <div className="courses-grid">
-                                    {enrollments.map((enrollment) => (
-                                        <motion.div
-                                            key={enrollment.id}
-                                            className="course-card"
-                                            whileHover={{ y: -4 }} // Hover effect
-                                            onClick={() => navigate(`/student/courses/${enrollment.courseId}`)}
-                                        >
-                                            <div className="course-card-header">
-                                                <div className="course-icon">
-                                                    <GraduationCap size={24} />
-                                                </div>
-                                                <ChevronRight size={20} className="course-arrow" />
-                                            </div>
-                                            <h3>{enrollment.courseName}</h3>
-                                            <div className="course-meta">
-                                                <span className="course-code">{enrollment.courseCode}</span>
-                                                <span className="enrolled-date">
-                                                    <Calendar size={12} />
-                                                    {new Date(enrollment.enrolledAt).toLocaleDateString()}
-                                                </span>
-                                            </div>
-                                        </motion.div>
-                                    ))}
-                                </div>
-                            ) : (
-                                // Empty state when no courses are enrolled
-                                <div className="empty-state">
-                                    <BookOpen size={48} />
-                                    <h3>No Courses Yet</h3>
-                                    <p>Enroll in a course to get started</p>
-                                </div>
-                            )}
-                        </section>
-
-                        {/* My Teams Section */}
-                        <section className="dashboard-section">
-                            <div className="section-header">
-                                <div className="section-title">
-                                    <div className="section-icon teams-icon">
-                                        <Users size={20} />
+                                <div className="grid grid-cols-3 gap-3 mt-auto">
+                                    {/* Calculated counts for overall progression summary */}
+                                    <div className="flex flex-col items-center p-3 bg-slate-50 rounded-xl">
+                                        <span className="text-xl font-bold text-slate-800">{enrollments.length}</span>
+                                        <span className="text-xs text-slate-500">Courses</span>
                                     </div>
-                                    <div>
-                                        <h2>My Teams</h2>
-                                        <p>Teams you're part of</p>
+                                    <div className="flex flex-col items-center p-3 bg-slate-50 rounded-xl">
+                                        <span className="text-xl font-bold text-slate-800">{teams.length}</span>
+                                        <span className="text-xs text-slate-500">Teams</span>
+                                    </div>
+                                    <div className="flex flex-col items-center p-3 bg-slate-50 rounded-xl">
+                                        <span className="text-xl font-bold text-slate-800">{achievements.length}</span>
+                                        <span className="text-xs text-slate-500">Badges</span>
                                     </div>
                                 </div>
                             </div>
+                        </div>
 
-                            {/* Display student's teams or an empty state */}
-                            {teams.length > 0 ? (
-                                <div className="teams-grid">
-                                    {teams.map((team) => (
-                                        <motion.div
-                                            key={team.id}
-                                            className="team-card"
-                                            whileHover={{ y: -4 }} // Hover effect
-                                            onClick={() => navigate(`/student/teams/${team.id}`)}
-                                        >
-                                            <div className="team-card-header">
-                                                <div className="team-icon">
-                                                    <Users size={20} />
-                                                </div>
-                                                <ChevronRight size={18} className="team-arrow" />
-                                            </div>
-                                            <h3>{team.name}</h3>
-                                            <div className="team-meta">
-                                                <span className="team-role">{team.role || 'Member'}</span>
-                                                <span className="member-count">
-                                                    {team.memberCount || 0} members
-                                                </span>
-                                            </div>
-                                        </motion.div>
-                                    ))}
-                                </div>
-                            ) : (
-                                // Empty state when not part of any team
-                                <div className="empty-state">
-                                    <Users size={48} />
-                                    <h3>No Teams Yet</h3>
-                                    <p>Join a team through your course</p>
-                                </div>
-                            )}
-                        </section>
-                    </div>
-
-                    {/* Right Column - Stats & Achievements */}
-                    <div className="side-column">
-                        {/* Score Comparison Card */}
-                        <div className="stat-card score-card">
-                            <div className="stat-card-header">
-                                <div className="stat-card-icon">
-                                    <Target size={20} />
+                        {/* Recent Achievements Card */}
+                        <div className="bg-white rounded-2xl shadow-xl shadow-violet-500/10 border border-slate-200/60 p-5">
+                            <div className="flex items-center gap-3 mb-4">
+                                <div className="flex items-center justify-center w-9 h-9 rounded-xl bg-gradient-to-br from-violet-500 to-purple-600 shadow-lg shadow-violet-500/30">
+                                    <Award size={18} className="text-white" />
                                 </div>
                                 <div>
-                                    <h3>Score Comparison</h3>
-                                    <p>Your performance vs course average</p>
+                                    <h3 className="text-base font-semibold text-slate-800">Recent Achievements</h3>
+                                    <p className="text-xs text-slate-500">Badges you've earned</p>
+                                </div>
+                            </div>
+
+                            {/* Display recent achievements */}
+                            {achievements.length > 0 ? (
+                                <div className="space-y-2">
+                                    {/* Slice(0, 5) shows only the 5 most recent achievements */}
+                                    {achievements.slice(0, 5).map((achievement, index) => (
+                                        <motion.div
+                                            key={achievement.id}
+                                            className="flex items-center gap-3 p-2.5 rounded-xl bg-slate-50 hover:bg-slate-100 transition-colors"
+                                            initial={{ opacity: 0, x: -10 }}
+                                            animate={{ opacity: 1, x: 0 }}
+                                            transition={{ delay: index * 0.1 }}
+                                        >
+                                            <div className="flex-shrink-0 w-8 h-8 rounded-lg flex items-center justify-center bg-gradient-to-br from-amber-400 to-amber-500 text-white shadow-md shadow-amber-500/20">
+                                                <Trophy size={14} />
+                                            </div>
+                                            <div className="flex-1 min-w-0">
+                                                <span className="block font-medium text-slate-800 text-sm truncate">{achievement.badgeName}</span>
+                                            </div>
+                                            <div className="flex items-center gap-1 px-2 py-1 rounded-full bg-violet-100 text-violet-700 font-semibold text-xs">
+                                                +{achievement.points} pts
+                                            </div>
+                                        </motion.div>
+                                    ))}
+                                </div>
+                            ) : (
+                                <div className="text-center py-6 text-slate-400">
+                                    <Trophy size={28} className="mx-auto mb-2 text-slate-300" />
+                                    <p className="text-sm">Complete tasks to earn badges!</p>
+                                </div>
+                            )}
+                        </div>
+
+                        {/* Score Comparison Card - span block or full width depending on screen size */}
+                        <div className="bg-white rounded-2xl shadow-xl shadow-indigo-500/10 border border-slate-200/60 p-5 md:col-span-2 lg:col-span-1">
+                            <div className="flex items-center gap-3 mb-4">
+                                <div className="flex items-center justify-center w-9 h-9 rounded-xl bg-gradient-to-br from-amber-400 to-orange-500 shadow-lg shadow-amber-500/30">
+                                    <Target size={18} className="text-white" />
+                                </div>
+                                <div>
+                                    <h3 className="text-base font-semibold text-slate-800">Score Comparison</h3>
+                                    <p className="text-xs text-slate-500">Your performance vs course average</p>
                                 </div>
                             </div>
                             <div className="score-chart-container">
@@ -445,91 +425,132 @@ const StudentDashboard = () => {
                                         </Bar>
                                     </BarChart>
                                 </ResponsiveContainer>
-                                <div className="score-comparison-summary">
+                                <div className="score-comparison-summary mt-2 pt-2 border-t border-slate-100 flex justify-center w-full">
                                     {/* Conditional message based on performance vs average */}
                                     {totalPoints >= courseAverage ? (
-                                        <span className="above-average">
+                                        <span className="flex items-center gap-1 px-3 py-1.5 rounded-lg bg-emerald-50 text-emerald-700 font-medium text-xs">
                                             <TrendingUp size={16} />
                                             You're above average!
                                         </span>
                                     ) : (
-                                        <span className="below-average">
+                                        <span className="text-xs text-slate-500 font-medium">
                                             Keep working to reach the average
                                         </span>
                                     )}
                                 </div>
                             </div>
                         </div>
+                    </div>
 
-                        {/* Recent Achievements Card */}
-                        <div className="stat-card achievements-card">
-                            <div className="stat-card-header">
-                                <div className="stat-card-icon achievements-icon">
-                                    <Award size={20} />
+                    {/* Bottom Row: Main Lists */}
+                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                        {/* My Courses Section */}
+                        <section className="bg-white rounded-2xl shadow-xl shadow-indigo-500/10 border border-slate-200/60 p-5 flex flex-col">
+                            <div className="flex items-center justify-between mb-6">
+                                <div className="flex items-center gap-3">
+                                    <div className="flex items-center justify-center w-10 h-10 rounded-xl bg-gradient-to-br from-violet-500 to-indigo-600 shadow-lg shadow-violet-500/30">
+                                        <BookOpen size={20} className="text-white" />
+                                    </div>
+                                    <div>
+                                        <h2 className="text-xl font-bold text-slate-800">My Courses</h2>
+                                        <p className="text-sm text-slate-500">Courses you're enrolled in</p>
+                                    </div>
                                 </div>
-                                <div>
-                                    <h3>Recent Achievements</h3>
-                                    <p>Badges you've earned</p>
-                                </div>
+                                {/* Button to open the enrollment modal */}
+                                <button
+                                    className="flex items-center gap-2 px-4 py-2 rounded-xl bg-gradient-to-r from-violet-600 to-indigo-600 text-white font-semibold shadow-lg shadow-violet-500/30 hover:scale-105 transition-all outline-none border-none"
+                                    onClick={() => setShowEnrollModal(true)}
+                                >
+                                    <Plus size={16} /> Enroll
+                                </button>
                             </div>
 
-                            {/* Display recent achievements */}
-                            {achievements.length > 0 ? (
-                                <div className="achievements-list">
-                                    {/* Slice(0, 5) shows only the 5 most recent achievements */}
-                                    {achievements.slice(0, 5).map((achievement, index) => (
+                            {/* Display enrolled courses or an empty state */}
+                            {enrollments.length > 0 ? (
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 flex-1">
+                                    {enrollments.map((enrollment) => (
                                         <motion.div
-                                            key={achievement.id}
-                                            className="achievement-item"
-                                            initial={{ opacity: 0, x: -10 }}
-                                            animate={{ opacity: 1, x: 0 }}
-                                            transition={{ delay: index * 0.1 }}
+                                            key={enrollment.id}
+                                            className="course-card h-full"
+                                            whileHover={{ y: -4 }} // Hover effect
+                                            onClick={() => navigate(`/student/courses/${enrollment.courseId}`)}
                                         >
-                                            <div className="achievement-icon">
-                                                <Trophy size={16} />
+                                            <div className="course-card-header">
+                                                <div className="course-icon">
+                                                    <GraduationCap size={24} />
+                                                </div>
+                                                <ChevronRight size={20} className="course-arrow" />
                                             </div>
-                                            <div className="achievement-info">
-                                                <span className="achievement-name">{achievement.badgeName}</span>
-                                                <span className="achievement-points">+{achievement.points} pts</span>
+                                            <h3>{enrollment.courseName}</h3>
+                                            <div className="course-meta">
+                                                <span className="course-code">{enrollment.courseCode}</span>
+                                                <span className="enrolled-date">
+                                                    <Calendar size={12} />
+                                                    {new Date(enrollment.enrolledAt).toLocaleDateString()}
+                                                </span>
                                             </div>
                                         </motion.div>
                                     ))}
                                 </div>
                             ) : (
-                                <div className="empty-achievements">
-                                    <Trophy size={32} />
-                                    <p>Complete tasks to earn badges!</p>
+                                // Empty state when no courses are enrolled
+                                <div className="empty-state m-auto">
+                                    <BookOpen size={48} />
+                                    <h3>No Courses Yet</h3>
+                                    <p>Enroll in a course to get started</p>
                                 </div>
                             )}
-                        </div>
+                        </section>
 
-                        {/* Progression Timeline Card (Summary) */}
-                        <div className="stat-card progression-card">
-                            <div className="stat-card-header">
-                                <div className="stat-card-icon progression-icon">
-                                    <TrendingUp size={20} />
-                                </div>
-                                <div>
-                                    <h3>Your Progression</h3>
-                                    <p>Overall activity summary</p>
-                                </div>
-                            </div>
-                            <div className="progression-stats">
-                                {/* Calculated counts for overall progression summary */}
-                                <div className="progression-stat">
-                                    <span className="prog-value">{enrollments.length}</span>
-                                    <span className="prog-label">Courses</span>
-                                </div>
-                                <div className="progression-stat">
-                                    <span className="prog-value">{teams.length}</span>
-                                    <span className="prog-label">Teams</span>
-                                </div>
-                                <div className="progression-stat">
-                                    <span className="prog-value">{achievements.length}</span>
-                                    <span className="prog-label">Badges</span>
+                        {/* My Teams Section */}
+                        <section className="bg-white rounded-2xl shadow-xl shadow-indigo-500/10 border border-slate-200/60 p-5 flex flex-col">
+                            <div className="flex items-center justify-between mb-6">
+                                <div className="flex items-center gap-3">
+                                    <div className="flex items-center justify-center w-10 h-10 rounded-xl bg-gradient-to-br from-emerald-500 to-teal-600 shadow-lg shadow-emerald-500/30">
+                                        <Users size={20} className="text-white" />
+                                    </div>
+                                    <div>
+                                        <h2 className="text-xl font-bold text-slate-800">My Teams</h2>
+                                        <p className="text-sm text-slate-500">Teams you're part of</p>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
+
+                            {/* Display student's teams or an empty state */}
+                            {teams.length > 0 ? (
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 flex-1">
+                                    {teams.map((team) => (
+                                        <motion.div
+                                            key={team.id}
+                                            className="team-card h-full"
+                                            whileHover={{ y: -4 }} // Hover effect
+                                            onClick={() => navigate(`/student/teams/${team.id}`)}
+                                        >
+                                            <div className="team-card-header">
+                                                <div className="team-icon">
+                                                    <Users size={20} />
+                                                </div>
+                                                <ChevronRight size={18} className="team-arrow" />
+                                            </div>
+                                            <h3>{team.name}</h3>
+                                            <div className="team-meta">
+                                                <span className="team-role">{team.role || 'Member'}</span>
+                                                <span className="member-count">
+                                                    {team.memberCount || 0} members
+                                                </span>
+                                            </div>
+                                        </motion.div>
+                                    ))}
+                                </div>
+                            ) : (
+                                // Empty state when not part of any team
+                                <div className="empty-state m-auto">
+                                    <Users size={48} />
+                                    <h3>No Teams Yet</h3>
+                                    <p>Join a team through your course</p>
+                                </div>
+                            )}
+                        </section>
                     </div>
                 </div>
             </div >

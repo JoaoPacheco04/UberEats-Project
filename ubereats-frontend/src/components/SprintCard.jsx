@@ -48,6 +48,13 @@ const SprintCard = ({ sprint, onViewBoard, onStart, onComplete }) => {
                 bg: '#f1f5f9', // slate-100
                 gradient: 'from-slate-400 to-slate-500'
             },
+            IN_PROGRESS: {
+                label: 'In Progress',
+                icon: PlayCircle,
+                color: '#059669', // emerald-600
+                bg: '#d1fae5', // emerald-100
+                gradient: 'from-emerald-500 to-teal-500'
+            },
             ACTIVE: {
                 label: 'In Progress',
                 icon: PlayCircle,
@@ -136,7 +143,7 @@ const SprintCard = ({ sprint, onViewBoard, onStart, onComplete }) => {
                     </div>
 
                     {/* Progress bar - only shown for active sprints */}
-                    {status === 'ACTIVE' && (
+                    {(status === 'ACTIVE' || status === 'IN_PROGRESS') && (
                         <div className="progress-section">
                             <div className="progress-bar">
                                 <div
@@ -174,7 +181,7 @@ const SprintCard = ({ sprint, onViewBoard, onStart, onComplete }) => {
                     )}
 
                     {/* Complete button - only shown for active sprints */}
-                    {status === 'ACTIVE' && onComplete && (
+                    {(status === 'ACTIVE' || status === 'IN_PROGRESS') && onComplete && (
                         <button className="action-btn complete" onClick={onComplete}>
                             <CheckCircle2 size={16} />
                             Complete
